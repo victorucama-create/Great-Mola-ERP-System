@@ -2301,6 +2301,85 @@
         let auditLogs = JSON.parse(localStorage.getItem('auditLogs') || '[]');
         let systemSettings = JSON.parse(localStorage.getItem('systemSettings') || '{}');
         
+        // ========== PLANO DE CONTAS PRÉ-CONFIGURADO ==========
+        const defaultPlanoContas = [
+            // ATIVO
+            { id: 1, codigo: '1', nome: 'ATIVO', tipo: 'Ativo', descricao: 'Contas do Ativo', pai: null },
+            { id: 2, codigo: '1.1', nome: 'ATIVO CIRCULANTE', tipo: 'Ativo', descricao: 'Ativo Circulante', pai: 1 },
+            { id: 3, codigo: '1.1.1', nome: 'DISPONIBILIDADES', tipo: 'Ativo', descricao: 'Disponibilidades', pai: 2 },
+            { id: 4, codigo: '1.1.1.1', nome: 'CAIXA', tipo: 'Ativo', descricao: 'Caixa', pai: 3 },
+            { id: 5, codigo: '1.1.1.2', nome: 'BANCOS CONTA MOVIMENTO', tipo: 'Ativo', descricao: 'Bancos - Conta Movimento', pai: 3 },
+            { id: 6, codigo: '1.1.1.3', nome: 'BANCOS CONTA INVESTIMENTO', tipo: 'Ativo', descricao: 'Bancos - Conta Investimento', pai: 3 },
+            { id: 7, codigo: '1.1.2', nome: 'APLICAÇÕES FINANCEIRAS', tipo: 'Ativo', descricao: 'Aplicações Financeiras', pai: 2 },
+            { id: 8, codigo: '1.1.2.1', nome: 'INVESTIMENTOS SSA', tipo: 'Ativo', descricao: 'Investimentos em Contas SSA', pai: 7 },
+            { id: 9, codigo: '1.1.2.2', nome: 'INVESTIMENTOS AGENTES', tipo: 'Ativo', descricao: 'Investimentos em Agentes', pai: 7 },
+            { id: 10, codigo: '1.1.3', nome: 'CONTAS A RECEBER', tipo: 'Ativo', descricao: 'Contas a Receber', pai: 2 },
+            { id: 11, codigo: '1.1.3.1', nome: 'CLIENTES', tipo: 'Ativo', descricao: 'Clientes', pai: 10 },
+            { id: 12, codigo: '1.1.3.2', nome: 'COMISSÕES A RECEBER', tipo: 'Ativo', descricao: 'Comissões a Receber', pai: 10 },
+            
+            { id: 13, codigo: '1.2', nome: 'ATIVO NÃO CIRCULANTE', tipo: 'Ativo', descricao: 'Ativo Não Circulante', pai: 1 },
+            { id: 14, codigo: '1.2.1', nome: 'INVESTIMENTOS', tipo: 'Ativo', descricao: 'Investimentos', pai: 13 },
+            { id: 15, codigo: '1.2.1.1', nome: 'PARTICIPAÇÕES SOCIAIS', tipo: 'Ativo', descricao: 'Participações Sociais', pai: 14 },
+            { id: 16, codigo: '1.2.2', nome: 'IMOBILIZADO', tipo: 'Ativo', descricao: 'Imobilizado', pai: 13 },
+            { id: 17, codigo: '1.2.2.1', nome: 'EQUIPAMENTOS INFORMÁTICOS', tipo: 'Ativo', descricao: 'Equipamentos Informáticos', pai: 16 },
+            { id: 18, codigo: '1.2.2.2', nome: 'MÓVEIS E UTENSÍLIOS', tipo: 'Ativo', descricao: 'Móveis e Utensílios', pai: 16 },
+            { id: 19, codigo: '1.2.2.3', nome: 'VIATURAS', tipo: 'Ativo', descricao: 'Viaturas', pai: 16 },
+            
+            // PASSIVO
+            { id: 20, codigo: '2', nome: 'PASSIVO', tipo: 'Passivo', descricao: 'Contas do Passivo', pai: null },
+            { id: 21, codigo: '2.1', nome: 'PASSIVO CIRCULANTE', tipo: 'Passivo', descricao: 'Passivo Circulante', pai: 20 },
+            { id: 22, codigo: '2.1.1', nome: 'FORNECEDORES', tipo: 'Passivo', descricao: 'Fornecedores', pai: 21 },
+            { id: 23, codigo: '2.1.2', nome: 'EMPRÉSTIMOS BANCÁRIOS', tipo: 'Passivo', descricao: 'Empréstimos Bancários', pai: 21 },
+            { id: 24, codigo: '2.1.3', nome: 'IMPOSTOS A PAGAR', tipo: 'Passivo', descricao: 'Impostos a Pagar', pai: 21 },
+            { id: 25, codigo: '2.1.3.1', nome: 'IRPS A PAGAR', tipo: 'Passivo', descricao: 'IRPS a Pagar', pai: 24 },
+            { id: 26, codigo: '2.1.3.2', nome: 'IVA A PAGAR', tipo: 'Passivo', descricao: 'IVA a Pagar', pai: 24 },
+            
+            { id: 27, codigo: '2.2', nome: 'PASSIVO NÃO CIRCULANTE', tipo: 'Passivo', descricao: 'Passivo Não Circulante', pai: 20 },
+            { id: 28, codigo: '2.2.1', nome: 'EMPRÉSTIMOS LONGO PRAZO', tipo: 'Passivo', descricao: 'Empréstimos Longo Prazo', pai: 27 },
+            
+            // PATRIMÔNIO LÍQUIDO
+            { id: 29, codigo: '3', nome: 'PATRIMÔNIO LÍQUIDO', tipo: 'Patrimonio', descricao: 'Patrimônio Líquido', pai: null },
+            { id: 30, codigo: '3.1', nome: 'CAPITAL SOCIAL', tipo: 'Patrimonio', descricao: 'Capital Social', pai: 29 },
+            { id: 31, codigo: '3.2', nome: 'RESERVAS', tipo: 'Patrimonio', descricao: 'Reservas', pai: 29 },
+            { id: 32, codigo: '3.3', nome: 'RESULTADOS ACUMULADOS', tipo: 'Patrimonio', descricao: 'Resultados Acumulados', pai: 29 },
+            { id: 33, codigo: '3.4', nome: 'LUCROS/ PREJUÍZOS DO EXERCÍCIO', tipo: 'Patrimonio', descricao: 'Lucros/Prejuízos do Exercício', pai: 29 },
+            
+            // RECEITAS
+            { id: 34, codigo: '4', nome: 'RECEITAS', tipo: 'Receita', descricao: 'Contas de Receitas', pai: null },
+            { id: 35, codigo: '4.1', nome: 'RECEITAS OPERACIONAIS', tipo: 'Receita', descricao: 'Receitas Operacionais', pai: 34 },
+            { id: 36, codigo: '4.1.1', nome: 'RENDIMENTOS DE INVESTIMENTOS', tipo: 'Receita', descricao: 'Rendimentos de Investimentos', pai: 35 },
+            { id: 37, codigo: '4.1.1.1', nome: 'RENDIMENTOS SSA', tipo: 'Receita', descricao: 'Rendimentos de Contas SSA', pai: 36 },
+            { id: 38, codigo: '4.1.1.2', nome: 'RENDIMENTOS AGENTES', tipo: 'Receita', descricao: 'Rendimentos de Agentes', pai: 36 },
+            { id: 39, codigo: '4.1.2', nome: 'COMISSÕES RECEBIDAS', tipo: 'Receita', descricao: 'Comissões Recebidas', pai: 35 },
+            { id: 40, codigo: '4.1.3', nome: 'TAXAS DE SERVIÇO', tipo: 'Receita', descricao: 'Taxas de Serviço', pai: 35 },
+            
+            { id: 41, codigo: '4.2', nome: 'RECEITAS NÃO OPERACIONAIS', tipo: 'Receita', descricao: 'Receitas Não Operacionais', pai: 34 },
+            { id: 42, codigo: '4.2.1', nome: 'JUROS ATIVOS', tipo: 'Receita', descricao: 'Juros Ativos', pai: 41 },
+            { id: 43, codigo: '4.2.2', nome: 'GANHOS COM CÂMBIO', tipo: 'Receita', descricao: 'Ganhos com Câmbio', pai: 41 },
+            
+            // DESPESAS
+            { id: 44, codigo: '5', nome: 'DESPESAS', tipo: 'Despesa', descricao: 'Contas de Despesas', pai: null },
+            { id: 45, codigo: '5.1', nome: 'DESPESAS OPERACIONAIS', tipo: 'Despesa', descricao: 'Despesas Operacionais', pai: 44 },
+            { id: 46, codigo: '5.1.1', nome: 'DESPESAS COM PESSOAL', tipo: 'Despesa', descricao: 'Despesas com Pessoal', pai: 45 },
+            { id: 47, codigo: '5.1.1.1', nome: 'SALÁRIOS', tipo: 'Despesa', descricao: 'Salários', pai: 46 },
+            { id: 48, codigo: '5.1.1.2', nome: 'ENCARGOS SOCIAIS', tipo: 'Despesa', descricao: 'Encargos Sociais', pai: 46 },
+            { id: 49, codigo: '5.1.2', nome: 'DESPESAS GERAIS', tipo: 'Despesa', descricao: 'Despesas Gerais', pai: 45 },
+            { id: 50, codigo: '5.1.2.1', nome: 'ALUGUÉIS', tipo: 'Despesa', descricao: 'Aluguéis', pai: 49 },
+            { id: 51, codigo: '5.1.2.2', nome: 'ÁGUA, LUZ E TELECOMUNICAÇÕES', tipo: 'Despesa', descricao: 'Água, Luz e Telecomunicações', pai: 49 },
+            { id: 52, codigo: '5.1.2.3', nome: 'MATERIAL DE ESCRITÓRIO', tipo: 'Despesa', descricao: 'Material de Escritório', pai: 49 },
+            { id: 53, codigo: '5.1.3', nome: 'COMISSÕES PAGAS', tipo: 'Despesa', descricao: 'Comissões Pagas', pai: 45 },
+            { id: 54, codigo: '5.1.4', nome: 'IMPOSTOS E TAXAS', tipo: 'Despesa', descricao: 'Impostos e Taxas', pai: 45 },
+            { id: 55, codigo: '5.1.4.1', nome: 'IRPS', tipo: 'Despesa', descricao: 'IRPS', pai: 54 },
+            { id: 56, codigo: '5.1.4.2', nome: 'IVA', tipo: 'Despesa', descricao: 'IVA', pai: 54 },
+            
+            { id: 57, codigo: '5.2', nome: 'DESPESAS FINANCEIRAS', tipo: 'Despesa', descricao: 'Despesas Financeiras', pai: 44 },
+            { id: 58, codigo: '5.2.1', nome: 'JUROS PASSIVOS', tipo: 'Despesa', descricao: 'Juros Passivos', pai: 57 },
+            { id: 59, codigo: '5.2.2', nome: 'COMISSÕES BANCÁRIAS', tipo: 'Despesa', descricao: 'Comissões Bancárias', pai: 57 },
+            
+            { id: 60, codigo: '5.3', nome: 'DEPRECIAÇÕES E AMORTIZAÇÕES', tipo: 'Despesa', descricao: 'Depreciações e Amortizações', pai: 44 },
+            { id: 61, codigo: '5.3.1', nome: 'DEPRECIAÇÃO DO IMOBILIZADO', tipo: 'Despesa', descricao: 'Depreciação do Imobilizado', pai: 60 }
+        ];
+
         // ========== INICIALIZAÇÃO DE DADOS PADRÃO ==========
         function initializeDefaultData() {
             // Verificar se já existem dados
@@ -2322,6 +2401,10 @@
 
                 users = [superAdmin];
                 localStorage.setItem('users', JSON.stringify(users));
+                
+                // Inicializar plano de contas
+                planoContas = defaultPlanoContas;
+                localStorage.setItem('planoContas', JSON.stringify(planoContas));
                 
                 // Inicializar configurações do sistema
                 const defaultSettings = {
@@ -2365,11 +2448,10 @@
                 localStorage.setItem('subchannels', JSON.stringify([]));
                 localStorage.setItem('approvals', JSON.stringify([]));
                 localStorage.setItem('transactions', JSON.stringify([]));
-                localStorage.setItem('planoContas', JSON.stringify([]));
                 localStorage.setItem('lancamentos', JSON.stringify([]));
                 localStorage.setItem('auditLogs', JSON.stringify([]));
                 
-                console.log('Sistema inicializado com Super Administrador');
+                console.log('Sistema inicializado com Super Administrador e Plano de Contas completo');
             }
             
             // Recarregar dados do localStorage
@@ -2443,6 +2525,100 @@
             localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
         }
 
+        // ========== FUNÇÕES DO PLANO DE CONTAS ==========
+        function renderPlanoContas() {
+            const container = document.getElementById('planoContasTree');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Agrupar contas por classe principal
+            const classes = {
+                'Ativo': planoContas.filter(c => c.tipo === 'Ativo' && !c.pai),
+                'Passivo': planoContas.filter(c => c.tipo === 'Passivo' && !c.pai),
+                'Patrimonio': planoContas.filter(c => c.tipo === 'Patrimonio' && !c.pai),
+                'Receita': planoContas.filter(c => c.tipo === 'Receita' && !c.pai),
+                'Despesa': planoContas.filter(c => c.tipo === 'Despesa' && !c.pai)
+            };
+            
+            Object.keys(classes).forEach(classe => {
+                if (classes[classe].length > 0) {
+                    const classDiv = document.createElement('div');
+                    classDiv.className = 'account-class';
+                    classDiv.textContent = `${classe.toUpperCase()}`;
+                    container.appendChild(classDiv);
+                    
+                    classes[classe].forEach(contaPrincipal => {
+                        renderConta(contaPrincipal, container, 0);
+                    });
+                }
+            });
+        }
+
+        function renderConta(conta, container, nivel) {
+            const contaDiv = document.createElement('div');
+            contaDiv.className = 'account-item';
+            contaDiv.style.paddingLeft = (nivel * 20) + 'px';
+            
+            const contaContent = document.createElement('div');
+            contaContent.style.display = 'flex';
+            contaContent.style.justifyContent = 'space-between';
+            contaContent.style.alignItems = 'center';
+            
+            const contaInfo = document.createElement('div');
+            contaInfo.innerHTML = `
+                <span class="account-code">${conta.codigo}</span> - ${conta.nome}
+                ${conta.descricao ? `<div class="small muted">${conta.descricao}</div>` : ''}
+            `;
+            
+            const contaActions = document.createElement('div');
+            contaActions.innerHTML = `
+                <button class="btn btn-small btn-primary" onclick="editConta(${conta.id})">Editar</button>
+                <button class="btn btn-small btn-danger" onclick="deleteConta(${conta.id})">Eliminar</button>
+            `;
+            
+            contaContent.appendChild(contaInfo);
+            contaContent.appendChild(contaActions);
+            contaDiv.appendChild(contaContent);
+            container.appendChild(contaDiv);
+            
+            // Renderizar subcontas
+            const subContas = planoContas.filter(c => c.pai === conta.id);
+            subContas.forEach(subConta => {
+                renderConta(subConta, container, nivel + 1);
+            });
+        }
+
+        function loadPlanoContasForDropdown() {
+            const debitoSelect = document.getElementById('lancamentoDebito');
+            const creditoSelect = document.getElementById('lancamentoCredito');
+            const contaPaiSelect = document.getElementById('contaPai');
+            const filterContaSelect = document.getElementById('filterConta');
+            
+            // Limpar selects
+            [debitoSelect, creditoSelect, contaPaiSelect, filterContaSelect].forEach(select => {
+                if (select) {
+                    select.innerHTML = select.id === 'contaPai' 
+                        ? '<option value="">Nenhuma (Conta Principal)</option>'
+                        : '<option value="">Selecionar conta</option>';
+                }
+            });
+            
+            // Popular selects
+            planoContas.forEach(conta => {
+                const optionText = `${conta.codigo} - ${conta.nome}`;
+                
+                [debitoSelect, creditoSelect, contaPaiSelect, filterContaSelect].forEach(select => {
+                    if (select) {
+                        const option = document.createElement('option');
+                        option.value = conta.id;
+                        option.textContent = optionText;
+                        select.appendChild(option);
+                    }
+                });
+            });
+        }
+
         // ========== FUNÇÕES DE NAVEGAÇÃO ==========
         function switchTab(tabName) {
             // Esconder todas as tabs
@@ -2508,6 +2684,14 @@
             // Ativar botão selecionado
             if (event && event.target) {
                 event.target.classList.add('active');
+            }
+            
+            // Ações específicas por sub-tab
+            if (subTabName === 'chartOfAccounts') {
+                renderPlanoContas();
+            } else if (subTabName === 'accountingEntries') {
+                loadPlanoContasForDropdown();
+                updateLancamentosTable();
             }
         }
 
@@ -3109,6 +3293,7 @@
             });
             
             console.log('Great Mola ERP inicializado com sucesso!');
+            console.log('Plano de Contas pré-configurado com', defaultPlanoContas.length, 'contas');
         });
 
         // ========== FUNÇÕES DE PLACEHOLDER ==========
@@ -3158,6 +3343,21 @@
         function exportSSAExcel() { alert('Exportação para Excel em desenvolvimento'); }
         function exportSSACSV() { alert('Exportação para CSV em desenvolvimento'); }
         function loadAgentExtract() { alert('Funcionalidade de extrato em desenvolvimento'); }
+        function editConta(id) { alert('Editar conta em desenvolvimento'); }
+        function deleteConta(id) { 
+            if (confirm('Tem certeza que deseja eliminar esta conta?')) {
+                alert('Eliminar conta em desenvolvimento'); 
+            }
+        }
+        function updateLancamentosTable() {
+            const tbody = document.getElementById('lancamentosTable').querySelector('tbody');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #6c757d;">Nenhum lançamento registado</td></tr>';
+            }
+        }
+        function filtrarLancamentos() {
+            alert('Filtrar lançamentos em desenvolvimento');
+        }
     </script>
 </body>
 </html>
