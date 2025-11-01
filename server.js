@@ -1,34 +1,40 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware para servir arquivos estáticos
-app.use(express.static(__dirname));
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname)));
 
-// Rota principal - serve o index.html
+// Rota principal - servir o arquivo HTML
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Rota para todas as outras URLs (SPA - Single Page Application)
+// Rota de health check para o Render
+app.get('/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'OK', 
+        message: 'Great Mola ERP System is running',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Rota para servir outros arquivos estáticos se necessário
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, req.path));
 });
 
 // Iniciar servidor
 app.listen(PORT, '0.0.0.0', () => {
-  console.log('🚀 Great Mola Sistema iniciado com sucesso!');
-  console.log(`📍 Servidor rodando na porta: ${PORT}`);
-  console.log(`🌐 Acesse: http://localhost:${PORT}`);
-  console.log('✅ Sistema pronto para uso!');
+    console.log(`🚀 Great Mola ERP System running on port ${PORT}`);
+    console.log(`📊 Access the system: http://localhost:${PORT}`);
+    console.log(`💡 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
-// Tratamento de erros
-process.on('uncaughtException', (err) => {
-  console.error('Erro não capturado:', err);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Rejeição não tratada em:', promise, 'motivo:', reason);
-});
+module.exports = app;
