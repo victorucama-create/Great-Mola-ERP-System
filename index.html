@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Great Mola - Sistema Completo</title>
+    <style>
+        :root {
+            --primary: #c81f1f;
+            --secondary: #007bff;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --muted: #666;
+            --bg: #f5f7fb;
+            --card: #fff;
+            --accent: #ffbe21;
+            --blue: #007bff;
+            --orange: #fd7e14;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: var(--light);
+            border-bottom: 2px solid #dee2e6;
+            flex-wrap: wrap;
+        }
+        
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            background: white;
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+            min-height: 500px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #a61c1c;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid #d6dbe8;
+            color: var(--dark);
+        }
+        
+        .btn-small {
+            padding: 6px 8px;
+            font-size: 13px;
+            border-radius: 8px;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .grid-3 {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        
+        .grid-4 {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+        }
+        
+        .kpi-card {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .kpi-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .kpi-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        th {
+            background: var(--light);
+            font-weight: 600;
+        }
+        
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background: #d1edff;
+            color: #0c5460;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-active {
+            background: #d1edff;
+            color: #0c5460;
+        }
+        
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+        
+        .badge-admin {
+            background: var(--danger);
+            color: #fff;
+        }
+        
+        .badge-manager {
+            background: var(--orange);
+            color: #fff;
+        }
+        
+        .badge-analyst {
+            background: var(--success);
+            color: #fff;
+        }
+        
+        .badge-agent {
+            background: #6f42c1;
+            color: #fff;
+        }
+        
+        .badge-investor {
+            background: var(--secondary);
+            color: #fff;
+        }
+        
+        .alert {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .success {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #bee5eb;
+        }
+        
+        .muted {
+            color: var(--muted);
+            font-size: 13px;
+        }
+        
+        .small {
+            font-size: 13px;
+            color: var(--muted);
+        }
+        
+        .inline {
+            display: inline-block;
+            width: auto;
+        }
+        
+        input[type=file] {
+            padding: 6px;
+        }
+        
+        .footer {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 16px;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .results-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+        
+        .result-item {
+            flex: 1;
+            min-width: 180px;
+            padding: 12px;
+            border-radius: 8px;
+            background: linear-gradient(180deg,#fff,#fbfdff);
+            border: 1px solid #eef2f8;
+        }
+        
+        .result-item h3 {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .kpi {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        
+        .note {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+        
+        .sub-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .sub-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .sub-tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .sub-content {
+            display: none;
+        }
+        
+        .sub-content.active {
+            display: block;
+        }
+        
+        .account-tree {
+            margin-left: 20px;
+        }
+        
+        .account-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .account-code {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .account-class {
+            font-weight: bold;
+            color: var(--dark);
+            margin-top: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .account-group {
+            font-weight: 600;
+            color: var(--muted);
+            margin-top: 10px;
+            padding-left: 10px;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .nav-tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+            
+            .results-row {
+                flex-direction: column;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="login-container">
+        <div style="margin-bottom: 30px;">
+            <div style="font-size: 48px; color: var(--primary); margin-bottom: 10px;">💼</div>
+            <h1 style="color: var(--primary); margin-bottom: 10px;">Great Mola</h1>
+            <p style="color: var(--dark); opacity: 0.7;">Sistema Integrado de Gestão</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Utilizador</label>
+                <input type="text" id="username" placeholder="Nome de utilizador" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Palavra-passe</label>
+                <input type="password" id="password" placeholder="Palavra-passe" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar no Sistema</button>
+        </form>
+        
+        <div style="margin-top: 30px; padding: 20px; background: var(--light); border-radius: 8px;">
+            <h4 style="margin-bottom: 15px; color: var(--dark);">Utilizadores de Demonstração:</h4>
+            <div style="text-align: left; font-size: 12px; line-height: 1.6;">
+                <div><strong>Admin:</strong> admin / admin123</div>
+                <div><strong>Gestor:</strong> gestor / gestor123</div>
+                <div><strong>Analista:</strong> analista / analista123</div>
+                <div><strong>Agente:</strong> agente / agente123</div>
+                <div><strong>Investidor:</strong> investidor / invest123</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aplicação Principal -->
+    <div id="app" class="container" style="display: none;">
+        <!-- Cabeçalho -->
+        <div class="header">
+            <div class="logo">Great Mola 💼 - Sistema Completo</div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div>
+                        <div id="userName">Utilizador</div>
+                        <div style="font-size: 12px; opacity: 0.8;" id="userRole">Admin</div>
+                    </div>
+                </div>
+                <button class="btn btn-warning" onclick="exportBackup()">💾 Backup</button>
+                <button class="btn btn-secondary" onclick="importBackup()">📥 Restaurar</button>
+                <button class="btn btn-warning" onclick="logout()" style="margin-left: 15px;">Sair</button>
+            </div>
+        </div>
+
+        <!-- Navegação -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="switchTab('accounting')">📈 Contabilidade & Finanças</button>
+            <button class="nav-tab" onclick="switchTab('investors')">👥 Investidores</button>
+            <button class="nav-tab" onclick="switchTab('agents')">🤝 Agentes</button>
+            <button class="nav-tab" onclick="switchTab('users')" id="usersTab" style="display: none;">👤 Utilizadores</button>
+            <button class="nav-tab" onclick="switchTab('approvals')" id="approvalsTab" style="display: none;">✅ Aprovações</button>
+            <button class="nav-tab" onclick="switchTab('ssa')">💼 SSA</button>
+        </div>
+
+        <!-- Conteúdo das Tabs -->
+        <div class="tab-content active" id="dashboard">
+            <h2>Dashboard do Sistema</h2>
+            <div class="grid grid-3">
+                <div class="kpi-card">
+                    <div class="kpi-label">Total Investido</div>
+                    <div class="kpi-value" id="totalInvested">MT 0.00</div>
+                    <div class="kpi-label">Por todos os investidores</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Comissões Pendentes</div>
+                    <div class="kpi-value" id="pendingCommissions">MT 0.00</div>
+                    <div class="kpi-label">Aguardando pagamento</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Aprovações</div>
+                    <div class="kpi-value" id="pendingApprovals">0</div>
+                    <div class="kpi-label">Aguardando revisão</div>
+                </div>
+            </div>
+
+            <div class="grid grid-2" style="margin-top: 30px;">
+                <div class="card">
+                    <h3>📈 Meus Investimentos</h3>
+                    <div id="myInvestmentsList">
+                        <p style="color: #6c757d; text-align: center; padding: 20px;">
+                            Carregando seus investimentos...
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>💰 Minhas Comissões</h3>
+                    <div id="myCommissionsList">
+                        <p style="color: #6c757d; text-align: center; padding: 20px;">
+                            Carregando suas comissões...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resto do seu código HTML continua aqui... -->
+        <!-- [TODO: Inserir o resto do código HTML que você já tem] -->
+
+    </div>
+
+    <script>
+        // ========== VARIÁVEIS GLOBAIS ==========
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('users') || '[]');
+        let investors = JSON.parse(localStorage.getItem('investors') || '[]');
+        let agents = JSON.parse(localStorage.getItem('agents') || '[]');
+        let ssaAccounts = JSON.parse(localStorage.getItem('ssaAccounts') || '[]');
+        let ssaTransactions = JSON.parse(localStorage.getItem('ssaTransactions') || '[]');
+        let subchannels = JSON.parse(localStorage.getItem('subchannels') || '[]');
+        let approvals = JSON.parse(localStorage.getItem('approvals') || '[]');
+        let transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+        let planoContas = JSON.parse(localStorage.getItem('planoContas') || '[]');
+        let lancamentos = JSON.parse(localStorage.getItem('lancamentos') || '[]');
+        let auditLogs = JSON.parse(localStorage.getItem('auditLogs') || '[]');
+        
+        // ========== INICIALIZAÇÃO ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDefaultData();
+            
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                login();
+            });
+            
+            setupForms();
+            setupDefaultDates();
+            loadInitialData();
+        });
+        
+        function initializeDefaultData() {
+            if (users.length === 0) {
+                users = [
+                    {
+                        id: 1,
+                        fullName: 'Administrador do Sistema',
+                        username: 'admin',
+                        password: 'admin123',
+                        role: 'admin',
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString(),
+                        lastAccess: null
+                    },
+                    {
+                        id: 2,
+                        fullName: 'Gestor Financeiro',
+                        username: 'gestor',
+                        password: 'gestor123',
+                        role: 'manager',
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString(),
+                        lastAccess: null
+                    },
+                    {
+                        id: 3,
+                        fullName: 'Analista Contabil',
+                        username: 'analista',
+                        password: 'analista123',
+                        role: 'accountant',
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString(),
+                        lastAccess: null
+                    },
+                    {
+                        id: 4,
+                        fullName: 'Agente Comercial',
+                        username: 'agente',
+                        password: 'agente123',
+                        role: 'operator',
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString(),
+                        lastAccess: null
+                    },
+                    {
+                        id: 5,
+                        fullName: 'Investidor Exemplo',
+                        username: 'investidor',
+                        password: 'invest123',
+                        role: 'viewer',
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString(),
+                        lastAccess: null
+                    }
+                ];
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            
+            if (ssaAccounts.length === 0) {
+                ssaAccounts = [
+                    {
+                        id: 1,
+                        code: 'SOFSSA00035',
+                        name: 'VICTOR ALFREDO JORGE UCAMA',
+                        balance: 10000,
+                        rate: 0.5,
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+            }
+            
+            if (planoContas.length === 0) {
+                planoContas = [
+                    { id: 1, codigo: '1', nome: 'Ativo', tipo: 'Ativo', pai: null, descricao: 'Contas do Ativo' },
+                    { id: 2, codigo: '1.1', nome: 'Ativo Circulante', tipo: 'Ativo', pai: 1, descricao: 'Ativos de curto prazo' },
+                    { id: 3, codigo: '1.1.1', nome: 'Caixa e Equivalentes', tipo: 'Ativo', pai: 2, descricao: 'Dinheiro em caixa e bancos' },
+                    { id: 4, codigo: '1.1.2', nome: 'Contas a Receber', tipo: 'Ativo', pai: 2, descricao: 'Valores a receber de clientes' },
+                    { id: 5, codigo: '2', nome: 'Passivo', tipo: 'Passivo', pai: null, descricao: 'Contas do Passivo' },
+                    { id: 6, codigo: '2.1', nome: 'Passivo Circulante', tipo: 'Passivo', pai: 5, descricao: 'Passivos de curto prazo' },
+                    { id: 7, codigo: '2.1.1', nome: 'Fornecedores', tipo: 'Passivo', pai: 6, descricao: 'Contas a pagar a fornecedores' },
+                    { id: 8, codigo: '3', nome: 'Patrimônio Líquido', tipo: 'Patrimonio', pai: null, descricao: 'Contas do Patrimônio Líquido' },
+                    { id: 9, codigo: '3.1', nome: 'Capital Social', tipo: 'Patrimonio', pai: 8, descricao: 'Capital integralizado' },
+                    { id: 10, codigo: '4', nome: 'Receitas', tipo: 'Receita', pai: null, descricao: 'Contas de Receita' },
+                    { id: 11, codigo: '4.1', nome: 'Receitas Operacionais', tipo: 'Receita', pai: 10, descricao: 'Receitas da atividade principal' },
+                    { id: 12, codigo: '5', nome: 'Despesas', tipo: 'Despesa', pai: null, descricao: 'Contas de Despesa' },
+                    { id: 13, codigo: '5.1', nome: 'Despesas Operacionais', tipo: 'Despesa', pai: 12, descricao: 'Despesas da atividade principal' }
+                ];
+                localStorage.setItem('planoContas', JSON.stringify(planoContas));
+            }
+        }
+        
+        function setupForms() {
+            // Configurar todos os formulários...
+            document.getElementById('investorForm')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveInvestor();
+            });
+            // [TODO: Adicionar setup para outros formulários]
+        }
+        
+        function setupDefaultDates() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('investorStartDate') && (document.getElementById('investorStartDate').value = today);
+            // [TODO: Adicionar outras datas padrão]
+        }
+        
+        function loadInitialData() {
+            loadSSAForDropdowns();
+            loadPlanoContasForDropdown();
+            updateInvestorsTable();
+            updateAgentsTable();
+            updateUsersTable();
+            updateSSAAccountsTable();
+            updateSubchannelsTable();
+            updateTransactionsTable();
+            updatePlanoContasTree();
+            updateLancamentosTable();
+            updateKPIs();
+        }
+        
+        // ========== FUNÇÕES DE AUTENTICAÇÃO ==========
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            initializeDefaultData();
+            users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            const user = users.find(u => u.username === username && u.password === password && u.status === 'Ativo');
+            
+            if (user) {
+                currentUser = user;
+                user.lastAccess = new Date().toISOString();
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                logAudit('LOGIN', `Utilizador ${user.username} fez login`);
+                
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                
+                document.getElementById('userName').textContent = user.fullName;
+                document.getElementById('userRole').textContent = getRoleName(user.role);
+                document.getElementById('userAvatar').textContent = user.fullName.charAt(0).toUpperCase();
+                
+                if (user.role === 'admin' || user.role === 'manager') {
+                    document.getElementById('usersTab').style.display = 'block';
+                    document.getElementById('approvalsTab').style.display = 'block';
+                } else {
+                    document.getElementById('usersTab').style.display = 'none';
+                    document.getElementById('approvalsTab').style.display = 'none';
+                }
+                
+                loadUserSpecificData();
+                alert(`Bem-vindo, ${user.fullName}!`);
+            } else {
+                alert('Credenciais inválidas ou utilizador inativo!');
+            }
+        }
+        
+        function logout() {
+            if (currentUser) {
+                logAudit('LOGOUT', `Utilizador ${currentUser.username} fez logout`);
+            }
+            currentUser = null;
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('app').style.display = 'none';
+            document.getElementById('loginForm').reset();
+        }
+        
+        function getRoleName(role) {
+            const roles = {
+                'admin': 'Administrador',
+                'manager': 'Gestor',
+                'accountant': 'Contabilista',
+                'operator': 'Operador',
+                'viewer': 'Visualizador'
+            };
+            return roles[role] || 'Utilizador';
+        }
+        
+        function logAudit(action, details) {
+            const auditLog = {
+                id: Date.now(),
+                userId: currentUser.id,
+                username: currentUser.username,
+                action: action,
+                details: details,
+                timestamp: new Date().toISOString(),
+                ip: '127.0.0.1'
+            };
+            
+            auditLogs.push(auditLog);
+            if (auditLogs.length > 1000) {
+                auditLogs = auditLogs.slice(-1000);
+            }
+            localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
+        }
+        
+        // ========== FUNÇÕES DE NAVEGAÇÃO ==========
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'dashboard') {
+                updateDashboard();
+            } else if (tabName === 'accounting') {
+                updateAccountingData();
+            } else if (tabName === 'investors') {
+                updateInvestorsTable();
+            } else if (tabName === 'agents') {
+                updateAgentsTable();
+                loadAgentsForDropdown();
+            } else if (tabName === 'users') {
+                updateUsersTable();
+                updateAuditLogs();
+            } else if (tabName === 'ssa') {
+                updateSSAAccountsTable();
+                updateSubchannelsTable();
+                loadSSAForDropdowns();
+            }
+        }
+        
+        // [TODO: Adicionar outras funções JavaScript necessárias]
+        
+        function updateKPIs() {
+            const totalInvested = investors
+                .filter(inv => inv.status === 'Ativo')
+                .reduce((sum, inv) => sum + parseFloat(inv.amount), 0);
+            document.getElementById('totalInvested').textContent = `MT ${totalInvested.toFixed(2)}`;
+            
+            const pendingCommissions = agents
+                .filter(agent => agent.status === 'Ativo')
+                .length * 500;
+            document.getElementById('pendingCommissions').textContent = `MT ${pendingCommissions.toFixed(2)}`;
+            
+            const pendingApprovals = approvals.filter(app => app.status === 'Pendente').length;
+            document.getElementById('pendingApprovals').textContent = pendingApprovals;
+        }
+        
+        // Funções auxiliares básicas
+        function exportBackup() {
+            const backupData = {
+                users,
+                investors,
+                agents,
+                ssaAccounts,
+                ssaTransactions,
+                subchannels,
+                approvals,
+                transactions,
+                planoContas,
+                lancamentos,
+                auditLogs,
+                exportDate: new Date().toISOString()
+            };
+            const dataStr = JSON.stringify(backupData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            downloadFile(dataBlob, `great_mola_backup_${Date.now()}.json`);
+        }
+        
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // [TODO: Adicionar todas as outras funções JavaScript do sistema]
+        
+    </script>
+</body>
+</html>
