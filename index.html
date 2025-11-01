@@ -639,9 +639,1186 @@
             </div>
         </div>
 
-        <!-- Resto do seu código HTML continua aqui... -->
-        <!-- [TODO: Inserir o resto do código HTML que você já tem] -->
+        <!-- Tab Contabilidade & Finanças -->
+        <div class="tab-content" id="accounting">
+            <h2>Contabilidade & Finanças</h2>
+            
+            <div class="sub-tabs">
+                <button class="sub-tab active" onclick="switchSubTab('planning')">Planejamento Financeiro</button>
+                <button class="sub-tab" onclick="switchSubTab('chartOfAccounts')">Plano de Contas</button>
+                <button class="sub-tab" onclick="switchSubTab('reports')">Relatórios Financeiros</button>
+                <button class="sub-tab" onclick="switchSubTab('transactions')">Transações</button>
+                <button class="sub-tab" onclick="switchSubTab('internalControl')">Controlo Interno</button>
+                <button class="sub-tab" onclick="switchSubTab('accountingEntries')">Lançamentos</button>
+            </div>
+            
+            <!-- Sub-tab Planejamento Financeiro -->
+            <div class="sub-content active" id="planning">
+                <div class="card">
+                    <div class="grid grid-3">
+                        <div>
+                            <label>Adicionar Transação</label>
+                            <form id="txnForm">
+                                <input type="hidden" id="txnId">
+                                <div class="form-group">
+                                    <label class="small">Tipo</label>
+                                    <select id="txnType">
+                                        <option value="income">Receita</option>
+                                        <option value="expense">Despesa</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="small">Categoria</label>
+                                    <select id="txnCategory">
+                                        <option value="">Selecionar categoria</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="small">Descrição</label>
+                                    <input id="txnDesc" placeholder="Descrição curta">
+                                </div>
+                                <div class="form-group">
+                                    <label class="small">Valor (MZN)</label>
+                                    <input id="txnValue" type="number" step="0.01" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="small">Data</label>
+                                    <input id="txnDate" type="date">
+                                </div>
+                                <div style="margin-top:8px;display:flex;gap:8px;">
+                                    <button class="btn btn-primary" type="submit">Salvar transação</button>
+                                    <button type="button" class="btn btn-ghost" id="txnClear">Limpar</button>
+                                </div>
+                            </form>
+                        </div>
 
+                        <div>
+                            <label>Resumo Financeiro</label>
+                            <div class="card" style="padding:10px">
+                                <div class="results-row">
+                                    <div class="result-item">
+                                        <h3>Receitas</h3>
+                                        <div class="kpi" id="kpiIncome">MT 0.00</div>
+                                    </div>
+                                    <div class="result-item">
+                                        <h3>Despesas</h3>
+                                        <div class="kpi" id="kpiExpense">MT 0.00</div>
+                                    </div>
+                                    <div class="result-item">
+                                        <h3>Saldo</h3>
+                                        <div class="kpi" id="kpiBalance">MT 0.00</div>
+                                    </div>
+                                </div>
+                                <div class="note">Os valores são calculados a partir das transações gravadas localmente.</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label>Configurações & Feriados</label>
+                            <div class="card" style="padding:10px">
+                                <div class="form-group">
+                                    <label class="small">Taxa diária (%)</label>
+                                    <input id="globalDailyRate" type="number" step="0.01" value="0.5">
+                                </div>
+                                <div class="form-group">
+                                    <label class="small" style="margin-top:8px">Sábados/Domingos contados como ½ dia</label>
+                                    <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+                                        <input id="weekendHalfChk" type="checkbox" checked style="width:18px"><div class="small muted">Ativar</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="small" style="margin-top:8px">Lista de feriados (AAAA-MM-DD por linha)</label>
+                                    <textarea id="holidaysList" rows="5" style="width:100%;"></textarea>
+                                </div>
+                                <div style="margin-top:8px;display:flex;gap:8px">
+                                    <button class="btn btn-ghost" id="restoreHolidays">Restaurar padrão</button>
+                                    <button class="btn btn-ghost" id="clearTxns">Limpar transações</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Transações recentes</h3>
+                    <table id="txnsTable">
+                        <thead><tr><th>Data</th><th>Tipo</th><th>Categoria</th><th>Descrição</th><th>Valor (MZN)</th><th></th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Plano de Contas -->
+            <div class="sub-content" id="chartOfAccounts">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2>Plano de Contas</h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="showModal('novaConta')">➕ Nova Conta</button>
+                            <button class="btn btn-secondary" onclick="exportPlanoContas()">📤 Exportar</button>
+                            <input type="file" id="importPlanoFile" accept=".json" style="display: none;" onchange="importPlanoContas()">
+                            <button class="btn btn-success" onclick="document.getElementById('importPlanoFile').click()">📥 Importar</button>
+                        </div>
+                    </div>
+                    
+                    <div id="planoContasTree" style="max-height: 600px; overflow-y: auto;">
+                        <!-- Hierarquia do plano de contas será renderizada aqui -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Relatórios Financeiros -->
+            <div class="sub-content" id="reports">
+                <div class="card">
+                    <h3>Relatórios Financeiros</h3>
+                    <div class="grid grid-3">
+                        <div class="result-item">
+                            <h3>Balanço</h3>
+                            <p>Relatório da posição financeira</p>
+                            <button class="btn btn-primary" onclick="generateBalanceSheet()">Gerar</button>
+                        </div>
+                        <div class="result-item">
+                            <h3>Demonstração de Resultados</h3>
+                            <p>Relatório de receitas e despesas</p>
+                            <button class="btn btn-primary" onclick="generateIncomeStatement()">Gerar</button>
+                        </div>
+                        <div class="result-item">
+                            <h3>Fluxo de Caixa</h3>
+                            <p>Relatório de entradas e saídas</p>
+                            <button class="btn btn-primary" onclick="generateCashFlow()">Gerar</button>
+                        </div>
+                    </div>
+                    
+                    <div id="reportResult" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Transações -->
+            <div class="sub-content" id="transactions">
+                <div class="card">
+                    <h3>Diário de Movimentos</h3>
+                    <table id="journalTable">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Conta Débito</th>
+                                <th>Conta Crédito</th>
+                                <th>Valor (MZN)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Controlo Interno -->
+            <div class="sub-content" id="internalControl">
+                <div class="card">
+                    <h3>⚙️ Sistema de Controlo Interno</h3>
+                    <p>Esta funcionalidade requer aprovação administrativa para acesso completo.</p>
+                    <div style="background: var(--light); padding: 20px; border-radius: 8px; margin-top: 15px;">
+                        <h4>🔒 Fluxos de Aprovação Ativos:</h4>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Transações financeiras acima de MT 10,000</li>
+                            <li>Todos os novos investimentos</li>
+                            <li>Depósitos de agentes para comissões</li>
+                            <li>Alterações no plano de contas</li>
+                            <li>Relatórios financeiros trimestrais</li>
+                            <li>Reconciliações bancárias</li>
+                        </ul>
+                        
+                        <h4 style="margin-top: 20px;">📋 Procedimentos de Controlo Interno:</h4>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Reconciliação diária de caixa</li>
+                            <li>Verificação de assinaturas duplas para pagamentos acima de MT 5,000</li>
+                            <li>Auditoria interna mensal</li>
+                            <li>Separação de funções (tesouraria vs contabilidade)</li>
+                            <li>Controlo de acesso por níveis de autorização</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Lançamentos -->
+            <div class="sub-content" id="accountingEntries">
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h2>Novo Lançamento</h2>
+                        <form id="lancamentoForm">
+                            <div class="form-group">
+                                <label>Data (dd/mm/aaaa)</label>
+                                <input type="date" id="lancamentoData" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <input type="text" id="lancamentoDescricao" placeholder="Descrição do lançamento" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Conta Débito</label>
+                                <select id="lancamentoDebito" required>
+                                    <option value="">Selecionar conta débito</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Conta Crédito</label>
+                                <select id="lancamentoCredito" required>
+                                    <option value="">Selecionar conta crédito</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Valor (MZN)</label>
+                                <input type="number" id="lancamentoValor" step="0.01" min="0.01" placeholder="0,00" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registar Lançamento</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h2>Filtros</h2>
+                        <div class="filters">
+                            <div class="filter-group">
+                                <label>Data Início</label>
+                                <input type="date" id="filterDataInicio" onchange="filtrarLancamentos()">
+                            </div>
+                            <div class="filter-group">
+                                <label>Data Fim</label>
+                                <input type="date" id="filterDataFim" onchange="filtrarLancamentos()">
+                            </div>
+                            <div class="filter-group">
+                                <label>Conta</label>
+                                <select id="filterConta" onchange="filtrarLancamentos()">
+                                    <option value="">Todas as contas</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h3>Últimos Lançamentos</h3>
+                            <table id="lancamentosTable">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Descrição</th>
+                                        <th>Débito</th>
+                                        <th>Crédito</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Investidores -->
+        <div class="tab-content" id="investors">
+            <h2>Gestão de Investidores</h2>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>➕ Novo Investidor</h3>
+                    <form id="investorForm">
+                        <input type="hidden" id="investorId">
+                        <div class="form-group">
+                            <label>Nome do Investidor</label>
+                            <input type="text" id="investorName" placeholder="Nome completo" required>
+                        </div>
+                        
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Tipo de Documento</label>
+                                <select id="investorDocType" required>
+                                    <option value="">Selecionar</option>
+                                    <option value="BI">BI</option>
+                                    <option value="Passaporte">Passaporte</option>
+                                    <option value="NUIT">NUIT</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Nº do Documento</label>
+                                <input type="text" id="investorDocNumber" placeholder="Número do documento" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Contacto</label>
+                                <input type="tel" id="investorPhone" placeholder="+258 ..." required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="investorEmail" placeholder="email@exemplo.com">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Conta Bancária / eMola</label>
+                            <input type="text" id="investorAccount" placeholder="Número da conta para rendimentos">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Tipo de Capital</label>
+                            <select id="investorCapitalType" required>
+                                <option value="proprio">Capital Próprio</option>
+                                <option value="alheio">Capital Alheio</option>
+                            </select>
+                        </div>
+                        
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Valor do Investimento (MZN)</label>
+                                <input type="number" id="investorAmount" placeholder="10,000" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Taxa de Rendimento (%)</label>
+                                <input type="number" id="investorRate" step="0.01" value="0.5" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Data de Início</label>
+                                <input type="date" id="investorStartDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Ciclo de Investimento</label>
+                                <select id="investorCycle" required>
+                                    <option value="Jan 2025">Jan 2025</option>
+                                    <option value="Fev 2025">Fev 2025</option>
+                                    <option value="Mar 2025">Mar 2025</option>
+                                    <option value="Abr 2025">Abr 2025</option>
+                                    <option value="Mai 2025">Mai 2025</option>
+                                    <option value="Jun 2025">Jun 2025</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>IRPS (%)</label>
+                            <input type="number" id="investorIRPS" step="0.01" value="20.0" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Registar Investidor</button>
+                        <button type="button" class="btn btn-ghost" onclick="clearInvestorForm()">Limpar</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h3>📊 Resumo de Investimentos</h3>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 24px; font-weight: bold; color: var(--primary);" id="summaryInvested">MT 0.00</div>
+                        <div style="color: #6c757d; margin-top: 10px;">Total Aprovado</div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Calculadora de Rendimentos</h4>
+                        <div class="form-group">
+                            <label>Capital (MZN)</label>
+                            <input type="number" id="calcCapital" placeholder="10,000" value="10000">
+                        </div>
+                        <div class="form-group">
+                            <label>Dias Úteis</label>
+                            <input type="number" id="calcDays" placeholder="22" value="22">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Capital</label>
+                            <select id="calcType">
+                                <option value="proprio">Próprio</option>
+                                <option value="alheio">Alheio</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-success" onclick="calculateReturn()">Calcular Rendimento</button>
+                        <div id="calcResult" style="margin-top: 15px; padding: 15px; background: var(--light); border-radius: 8px; display: none;">
+                            <strong>Resultado:</strong> <span id="calcAmount">MT 0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Exportar Dados</h4>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" onclick="exportInvestorsExcel()">📊 Excel</button>
+                            <button class="btn btn-success" onclick="exportInvestorsCSV()">📄 CSV</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📋 Lista de Investidores</h3>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Ciclo</label>
+                        <select id="filterCycle" onchange="filterInvestors()">
+                            <option value="">Todos os ciclos</option>
+                            <option value="Jan 2025">Jan 2025</option>
+                            <option value="Fev 2025">Fev 2025</option>
+                            <option value="Mar 2025">Mar 2025</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Situação</label>
+                        <select id="filterStatus" onchange="filterInvestors()">
+                            <option value="">Todas</option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Renovado">Renovado</option>
+                            <option value="Resgatado">Resgatado</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <table id="investorsTable">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Documento</th>
+                            <th>Contacto</th>
+                            <th>Capital</th>
+                            <th>Valor</th>
+                            <th>Início</th>
+                            <th>Ciclo</th>
+                            <th>Rendimento Bruto</th>
+                            <th>IRPS</th>
+                            <th>Rendimento Líquido</th>
+                            <th>Situação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div class="card">
+                <h3>📈 Histórico de Transações</h3>
+                <table id="investorHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Investidor</th>
+                            <th>Tipo</th>
+                            <th>Valor (MZN)</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Agentes -->
+        <div class="tab-content" id="agents">
+            <h2>Gestão de Agentes</h2>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>➕ Novo Agente</h3>
+                    <form id="agentForm">
+                        <input type="hidden" id="agentId">
+                        <div class="form-group">
+                            <label>Código do Agente</label>
+                            <input type="text" id="agentCode" placeholder="Ex: 91337" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nome do Agente</label>
+                            <input type="text" id="agentName" placeholder="Nome completo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Localização / Filial</label>
+                            <input type="text" id="agentLocation" placeholder="Cidade ou região" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Subordinado a (SSA)</label>
+                            <select id="agentSSA" required>
+                                <option value="">Selecionar SSA</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Contacto</label>
+                            <input type="tel" id="agentPhone" placeholder="+258 ...">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="agentEmail" placeholder="email@exemplo.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Saldo Inicial (MZN)</label>
+                            <input type="number" id="agentInitialBalance" step="0.01" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="agentStatus">
+                                <option value="Ativo">Ativo</option>
+                                <option value="Inativo">Inativo</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Registar Agente</button>
+                        <button type="button" class="btn btn-ghost" onclick="clearAgentForm()">Limpar</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h3>📊 Resumo de Agentes</h3>
+                    <div class="results-row">
+                        <div class="result-item">
+                            <h3>Total de Agentes</h3>
+                            <div class="kpi" id="totalAgents">0</div>
+                        </div>
+                        <div class="result-item">
+                            <h3>Agentes Ativos</h3>
+                            <div class="kpi" id="activeAgents">0</div>
+                        </div>
+                        <div class="result-item">
+                            <h3>Saldo Total</h3>
+                            <div class="kpi" id="totalAgentBalance">MT 0.00</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Exportar Dados</h4>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" onclick="exportAgentsExcel()">📊 Excel</button>
+                            <button class="btn btn-success" onclick="exportAgentsCSV()">📄 CSV</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Estatísticas</h4>
+                        <div class="small muted">Última movimentação: <span id="lastMovement">N/A</span></div>
+                        <div class="small muted">Transações totais: <span id="totalTransactions">0</span></div>
+                        <div class="small muted">Valor total movimentado: <span id="totalMovement">MT 0.00</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📋 Lista de Agentes</h3>
+                <table id="agentsTable">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Localização</th>
+                            <th>SSA</th>
+                            <th>Saldo Atual</th>
+                            <th>Transações</th>
+                            <th>Última Movimentação</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div class="card">
+                <h3>💰 Extrato do Agente</h3>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Agente</label>
+                        <select id="extractAgent" onchange="loadAgentExtract()">
+                            <option value="">Selecionar agente</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Período</label>
+                        <select id="extractPeriod" onchange="loadAgentExtract()">
+                            <option value="7">Últimos 7 dias</option>
+                            <option value="30">Últimos 30 dias</option>
+                            <option value="90">Últimos 90 dias</option>
+                            <option value="all">Todo o período</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <table id="agentExtractTable">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo</th>
+                            <th>Descrição</th>
+                            <th>Valor (MZN)</th>
+                            <th>Saldo (MZN)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Utilizadores -->
+        <div class="tab-content" id="users">
+            <h2>Gestão de Utilizadores</h2>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>➕ Novo Utilizador</h3>
+                    <form id="userForm">
+                        <input type="hidden" id="userId">
+                        <div class="form-group">
+                            <label>Nome do Utilizador</label>
+                            <input type="text" id="userFullName" placeholder="Nome completo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Username / Email</label>
+                            <input type="text" id="userUsername" placeholder="username ou email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Senha</label>
+                            <input type="password" id="userPassword" placeholder="Senha de acesso" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirmar Senha</label>
+                            <input type="password" id="userConfirmPassword" placeholder="Confirmar senha" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Função / Nível de Acesso</label>
+                            <select id="userRole" required>
+                                <option value="">Selecionar função</option>
+                                <option value="admin">Administrador</option>
+                                <option value="manager">Gestor</option>
+                                <option value="accountant">Contabilista</option>
+                                <option value="operator">Operador</option>
+                                <option value="viewer">Visualizador</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="userStatus">
+                                <option value="Ativo">Ativo</option>
+                                <option value="Inativo">Inativo</option>
+                            </select>
+                        </div>
+                        <div id="permissionsSection" style="display: none;">
+                            <h4>Permissões Específicas</h4>
+                            <div id="customPermissions"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Registar Utilizador</button>
+                        <button type="button" class="btn btn-ghost" onclick="clearUserForm()">Limpar</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Resumo de Utilizadores</h3>
+                    <div class="results-row">
+                        <div class="result-item">
+                            <h3>Total</h3>
+                            <div class="kpi" id="totalUsers">0</div>
+                        </div>
+                        <div class="result-item">
+                            <h3>Ativos</h3>
+                            <div class="kpi" id="activeUsers">0</div>
+                        </div>
+                        <div class="result-item">
+                            <h3>Administradores</h3>
+                            <div class="kpi" id="adminUsers">0</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Último Acesso</h4>
+                        <div id="lastAccessInfo">
+                            <p class="small muted">Carregando informações...</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Exportar Dados</h4>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" onclick="exportUsersExcel()">📊 Excel</button>
+                            <button class="btn btn-success" onclick="exportUsersCSV()">📄 CSV</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Lista de Utilizadores</h3>
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Username</th>
+                            <th>Função</th>
+                            <th>Estado</th>
+                            <th>Data de Criação</th>
+                            <th>Último Acesso</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div class="card">
+                <h3>📊 Logs de Auditoria</h3>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Utilizador</label>
+                        <select id="auditUser" onchange="filterAuditLogs()">
+                            <option value="">Todos os utilizadores</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Período</label>
+                        <select id="auditPeriod" onchange="filterAuditLogs()">
+                            <option value="7">Últimos 7 dias</option>
+                            <option value="30">Últimos 30 dias</option>
+                            <option value="90">Últimos 90 dias</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <table id="auditLogsTable">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Utilizador</th>
+                            <th>Ação</th>
+                            <th>Detalhes</th>
+                            <th>IP</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Aprovações -->
+        <div class="tab-content" id="approvals">
+            <h2>✅ Painel de Aprovações</h2>
+            <div class="card">
+                <h3>📋 Aprovações Pendentes</h3>
+                <div id="approvalsList">
+                    <p style="color: #6c757d; text-align: center; padding: 20px;">
+                        Nenhuma aprovação pendente no momento.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>✅ Histórico de Aprovações</h3>
+                <table id="approvalsHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo</th>
+                            <th>Descrição</th>
+                            <th>Solicitante</th>
+                            <th>Aprovador</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab SSA -->
+        <div class="tab-content" id="ssa">
+            <h2>💼 Gestão SSA (Sub Super Agente)</h2>
+            
+            <div class="sub-tabs">
+                <button class="sub-tab active" onclick="switchSSASubTab('accounts')">Contas SSA</button>
+                <button class="sub-tab" onclick="switchSSASubTab('transactions')">Transações</button>
+                <button class="sub-tab" onclick="switchSSASubTab('subchannels')">Subcanais</button>
+                <button class="sub-tab" onclick="switchSSASubTab('reports')">Relatórios</button>
+            </div>
+            
+            <!-- Sub-tab Contas SSA -->
+            <div class="sub-content active" id="ssaAccounts">
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3>➕ Nova Conta SSA</h3>
+                        <form id="ssaAccountForm">
+                            <input type="hidden" id="ssaAccountId">
+                            <div class="form-group">
+                                <label>Código SSA</label>
+                                <input type="text" id="ssaAccountCode" placeholder="Ex: SOFSSA00035" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nome SSA</label>
+                                <input type="text" id="ssaAccountName" placeholder="Nome completo" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Saldo Inicial (MZN)</label>
+                                <input type="number" id="ssaAccountBalance" step="0.01" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Taxa de Rendimento (%)</label>
+                                <input type="number" id="ssaAccountRate" step="0.01" value="0.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="ssaAccountStatus">
+                                    <option value="Ativo">Ativo</option>
+                                    <option value="Inativo">Inativo</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registar SSA</button>
+                            <button type="button" class="btn btn-ghost" onclick="clearSSAAccountForm()">Limpar</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📊 Resumo SSA</h3>
+                        <div class="results-row">
+                            <div class="result-item">
+                                <h3>Saldo Principal</h3>
+                                <div class="kpi" id="ssaMainBalance">MT 0.00</div>
+                            </div>
+                            <div class="result-item">
+                                <h3>Total Subcanais</h3>
+                                <div class="kpi" id="ssaSubchannels">0</div>
+                            </div>
+                            <div class="result-item">
+                                <h3>Rendimento do Mês</h3>
+                                <div class="kpi" id="ssaMonthlyYield">MT 0.00</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>Estatísticas</h4>
+                            <div class="small muted">Transações hoje: <span id="ssaTodayTxns">0</span></div>
+                            <div class="small muted">Transações este mês: <span id="ssaMonthlyTxns">0</span></div>
+                            <div class="small muted">Saldo total: <span id="ssaTotalBalance">MT 0.00</span></div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>Exportar Dados</h4>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-secondary" onclick="exportSSAExcel()">📊 Excel</button>
+                                <button class="btn btn-success" onclick="exportSSACSV()">📄 CSV</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>📋 Lista de Contas SSA</h3>
+                    <table id="ssaAccountsTable">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>Saldo Atual</th>
+                                <th>Taxa</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Transações -->
+            <div class="sub-content" id="ssaTransactions">
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3>💰 Registar Depósito</h3>
+                        <form id="ssaDepositForm">
+                            <input type="hidden" id="ssaDepositId">
+                            <div class="form-group">
+                                <label>Conta de Origem</label>
+                                <select id="ssaDepositFrom" required>
+                                    <option value="">Selecionar conta</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Conta de Destino</label>
+                                <select id="ssaDepositTo" required>
+                                    <option value="">Selecionar conta</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Valor (MZN)</label>
+                                <input type="number" id="ssaDepositAmount" placeholder="1,000" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Data</label>
+                                <input type="date" id="ssaDepositDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <textarea id="ssaDepositDescription" placeholder="Descrição da transação" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registar Depósito</button>
+                            <button type="button" class="btn btn-ghost" onclick="clearSSADepositForm()">Limpar</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>💸 Registar Recebimento</h3>
+                        <form id="ssaReceiveForm">
+                            <input type="hidden" id="ssaReceiveId">
+                            <div class="form-group">
+                                <label>Origem</label>
+                                <select id="ssaReceiveSource" required>
+                                    <option value="">Selecionar origem</option>
+                                    <option value="Banco">Banco</option>
+                                    <option value="SA">SA (Super Agente)</option>
+                                    <option value="SSA">SSA</option>
+                                    <option value="Cliente">Cliente</option>
+                                    <option value="Investidor">Investidor</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Conta de Destino</label>
+                                <select id="ssaReceiveTo" required>
+                                    <option value="">Selecionar conta</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Valor (MZN)</label>
+                                <input type="number" id="ssaReceiveAmount" placeholder="1,000" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Data</label>
+                                <input type="date" id="ssaReceiveDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Observações</label>
+                                <textarea id="ssaReceiveObservations" placeholder="Observações da transação" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">Registar Recebimento</button>
+                            <button type="button" class="btn btn-ghost" onclick="clearSSAReceiveForm()">Limpar</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>📋 Histórico de Transações</h3>
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>Conta</label>
+                            <select id="ssaTransactionAccount" onchange="filterSSATransactions()">
+                                <option value="">Todas as contas</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Tipo</label>
+                            <select id="ssaTransactionType" onchange="filterSSATransactions()">
+                                <option value="">Todos os tipos</option>
+                                <option value="deposit">Depósito</option>
+                                <option value="receive">Recebimento</option>
+                                <option value="transfer">Transferência</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Período</label>
+                            <select id="ssaTransactionPeriod" onchange="filterSSATransactions()">
+                                <option value="7">Últimos 7 dias</option>
+                                <option value="30">Últimos 30 dias</option>
+                                <option value="90">Últimos 90 dias</option>
+                                <option value="all">Todo o período</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <table id="ssaTransactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Origem</th>
+                                <th>Destino</th>
+                                <th>Tipo</th>
+                                <th>Valor (MZN)</th>
+                                <th>Rendimento</th>
+                                <th>Observações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Subcanais -->
+            <div class="sub-content" id="ssaSubchannels">
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3>➕ Novo Subcanal</h3>
+                        <form id="subchannelForm">
+                            <input type="hidden" id="subchannelId">
+                            <div class="form-group">
+                                <label>Tipo de Subcanal</label>
+                                <select id="subchannelType" required>
+                                    <option value="">Selecionar tipo</option>
+                                    <option value="ST">ST (Colaborador SSA)</option>
+                                    <option value="SAG">SAG (Sub Canal Agente)</option>
+                                    <option value="AG">AG (Agente Emola)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Código</label>
+                                <input type="text" id="subchannelCode" placeholder="Código único" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <input type="text" id="subchannelName" placeholder="Nome completo" required>
+                            </div>
+                            <div class="form-group">
+                                <label>SSA Principal</label>
+                                <select id="subchannelSSA" required>
+                                    <option value="">Selecionar SSA</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Saldo Inicial (MZN)</label>
+                                <input type="number" id="subchannelBalance" step="0.01" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="subchannelStatus">
+                                    <option value="Ativo">Ativo</option>
+                                    <option value="Inativo">Inativo</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registar Subcanal</button>
+                            <button type="button" class="btn btn-ghost" onclick="clearSubchannelForm()">Limpar</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📊 Resumo de Subcanais</h3>
+                        <div class="results-row">
+                            <div class="result-item">
+                                <h3>Total ST</h3>
+                                <div class="kpi" id="totalST">0</div>
+                            </div>
+                            <div class="result-item">
+                                <h3>Total SAG</h3>
+                                <div class="kpi" id="totalSAG">0</div>
+                            </div>
+                            <div class="result-item">
+                                <h3>Total AG</h3>
+                                <div class="kpi" id="totalAG">0</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>Top Subcanais por Rendimento</h4>
+                            <div id="topSubchannels">
+                                <p class="small muted">Carregando dados...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>📋 Lista de Subcanais</h3>
+                    <table id="subchannelsTable">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>SSA Principal</th>
+                                <th>Saldo Atual</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Relatórios -->
+            <div class="sub-content" id="ssaReports">
+                <div class="card">
+                    <h3>📊 Relatórios SSA</h3>
+                    <div class="grid grid-3">
+                        <div class="result-item">
+                            <h3>Extrato por Conta</h3>
+                            <p>Extrato detalhado de uma conta específica</p>
+                            <select id="ssaReportAccount" style="margin-bottom: 10px;">
+                                <option value="">Selecionar conta</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="generateAccountStatement()">Gerar</button>
+                        </div>
+                        <div class="result-item">
+                            <h3>Relatório de Rendimentos</h3>
+                            <p>Rendimentos por período</p>
+                            <button class="btn btn-primary" onclick="generateYieldReport()">Gerar</button>
+                        </div>
+                        <div class="result-item">
+                            <h3>Relatório Consolidado</h3>
+                            <p>Visão geral de todas as contas</p>
+                            <button class="btn btn-primary" onclick="generateConsolidatedReport()">Gerar</button>
+                        </div>
+                    </div>
+                    
+                    <div id="ssaReportResult" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modais -->
+    <div id="novaConta" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nova Conta Contábil</h3>
+                <span class="close" onclick="closeModal('novaConta')">&times;</span>
+            </div>
+            <form id="contaForm">
+                <input type="hidden" id="contaId">
+                <div class="form-group">
+                    <label>Código da Conta</label>
+                    <input type="text" id="contaCodigo" required>
+                </div>
+                <div class="form-group">
+                    <label>Nome da Conta</label>
+                    <input type="text" id="contaNome" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Conta</label>
+                    <select id="contaTipo" required>
+                        <option value="Ativo">Ativo</option>
+                        <option value="Passivo">Passivo</option>
+                        <option value="Patrimonio">Patrimônio Líquido</option>
+                        <option value="Receita">Receita</option>
+                        <option value="Despesa">Despesa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Conta Pai</label>
+                    <select id="contaPai">
+                        <option value="">Nenhuma (Conta Principal)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="contaDescricao" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Salvar Conta</button>
+                <button type="button" class="btn btn-ghost" onclick="closeModal('novaConta')">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="backupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Backup & Restauro</h3>
+                <span class="close" onclick="closeModal('backupModal')">&times;</span>
+            </div>
+            <div class="grid grid-2">
+                <div>
+                    <h4>Exportar Backup</h4>
+                    <p>Faça uma cópia de segurança de todos os dados do sistema.</p>
+                    <button class="btn btn-primary" onclick="exportBackup()">Exportar Backup</button>
+                </div>
+                <div>
+                    <h4>Importar Backup</h4>
+                    <p>Restaurar dados a partir de um backup anterior.</p>
+                    <input type="file" id="backupFile" accept=".json" style="margin-bottom: 10px;">
+                    <button class="btn btn-success" onclick="importBackup()">Importar Backup</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -661,19 +1838,27 @@
         
         // ========== INICIALIZAÇÃO ==========
         document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar dados padrão se não existirem
             initializeDefaultData();
             
+            // Configurar formulário de login
             document.getElementById('loginForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 login();
             });
             
+            // Configurar formulários
             setupForms();
+            
+            // Configurar datas padrão
             setupDefaultDates();
+            
+            // Carregar dados iniciais
             loadInitialData();
         });
         
         function initializeDefaultData() {
+            // Criar utilizadores padrão se não existirem
             if (users.length === 0) {
                 users = [
                     {
@@ -730,6 +1915,7 @@
                 localStorage.setItem('users', JSON.stringify(users));
             }
             
+            // Criar SSA principal se não existir
             if (ssaAccounts.length === 0) {
                 ssaAccounts = [
                     {
@@ -745,6 +1931,7 @@
                 localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
             }
             
+            // Inicializar plano de contas se não existir
             if (planoContas.length === 0) {
                 planoContas = [
                     { id: 1, codigo: '1', nome: 'Ativo', tipo: 'Ativo', pai: null, descricao: 'Contas do Ativo' },
@@ -766,23 +1953,81 @@
         }
         
         function setupForms() {
-            // Configurar todos os formulários...
-            document.getElementById('investorForm')?.addEventListener('submit', function(e) {
+            // Configurar formulário de investidor
+            document.getElementById('investorForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 saveInvestor();
             });
-            // [TODO: Adicionar setup para outros formulários]
+            
+            // Configurar formulário de agente
+            document.getElementById('agentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveAgent();
+            });
+            
+            // Configurar formulário de utilizador
+            document.getElementById('userForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveUser();
+            });
+            
+            // Configurar formulário de SSA
+            document.getElementById('ssaAccountForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveSSAAccount();
+            });
+            
+            // Configurar formulário de transação SSA
+            document.getElementById('ssaDepositForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveSSADeposit();
+            });
+            
+            document.getElementById('ssaReceiveForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveSSAReceive();
+            });
+            
+            // Configurar formulário de subcanal
+            document.getElementById('subchannelForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveSubchannel();
+            });
+            
+            // Configurar formulário de transação
+            document.getElementById('txnForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveTransaction();
+            });
+            
+            // Configurar formulário de conta contábil
+            document.getElementById('contaForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveConta();
+            });
+            
+            // Configurar formulário de lançamento
+            document.getElementById('lancamentoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveLancamento();
+            });
         }
         
         function setupDefaultDates() {
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('investorStartDate') && (document.getElementById('investorStartDate').value = today);
-            // [TODO: Adicionar outras datas padrão]
+            document.getElementById('investorStartDate').value = today;
+            document.getElementById('ssaDepositDate').value = today;
+            document.getElementById('ssaReceiveDate').value = today;
+            document.getElementById('txnDate').value = today;
+            document.getElementById('lancamentoData').value = today;
         }
         
         function loadInitialData() {
+            // Carregar dados para dropdowns
             loadSSAForDropdowns();
             loadPlanoContasForDropdown();
+            
+            // Atualizar tabelas
             updateInvestorsTable();
             updateAgentsTable();
             updateUsersTable();
@@ -791,6 +2036,8 @@
             updateTransactionsTable();
             updatePlanoContasTree();
             updateLancamentosTable();
+            
+            // Atualizar KPIs
             updateKPIs();
         }
         
@@ -799,25 +2046,33 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
+            // Garantir que os dados padrão estão inicializados
             initializeDefaultData();
+            
+            // Recarregar os usuários do localStorage
             users = JSON.parse(localStorage.getItem('users') || '[]');
             
             const user = users.find(u => u.username === username && u.password === password && u.status === 'Ativo');
             
             if (user) {
                 currentUser = user;
+                
+                // Atualizar último acesso
                 user.lastAccess = new Date().toISOString();
                 localStorage.setItem('users', JSON.stringify(users));
                 
+                // Registrar log de auditoria
                 logAudit('LOGIN', `Utilizador ${user.username} fez login`);
                 
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('app').style.display = 'block';
                 
+                // Atualizar informações do utilizador
                 document.getElementById('userName').textContent = user.fullName;
                 document.getElementById('userRole').textContent = getRoleName(user.role);
                 document.getElementById('userAvatar').textContent = user.fullName.charAt(0).toUpperCase();
                 
+                // Mostrar/ocultar tabs baseado no tipo de utilizador
                 if (user.role === 'admin' || user.role === 'manager') {
                     document.getElementById('usersTab').style.display = 'block';
                     document.getElementById('approvalsTab').style.display = 'block';
@@ -826,7 +2081,10 @@
                     document.getElementById('approvalsTab').style.display = 'none';
                 }
                 
+                // Carregar dados específicos do utilizador
                 loadUserSpecificData();
+                
+                // Mostrar mensagem de boas-vindas
                 alert(`Bem-vindo, ${user.fullName}!`);
             } else {
                 alert('Credenciais inválidas ou utilizador inativo!');
@@ -862,27 +2120,38 @@
                 action: action,
                 details: details,
                 timestamp: new Date().toISOString(),
-                ip: '127.0.0.1'
+                ip: '127.0.0.1' // Em produção, obter IP real
             };
             
             auditLogs.push(auditLog);
+            
+            // Manter apenas os últimos 1000 registros
             if (auditLogs.length > 1000) {
                 auditLogs = auditLogs.slice(-1000);
             }
+            
             localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
         }
         
         // ========== FUNÇÕES DE NAVEGAÇÃO ==========
         function switchTab(tabName) {
+            // Esconder todas as tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
+            
+            // Remover classe active de todos os botões
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
+            
+            // Mostrar tab selecionada
             document.getElementById(tabName).classList.add('active');
+            
+            // Ativar botão selecionado
             event.target.classList.add('active');
             
+            // Atualizar dados específicos da tab
             if (tabName === 'dashboard') {
                 updateDashboard();
             } else if (tabName === 'accounting') {
@@ -902,24 +2171,1841 @@
             }
         }
         
-        // [TODO: Adicionar outras funções JavaScript necessárias]
+        function switchSubTab(subTabName) {
+            // Esconder todos os sub-conteúdos
+            document.querySelectorAll('.sub-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remover classe active de todos os botões
+            document.querySelectorAll('.sub-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar sub-tab selecionada
+            document.getElementById(subTabName).classList.add('active');
+            
+            // Ativar botão selecionado
+            event.target.classList.add('active');
+        }
+        
+        function switchSSASubTab(subTabName) {
+            // Esconder todos os sub-conteúdos SSA
+            document.querySelectorAll('#ssa .sub-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remover classe active de todos os botões SSA
+            document.querySelectorAll('#ssa .sub-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar sub-tab selecionada
+            const elementId = 'ssa' + subTabName.charAt(0).toUpperCase() + subTabName.slice(1);
+            document.getElementById(elementId).classList.add('active');
+            
+            // Ativar botão selecionado
+            event.target.classList.add('active');
+        }
+        
+        // ========== FUNÇÕES DO DASHBOARD ==========
+        function updateDashboard() {
+            updateKPIs();
+            updateMyInvestments();
+            updateMyCommissions();
+        }
         
         function updateKPIs() {
+            // Calcular total investido
             const totalInvested = investors
                 .filter(inv => inv.status === 'Ativo')
                 .reduce((sum, inv) => sum + parseFloat(inv.amount), 0);
             document.getElementById('totalInvested').textContent = `MT ${totalInvested.toFixed(2)}`;
             
+            // Calcular comissões pendentes (simulado)
             const pendingCommissions = agents
                 .filter(agent => agent.status === 'Ativo')
-                .length * 500;
+                .length * 500; // Valor simulado
             document.getElementById('pendingCommissions').textContent = `MT ${pendingCommissions.toFixed(2)}`;
             
+            // Calcular aprovações pendentes
             const pendingApprovals = approvals.filter(app => app.status === 'Pendente').length;
             document.getElementById('pendingApprovals').textContent = pendingApprovals;
         }
         
-        // Funções auxiliares básicas
+        function updateMyInvestments() {
+            const container = document.getElementById('myInvestmentsList');
+            
+            if (currentUser.role === 'viewer' || currentUser.username === 'investidor') {
+                // Mostrar apenas investimentos do utilizador atual
+                const myInvestments = investors.filter(inv => 
+                    inv.userId === currentUser.id && inv.status === 'Ativo'
+                );
+                
+                if (myInvestments.length > 0) {
+                    let html = '';
+                    myInvestments.forEach(inv => {
+                        // Calcular rendimento
+                        const days = calculateBusinessDays(new Date(inv.startDate), new Date());
+                        const grossYield = inv.amount * (inv.rate / 100) * days;
+                        const irps = grossYield * (inv.irps / 100);
+                        const netYield = grossYield - irps;
+                        
+                        html += `
+                            <div style="padding: 10px; border-bottom: 1px solid #eee;">
+                                <div style="font-weight: bold;">${inv.name}</div>
+                                <div style="color: #28a745;">MT ${parseFloat(inv.amount).toFixed(2)}</div>
+                                <div style="font-size: 12px; color: #6c757d;">
+                                    Rendimento líquido: MT ${netYield.toFixed(2)} | ${inv.cycle}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p style="color: #6c757d; text-align: center; padding: 20px;">Nenhum investimento ativo</p>';
+                }
+            } else {
+                // Para outros tipos de utilizador, mostrar investimentos recentes
+                const recentInvestments = investors
+                    .filter(inv => inv.status === 'Ativo')
+                    .slice(0, 5);
+                
+                if (recentInvestments.length > 0) {
+                    let html = '';
+                    recentInvestments.forEach(inv => {
+                        html += `
+                            <div style="padding: 10px; border-bottom: 1px solid #eee;">
+                                <div style="font-weight: bold;">${inv.name}</div>
+                                <div style="color: #28a745;">MT ${parseFloat(inv.amount).toFixed(2)}</div>
+                                <div style="font-size: 12px; color: #6c757d;">${inv.startDate} | ${inv.cycle}</div>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p style="color: #6c757d; text-align: center; padding: 20px;">Nenhum investimento registado</p>';
+                }
+            }
+        }
+        
+        function updateMyCommissions() {
+            const container = document.getElementById('myCommissionsList');
+            
+            if (currentUser.role === 'operator' || currentUser.username === 'agente') {
+                // Mostrar comissões do agente atual
+                const agent = agents.find(a => a.userId === currentUser.id);
+                
+                if (agent) {
+                    const myCommissions = [
+                        { id: 1, description: 'Comissão de Vendas', amount: 1250.00, status: 'Pendente', date: '2023-10-15' },
+                        { id: 2, description: 'Comissão de Investimento', amount: 750.50, status: 'Pago', date: '2023-10-10' }
+                    ];
+                    
+                    let html = '';
+                    myCommissions.forEach(comm => {
+                        const statusClass = comm.status === 'Pago' ? 'status-approved' : 'status-pending';
+                        
+                        html += `
+                            <div style="padding: 10px; border-bottom: 1px solid #eee;">
+                                <div style="font-weight: bold;">${comm.description}</div>
+                                <div style="color: #28a745;">MT ${comm.amount.toFixed(2)}</div>
+                                <div><span class="status ${statusClass}">${comm.status}</span></div>
+                                <div style="font-size: 12px; color: #6c757d;">${comm.date}</div>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p style="color: #6c757d; text-align: center; padding: 20px;">Nenhum agente associado</p>';
+                }
+            } else {
+                container.innerHTML = '<p style="color: #6c757d; text-align: center; padding: 20px;">Apenas disponível para agentes</p>';
+            }
+        }
+        
+        // ========== FUNÇÕES DE INVESTIDORES ==========
+        function saveInvestor() {
+            const id = document.getElementById('investorId').value;
+            const name = document.getElementById('investorName').value;
+            const docType = document.getElementById('investorDocType').value;
+            const docNumber = document.getElementById('investorDocNumber').value;
+            const phone = document.getElementById('investorPhone').value;
+            const email = document.getElementById('investorEmail').value;
+            const account = document.getElementById('investorAccount').value;
+            const capitalType = document.getElementById('investorCapitalType').value;
+            const amount = parseFloat(document.getElementById('investorAmount').value);
+            const rate = parseFloat(document.getElementById('investorRate').value);
+            const startDate = document.getElementById('investorStartDate').value;
+            const cycle = document.getElementById('investorCycle').value;
+            const irps = parseFloat(document.getElementById('investorIRPS').value);
+            
+            if (id) {
+                // Atualizar investidor existente
+                const index = investors.findIndex(inv => inv.id == id);
+                if (index !== -1) {
+                    investors[index] = { 
+                        ...investors[index], 
+                        name, docType, docNumber, phone, email, account,
+                        capitalType, amount, rate, startDate, cycle, irps
+                    };
+                }
+            } else {
+                // Criar novo investidor
+                const newInvestor = {
+                    id: Date.now(),
+                    name,
+                    docType,
+                    docNumber,
+                    phone,
+                    email,
+                    account,
+                    capitalType,
+                    amount,
+                    rate,
+                    startDate,
+                    cycle,
+                    irps,
+                    status: 'Ativo',
+                    userId: currentUser.id,
+                    createdAt: new Date().toISOString()
+                };
+                
+                investors.push(newInvestor);
+                
+                // Registrar log de auditoria
+                logAudit('CREATE_INVESTOR', `Criou investidor: ${name}`);
+            }
+            
+            localStorage.setItem('investors', JSON.stringify(investors));
+            updateInvestorsTable();
+            clearInvestorForm();
+            
+            alert(id ? 'Investidor atualizado com sucesso!' : 'Investidor registado com sucesso!');
+        }
+        
+        function clearInvestorForm() {
+            document.getElementById('investorId').value = '';
+            document.getElementById('investorForm').reset();
+            document.getElementById('investorRate').value = '0.5';
+            document.getElementById('investorIRPS').value = '20.0';
+            document.getElementById('investorStartDate').value = new Date().toISOString().split('T')[0];
+        }
+        
+        function updateInvestorsTable() {
+            const tbody = document.getElementById('investorsTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            // Aplicar filtros
+            let filteredInvestors = [...investors];
+            const cycleFilter = document.getElementById('filterCycle').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+            
+            if (cycleFilter) {
+                filteredInvestors = filteredInvestors.filter(inv => inv.cycle === cycleFilter);
+            }
+            
+            if (statusFilter) {
+                filteredInvestors = filteredInvestors.filter(inv => inv.status === statusFilter);
+            }
+            
+            filteredInvestors.forEach(investor => {
+                // Calcular rendimentos
+                const days = calculateBusinessDays(new Date(investor.startDate), new Date());
+                const grossYield = investor.amount * (investor.rate / 100) * days;
+                const irpsAmount = grossYield * (investor.irps / 100);
+                const netYield = grossYield - irpsAmount;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${investor.name}</td>
+                    <td>${investor.docType}: ${investor.docNumber}</td>
+                    <td>${investor.phone}</td>
+                    <td>${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}</td>
+                    <td>MT ${parseFloat(investor.amount).toFixed(2)}</td>
+                    <td>${investor.startDate}</td>
+                    <td>${investor.cycle}</td>
+                    <td>MT ${grossYield.toFixed(2)}</td>
+                    <td>MT ${irpsAmount.toFixed(2)}</td>
+                    <td>MT ${netYield.toFixed(2)}</td>
+                    <td><span class="status status-active">${investor.status}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editInvestor(${investor.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleInvestorStatus(${investor.id})">
+                            ${investor.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Atualizar resumo
+            const totalApproved = investors
+                .filter(inv => inv.status === 'Ativo')
+                .reduce((sum, inv) => sum + parseFloat(inv.amount), 0);
+            document.getElementById('summaryInvested').textContent = `MT ${totalApproved.toFixed(2)}`;
+        }
+        
+        function editInvestor(id) {
+            const investor = investors.find(inv => inv.id === id);
+            if (investor) {
+                document.getElementById('investorId').value = investor.id;
+                document.getElementById('investorName').value = investor.name;
+                document.getElementById('investorDocType').value = investor.docType;
+                document.getElementById('investorDocNumber').value = investor.docNumber;
+                document.getElementById('investorPhone').value = investor.phone;
+                document.getElementById('investorEmail').value = investor.email || '';
+                document.getElementById('investorAccount').value = investor.account || '';
+                document.getElementById('investorCapitalType').value = investor.capitalType;
+                document.getElementById('investorAmount').value = investor.amount;
+                document.getElementById('investorRate').value = investor.rate;
+                document.getElementById('investorStartDate').value = investor.startDate;
+                document.getElementById('investorCycle').value = investor.cycle;
+                document.getElementById('investorIRPS').value = investor.irps;
+                
+                // Scroll para o formulário
+                document.getElementById('investorForm').scrollIntoView();
+            }
+        }
+        
+        function toggleInvestorStatus(id) {
+            const investor = investors.find(inv => inv.id === id);
+            if (investor) {
+                investor.status = investor.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('investors', JSON.stringify(investors));
+                updateInvestorsTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_INVESTOR_STATUS', `${investor.status === 'Ativo' ? 'Ativou' : 'Desativou'} investidor: ${investor.name}`);
+            }
+        }
+        
+        function filterInvestors() {
+            updateInvestorsTable();
+        }
+        
+        function calculateReturn() {
+            const capital = parseFloat(document.getElementById('calcCapital').value);
+            const days = parseInt(document.getElementById('calcDays').value);
+            const type = document.getElementById('calcType').value;
+            
+            // Taxa diária baseada no tipo de capital
+            const dailyRate = type === 'proprio' ? 0.5 : 0.3; // 0.5% para próprio, 0.3% para alheio
+            
+            const returnAmount = capital * (dailyRate / 100) * days;
+            
+            document.getElementById('calcAmount').textContent = `MT ${returnAmount.toFixed(2)}`;
+            document.getElementById('calcResult').style.display = 'block';
+        }
+        
+        function calculateBusinessDays(startDate, endDate) {
+            // Implementação simplificada - em produção, considerar feriados
+            let count = 0;
+            const curDate = new Date(startDate.getTime());
+            while (curDate <= endDate) {
+                const dayOfWeek = curDate.getDay();
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
+                curDate.setDate(curDate.getDate() + 1);
+            }
+            return count;
+        }
+        
+        function exportInvestorsExcel() {
+            alert('Exportação para Excel será implementada');
+            // Implementação futura com SheetJS
+        }
+        
+        function exportInvestorsCSV() {
+            let csvContent = 'Nome,Documento,Contacto,Capital,Valor,Início,Ciclo,Rendimento Bruto,IRPS,Rendimento Líquido,Situação\n';
+            
+            investors.forEach(investor => {
+                const days = calculateBusinessDays(new Date(investor.startDate), new Date());
+                const grossYield = investor.amount * (investor.rate / 100) * days;
+                const irpsAmount = grossYield * (investor.irps / 100);
+                const netYield = grossYield - irpsAmount;
+                
+                csvContent += `"${investor.name}","${investor.docType}: ${investor.docNumber}","${investor.phone}","${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}","${investor.amount}","${investor.startDate}","${investor.cycle}","${grossYield.toFixed(2)}","${irpsAmount.toFixed(2)}","${netYield.toFixed(2)}","${investor.status}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `investidores_${Date.now()}.csv`);
+        }
+        
+        // ========== FUNÇÕES DE AGENTES ==========
+        function saveAgent() {
+            const id = document.getElementById('agentId').value;
+            const code = document.getElementById('agentCode').value;
+            const name = document.getElementById('agentName').value;
+            const location = document.getElementById('agentLocation').value;
+            const ssa = document.getElementById('agentSSA').value;
+            const phone = document.getElementById('agentPhone').value;
+            const email = document.getElementById('agentEmail').value;
+            const initialBalance = parseFloat(document.getElementById('agentInitialBalance').value) || 0;
+            const status = document.getElementById('agentStatus').value;
+            
+            if (id) {
+                // Atualizar agente existente
+                const index = agents.findIndex(agent => agent.id == id);
+                if (index !== -1) {
+                    agents[index] = { 
+                        ...agents[index], 
+                        code, name, location, ssa, phone, email, 
+                        balance: initialBalance, status
+                    };
+                }
+            } else {
+                // Criar novo agente
+                const newAgent = {
+                    id: Date.now(),
+                    code,
+                    name,
+                    location,
+                    ssa,
+                    phone,
+                    email,
+                    balance: initialBalance,
+                    transactions: 0,
+                    lastMovement: null,
+                    status,
+                    userId: currentUser.id,
+                    createdAt: new Date().toISOString()
+                };
+                
+                agents.push(newAgent);
+                
+                // Registrar log de auditoria
+                logAudit('CREATE_AGENT', `Criou agente: ${name} (${code})`);
+            }
+            
+            localStorage.setItem('agents', JSON.stringify(agents));
+            updateAgentsTable();
+            clearAgentForm();
+            
+            alert(id ? 'Agente atualizado com sucesso!' : 'Agente registado com sucesso!');
+        }
+        
+        function clearAgentForm() {
+            document.getElementById('agentId').value = '';
+            document.getElementById('agentForm').reset();
+            document.getElementById('agentInitialBalance').value = '0';
+        }
+        
+        function updateAgentsTable() {
+            const tbody = document.getElementById('agentsTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            let totalBalance = 0;
+            let activeCount = 0;
+            let totalTransactions = 0;
+            
+            agents.forEach(agent => {
+                if (agent.status === 'Ativo') {
+                    totalBalance += agent.balance;
+                    activeCount++;
+                    totalTransactions += agent.transactions || 0;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${agent.code}</td>
+                    <td>${agent.name}</td>
+                    <td>${agent.location}</td>
+                    <td>${agent.ssa}</td>
+                    <td>MT ${agent.balance.toFixed(2)}</td>
+                    <td>${agent.transactions || 0}</td>
+                    <td>${agent.lastMovement || 'N/A'}</td>
+                    <td><span class="status ${agent.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${agent.status}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editAgent(${agent.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleAgentStatus(${agent.id})">
+                            ${agent.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Atualizar resumo
+            document.getElementById('totalAgents').textContent = agents.length;
+            document.getElementById('activeAgents').textContent = activeCount;
+            document.getElementById('totalAgentBalance').textContent = `MT ${totalBalance.toFixed(2)}`;
+            document.getElementById('totalTransactions').textContent = totalTransactions;
+            
+            // Encontrar última movimentação
+            const lastMovement = agents.reduce((latest, agent) => {
+                if (!agent.lastMovement) return latest;
+                const agentDate = new Date(agent.lastMovement);
+                const latestDate = latest ? new Date(latest) : new Date(0);
+                return agentDate > latestDate ? agent.lastMovement : latest;
+            }, null);
+            
+            document.getElementById('lastMovement').textContent = lastMovement || 'N/A';
+            
+            // Atualizar dropdown de agentes
+            loadAgentsForDropdown();
+        }
+        
+        function editAgent(id) {
+            const agent = agents.find(agent => agent.id === id);
+            if (agent) {
+                document.getElementById('agentId').value = agent.id;
+                document.getElementById('agentCode').value = agent.code;
+                document.getElementById('agentName').value = agent.name;
+                document.getElementById('agentLocation').value = agent.location;
+                document.getElementById('agentSSA').value = agent.ssa;
+                document.getElementById('agentPhone').value = agent.phone || '';
+                document.getElementById('agentEmail').value = agent.email || '';
+                document.getElementById('agentInitialBalance').value = agent.balance;
+                document.getElementById('agentStatus').value = agent.status;
+                
+                // Scroll para o formulário
+                document.getElementById('agentForm').scrollIntoView();
+            }
+        }
+        
+        function toggleAgentStatus(id) {
+            const agent = agents.find(agent => agent.id === id);
+            if (agent) {
+                agent.status = agent.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('agents', JSON.stringify(agents));
+                updateAgentsTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_AGENT_STATUS', `${agent.status === 'Ativo' ? 'Ativou' : 'Desativou'} agente: ${agent.name} (${agent.code})`);
+            }
+        }
+        
+        function loadAgentsForDropdown() {
+            const select = document.getElementById('extractAgent');
+            select.innerHTML = '<option value="">Selecionar agente</option>';
+            
+            agents.forEach(agent => {
+                const option = document.createElement('option');
+                option.value = agent.id;
+                option.textContent = `${agent.code} - ${agent.name}`;
+                select.appendChild(option);
+            });
+        }
+        
+        function loadAgentExtract() {
+            // Implementação futura - carregar extrato do agente selecionado
+            alert('Funcionalidade de extrato em desenvolvimento');
+        }
+        
+        function exportAgentsExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+        
+        function exportAgentsCSV() {
+            let csvContent = 'Código,Nome,Localização,SSA,Saldo,Transações,Última Movimentação,Status\n';
+            
+            agents.forEach(agent => {
+                csvContent += `"${agent.code}","${agent.name}","${agent.location}","${agent.ssa}","${agent.balance}","${agent.transactions || 0}","${agent.lastMovement || 'N/A'}","${agent.status}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `agentes_${Date.now()}.csv`);
+        }
+        
+        // ========== FUNÇÕES DE UTILIZADORES ==========
+        function saveUser() {
+            const id = document.getElementById('userId').value;
+            const fullName = document.getElementById('userFullName').value;
+            const username = document.getElementById('userUsername').value;
+            const password = document.getElementById('userPassword').value;
+            const confirmPassword = document.getElementById('userConfirmPassword').value;
+            const role = document.getElementById('userRole').value;
+            const status = document.getElementById('userStatus').value;
+            
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+            
+            // Verificar se username já existe
+            const existingUser = users.find(u => u.username === username && u.id != id);
+            if (existingUser) {
+                alert('Já existe um utilizador com este username!');
+                return;
+            }
+            
+            if (id) {
+                // Atualizar utilizador existente
+                const index = users.findIndex(user => user.id == id);
+                if (index !== -1) {
+                    users[index] = { 
+                        ...users[index], 
+                        fullName, username, role, status
+                    };
+                    
+                    // Atualizar senha apenas se foi alterada
+                    if (password) {
+                        users[index].password = password;
+                    }
+                }
+            } else {
+                // Criar novo utilizador
+                const newUser = {
+                    id: Date.now(),
+                    fullName,
+                    username,
+                    password,
+                    role,
+                    status,
+                    createdAt: new Date().toISOString(),
+                    lastAccess: null
+                };
+                
+                users.push(newUser);
+                
+                // Registrar log de auditoria
+                logAudit('CREATE_USER', `Criou utilizador: ${fullName} (${username})`);
+            }
+            
+            localStorage.setItem('users', JSON.stringify(users));
+            updateUsersTable();
+            clearUserForm();
+            
+            alert(id ? 'Utilizador atualizado com sucesso!' : 'Utilizador registado com sucesso!');
+        }
+        
+        function clearUserForm() {
+            document.getElementById('userId').value = '';
+            document.getElementById('userForm').reset();
+        }
+        
+        function updateUsersTable() {
+            const tbody = document.getElementById('usersTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            let totalCount = 0;
+            let activeCount = 0;
+            let adminCount = 0;
+            
+            users.forEach(user => {
+                totalCount++;
+                if (user.status === 'Ativo') activeCount++;
+                if (user.role === 'admin') adminCount++;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.fullName}</td>
+                    <td>${user.username}</td>
+                    <td><span class="badge badge-${user.role}">${getRoleName(user.role)}</span></td>
+                    <td><span class="status ${user.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${user.status}</span></td>
+                    <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                    <td>${user.lastAccess ? new Date(user.lastAccess).toLocaleDateString() : 'Nunca'}</td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editUser(${user.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleUserStatus(${user.id})">
+                            ${user.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>
+                        ${currentUser.id !== user.id ? `
+                            <button class="btn btn-small btn-danger" onclick="deleteUser(${user.id})">Eliminar</button>
+                        ` : ''}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Atualizar resumo
+            document.getElementById('totalUsers').textContent = totalCount;
+            document.getElementById('activeUsers').textContent = activeCount;
+            document.getElementById('adminUsers').textContent = adminCount;
+            
+            // Atualizar informações de último acesso
+            updateLastAccessInfo();
+            
+            // Atualizar dropdown de utilizadores para auditoria
+            updateAuditUserDropdown();
+        }
+        
+        function editUser(id) {
+            const user = users.find(user => user.id === id);
+            if (user) {
+                document.getElementById('userId').value = user.id;
+                document.getElementById('userFullName').value = user.fullName;
+                document.getElementById('userUsername').value = user.username;
+                document.getElementById('userPassword').value = '';
+                document.getElementById('userConfirmPassword').value = '';
+                document.getElementById('userRole').value = user.role;
+                document.getElementById('userStatus').value = user.status;
+                
+                // Scroll para o formulário
+                document.getElementById('userForm').scrollIntoView();
+            }
+        }
+        
+        function toggleUserStatus(id) {
+            const user = users.find(user => user.id === id);
+            if (user && user.id !== currentUser.id) {
+                user.status = user.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('users', JSON.stringify(users));
+                updateUsersTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_USER_STATUS', `${user.status === 'Ativo' ? 'Ativou' : 'Desativou'} utilizador: ${user.fullName}`);
+            } else {
+                alert('Não pode desativar a sua própria conta!');
+            }
+        }
+        
+        function deleteUser(id) {
+            if (id === currentUser.id) {
+                alert('Não pode eliminar a sua própria conta!');
+                return;
+            }
+            
+            if (confirm('Tem certeza que deseja eliminar este utilizador?')) {
+                users = users.filter(user => user.id !== id);
+                localStorage.setItem('users', JSON.stringify(users));
+                updateUsersTable();
+                
+                // Registrar log de auditoria
+                logAudit('DELETE_USER', `Eliminou utilizador ID: ${id}`);
+            }
+        }
+        
+        function updateLastAccessInfo() {
+            const container = document.getElementById('lastAccessInfo');
+            const lastAccess = users.reduce((latest, user) => {
+                if (!user.lastAccess) return latest;
+                const userDate = new Date(user.lastAccess);
+                const latestDate = latest ? new Date(latest) : new Date(0);
+                return userDate > latestDate ? { user: user.fullName, date: user.lastAccess } : latest;
+            }, null);
+            
+            if (lastAccess) {
+                container.innerHTML = `
+                    <div class="small muted">${lastAccess.user}</div>
+                    <div class="small">${new Date(lastAccess.date).toLocaleString()}</div>
+                `;
+            } else {
+                container.innerHTML = '<p class="small muted">Nenhum acesso registado</p>';
+            }
+        }
+        
+        function updateAuditUserDropdown() {
+            const select = document.getElementById('auditUser');
+            select.innerHTML = '<option value="">Todos os utilizadores</option>';
+            
+            users.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.id;
+                option.textContent = user.fullName;
+                select.appendChild(option);
+            });
+        }
+        
+        function updateAuditLogs() {
+            const tbody = document.getElementById('auditLogsTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            // Aplicar filtros
+            let filteredLogs = [...auditLogs];
+            const userFilter = document.getElementById('auditUser').value;
+            const periodFilter = document.getElementById('auditPeriod').value;
+            
+            if (userFilter) {
+                filteredLogs = filteredLogs.filter(log => log.userId == userFilter);
+            }
+            
+            if (periodFilter) {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - parseInt(periodFilter));
+                filteredLogs = filteredLogs.filter(log => new Date(log.timestamp) >= cutoffDate);
+            }
+            
+            // Ordenar por data (mais recente primeiro)
+            filteredLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            // Mostrar apenas os últimos 100 registros
+            filteredLogs.slice(0, 100).forEach(log => {
+                const user = users.find(u => u.id === log.userId);
+                const userName = user ? user.fullName : 'Utilizador desconhecido';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${new Date(log.timestamp).toLocaleString()}</td>
+                    <td>${userName}</td>
+                    <td>${log.action}</td>
+                    <td>${log.details}</td>
+                    <td>${log.ip}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function filterAuditLogs() {
+            updateAuditLogs();
+        }
+        
+        function exportUsersExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+        
+        function exportUsersCSV() {
+            let csvContent = 'Nome,Username,Função,Estado,Data de Criação,Último Acesso\n';
+            
+            users.forEach(user => {
+                csvContent += `"${user.fullName}","${user.username}","${getRoleName(user.role)}","${user.status}","${new Date(user.createdAt).toLocaleDateString()}","${user.lastAccess ? new Date(user.lastAccess).toLocaleDateString() : 'Nunca'}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `utilizadores_${Date.now()}.csv`);
+        }
+        
+        // ========== FUNÇÕES SSA ==========
+        function saveSSAAccount() {
+            const id = document.getElementById('ssaAccountId').value;
+            const code = document.getElementById('ssaAccountCode').value;
+            const name = document.getElementById('ssaAccountName').value;
+            const balance = parseFloat(document.getElementById('ssaAccountBalance').value) || 0;
+            const rate = parseFloat(document.getElementById('ssaAccountRate').value);
+            const status = document.getElementById('ssaAccountStatus').value;
+            
+            // Verificar se código já existe
+            const existingAccount = ssaAccounts.find(acc => acc.code === code && acc.id != id);
+            if (existingAccount) {
+                alert('Já existe uma conta SSA com este código!');
+                return;
+            }
+            
+            if (id) {
+                // Atualizar conta existente
+                const index = ssaAccounts.findIndex(acc => acc.id == id);
+                if (index !== -1) {
+                    ssaAccounts[index] = { 
+                        ...ssaAccounts[index], 
+                        code, name, balance, rate, status
+                    };
+                }
+            } else {
+                // Criar nova conta
+                const newAccount = {
+                    id: Date.now(),
+                    code,
+                    name,
+                    balance,
+                    rate,
+                    status,
+                    createdAt: new Date().toISOString()
+                };
+                
+                ssaAccounts.push(newAccount);
+                
+                // Registrar log de auditoria
+                logAudit('CREATE_SSA_ACCOUNT', `Criou conta SSA: ${name} (${code})`);
+            }
+            
+            localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+            updateSSAAccountsTable();
+            loadSSAForDropdowns();
+            clearSSAAccountForm();
+            
+            alert(id ? 'Conta SSA atualizada com sucesso!' : 'Conta SSA registada com sucesso!');
+        }
+        
+        function clearSSAAccountForm() {
+            document.getElementById('ssaAccountId').value = '';
+            document.getElementById('ssaAccountForm').reset();
+            document.getElementById('ssaAccountBalance').value = '0';
+            document.getElementById('ssaAccountRate').value = '0.5';
+        }
+        
+        function updateSSAAccountsTable() {
+            const tbody = document.getElementById('ssaAccountsTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            let totalBalance = 0;
+            let activeAccounts = 0;
+            
+            ssaAccounts.forEach(account => {
+                if (account.status === 'Ativo') {
+                    totalBalance += account.balance;
+                    activeAccounts++;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${account.code}</td>
+                    <td>${account.name}</td>
+                    <td>MT ${account.balance.toFixed(2)}</td>
+                    <td>${account.rate}%</td>
+                    <td><span class="status ${account.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${account.status}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editSSAAccount(${account.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleSSAAccountStatus(${account.id})">
+                            ${account.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Atualizar resumo
+            document.getElementById('ssaMainBalance').textContent = `MT ${totalBalance.toFixed(2)}`;
+            document.getElementById('ssaSubchannels').textContent = subchannels.length;
+            document.getElementById('ssaTotalBalance').textContent = `MT ${totalBalance.toFixed(2)}`;
+            
+            // Calcular transações do dia
+            const today = new Date().toISOString().split('T')[0];
+            const todayTransactions = ssaTransactions.filter(t => t.date === today).length;
+            document.getElementById('ssaTodayTxns').textContent = todayTransactions;
+            
+            // Calcular transações do mês
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            const monthlyTransactions = ssaTransactions.filter(t => {
+                const tDate = new Date(t.date);
+                return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
+            }).length;
+            document.getElementById('ssaMonthlyTxns').textContent = monthlyTransactions;
+            
+            // Calcular rendimento do mês (simplificado)
+            const monthlyYield = totalBalance * (0.5 / 100) * 22; // 0.5% por 22 dias úteis
+            document.getElementById('ssaMonthlyYield').textContent = `MT ${monthlyYield.toFixed(2)}`;
+        }
+        
+        function editSSAAccount(id) {
+            const account = ssaAccounts.find(acc => acc.id === id);
+            if (account) {
+                document.getElementById('ssaAccountId').value = account.id;
+                document.getElementById('ssaAccountCode').value = account.code;
+                document.getElementById('ssaAccountName').value = account.name;
+                document.getElementById('ssaAccountBalance').value = account.balance;
+                document.getElementById('ssaAccountRate').value = account.rate;
+                document.getElementById('ssaAccountStatus').value = account.status;
+                
+                // Scroll para o formulário
+                document.getElementById('ssaAccountForm').scrollIntoView();
+            }
+        }
+        
+        function toggleSSAAccountStatus(id) {
+            const account = ssaAccounts.find(acc => acc.id === id);
+            if (account) {
+                account.status = account.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+                updateSSAAccountsTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_SSA_ACCOUNT_STATUS', `${account.status === 'Ativo' ? 'Ativou' : 'Desativou'} conta SSA: ${account.name} (${account.code})`);
+            }
+        }
+        
+        function loadSSAForDropdowns() {
+            const dropdowns = [
+                'agentSSA', 'ssaDepositFrom', 'ssaDepositTo', 
+                'ssaReceiveTo', 'subchannelSSA', 'ssaTransactionAccount',
+                'ssaReportAccount'
+            ];
+            
+            dropdowns.forEach(dropdownId => {
+                const select = document.getElementById(dropdownId);
+                if (select) {
+                    select.innerHTML = '<option value="">Selecionar SSA</option>';
+                    
+                    ssaAccounts
+                        .filter(acc => acc.status === 'Ativo')
+                        .forEach(account => {
+                            const option = document.createElement('option');
+                            option.value = account.id;
+                            option.textContent = `${account.code} - ${account.name}`;
+                            select.appendChild(option);
+                });
+                }
+            });
+        }
+        
+        function saveSSADeposit() {
+            const fromAccountId = document.getElementById('ssaDepositFrom').value;
+            const toAccountId = document.getElementById('ssaDepositTo').value;
+            const amount = parseFloat(document.getElementById('ssaDepositAmount').value);
+            const date = document.getElementById('ssaDepositDate').value;
+            const description = document.getElementById('ssaDepositDescription').value;
+            
+            if (!fromAccountId || !toAccountId) {
+                alert('Selecione as contas de origem e destino!');
+                return;
+            }
+            
+            if (fromAccountId === toAccountId) {
+                alert('A conta de origem e destino não podem ser iguais!');
+                return;
+            }
+            
+            const fromAccount = ssaAccounts.find(acc => acc.id == fromAccountId);
+            const toAccount = ssaAccounts.find(acc => acc.id == toAccountId);
+            
+            if (!fromAccount || !toAccount) {
+                alert('Conta não encontrada!');
+                return;
+            }
+            
+            if (fromAccount.balance < amount) {
+                alert('Saldo insuficiente na conta de origem!');
+                return;
+            }
+            
+            // Atualizar saldos
+            fromAccount.balance -= amount;
+            toAccount.balance += amount;
+            
+            // Registrar transação
+            const transaction = {
+                id: Date.now(),
+                fromAccountId,
+                fromAccountCode: fromAccount.code,
+                fromAccountName: fromAccount.name,
+                toAccountId,
+                toAccountCode: toAccount.code,
+                toAccountName: toAccount.name,
+                amount,
+                type: 'deposit',
+                date,
+                description,
+                yield: amount * (0.5 / 100), // 0.5% de rendimento
+                createdAt: new Date().toISOString()
+            };
+            
+            ssaTransactions.push(transaction);
+            
+            localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+            localStorage.setItem('ssaTransactions', JSON.stringify(ssaTransactions));
+            
+            updateSSAAccountsTable();
+            updateSSATransactionsTable();
+            clearSSADepositForm();
+            
+            // Registrar log de auditoria
+            logAudit('SSA_DEPOSIT', `Depósito de ${fromAccount.code} para ${toAccount.code}: MT ${amount.toFixed(2)}`);
+            
+            alert('Depósito registado com sucesso!');
+        }
+        
+        function saveSSAReceive() {
+            const source = document.getElementById('ssaReceiveSource').value;
+            const toAccountId = document.getElementById('ssaReceiveTo').value;
+            const amount = parseFloat(document.getElementById('ssaReceiveAmount').value);
+            const date = document.getElementById('ssaReceiveDate').value;
+            const observations = document.getElementById('ssaReceiveObservations').value;
+            
+            if (!toAccountId) {
+                alert('Selecione a conta de destino!');
+                return;
+            }
+            
+            const toAccount = ssaAccounts.find(acc => acc.id == toAccountId);
+            
+            if (!toAccount) {
+                alert('Conta não encontrada!');
+                return;
+            }
+            
+            // Atualizar saldo
+            toAccount.balance += amount;
+            
+            // Registrar transação
+            const transaction = {
+                id: Date.now(),
+                source,
+                toAccountId,
+                toAccountCode: toAccount.code,
+                toAccountName: toAccount.name,
+                amount,
+                type: 'receive',
+                date,
+                observations,
+                yield: amount * (0.5 / 100), // 0.5% de rendimento
+                createdAt: new Date().toISOString()
+            };
+            
+            ssaTransactions.push(transaction);
+            
+            localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+            localStorage.setItem('ssaTransactions', JSON.stringify(ssaTransactions));
+            
+            updateSSAAccountsTable();
+            updateSSATransactionsTable();
+            clearSSAReceiveForm();
+            
+            // Registrar log de auditoria
+            logAudit('SSA_RECEIVE', `Recebimento de ${source} para ${toAccount.code}: MT ${amount.toFixed(2)}`);
+            
+            alert('Recebimento registado com sucesso!');
+        }
+        
+        function clearSSADepositForm() {
+            document.getElementById('ssaDepositForm').reset();
+            document.getElementById('ssaDepositDate').value = new Date().toISOString().split('T')[0];
+        }
+        
+        function clearSSAReceiveForm() {
+            document.getElementById('ssaReceiveForm').reset();
+            document.getElementById('ssaReceiveDate').value = new Date().toISOString().split('T')[0];
+        }
+        
+        function updateSSATransactionsTable() {
+            const tbody = document.getElementById('ssaTransactionsTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            // Aplicar filtros
+            let filteredTransactions = [...ssaTransactions];
+            const accountFilter = document.getElementById('ssaTransactionAccount').value;
+            const typeFilter = document.getElementById('ssaTransactionType').value;
+            const periodFilter = document.getElementById('ssaTransactionPeriod').value;
+            
+            if (accountFilter) {
+                filteredTransactions = filteredTransactions.filter(t => 
+                    t.fromAccountId == accountFilter || t.toAccountId == accountFilter
+                );
+            }
+            
+            if (typeFilter) {
+                filteredTransactions = filteredTransactions.filter(t => t.type === typeFilter);
+            }
+            
+            if (periodFilter && periodFilter !== 'all') {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - parseInt(periodFilter));
+                filteredTransactions = filteredTransactions.filter(t => new Date(t.date) >= cutoffDate);
+            }
+            
+            // Ordenar por data (mais recente primeiro)
+            filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            filteredTransactions.forEach(transaction => {
+                const row = document.createElement('tr');
+                
+                if (transaction.type === 'deposit') {
+                    row.innerHTML = `
+                        <td>${transaction.date}</td>
+                        <td>${transaction.fromAccountCode} - ${transaction.fromAccountName}</td>
+                        <td>${transaction.toAccountCode} - ${transaction.toAccountName}</td>
+                        <td>Depósito</td>
+                        <td>MT ${transaction.amount.toFixed(2)}</td>
+                        <td>MT ${transaction.yield.toFixed(2)}</td>
+                        <td>${transaction.description}</td>
+                        <td>
+                            <button class="btn btn-small btn-danger" onclick="deleteSSATransaction(${transaction.id})">Eliminar</button>
+                        </td>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <td>${transaction.date}</td>
+                        <td>${transaction.source}</td>
+                        <td>${transaction.toAccountCode} - ${transaction.toAccountName}</td>
+                        <td>Recebimento</td>
+                        <td>MT ${transaction.amount.toFixed(2)}</td>
+                        <td>MT ${transaction.yield.toFixed(2)}</td>
+                        <td>${transaction.observations}</td>
+                        <td>
+                            <button class="btn btn-small btn-danger" onclick="deleteSSATransaction(${transaction.id})">Eliminar</button>
+                        </td>
+                    `;
+                }
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        function deleteSSATransaction(id) {
+            if (confirm('Tem certeza que deseja eliminar esta transação?')) {
+                const transaction = ssaTransactions.find(t => t.id === id);
+                
+                if (transaction) {
+                    // Reverter saldos
+                    if (transaction.type === 'deposit') {
+                        const fromAccount = ssaAccounts.find(acc => acc.id == transaction.fromAccountId);
+                        const toAccount = ssaAccounts.find(acc => acc.id == transaction.toAccountId);
+                        
+                        if (fromAccount && toAccount) {
+                            fromAccount.balance += transaction.amount;
+                            toAccount.balance -= transaction.amount;
+                        }
+                    } else {
+                        const toAccount = ssaAccounts.find(acc => acc.id == transaction.toAccountId);
+                        if (toAccount) {
+                            toAccount.balance -= transaction.amount;
+                        }
+                    }
+                    
+                    ssaTransactions = ssaTransactions.filter(t => t.id !== id);
+                    
+                    localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+                    localStorage.setItem('ssaTransactions', JSON.stringify(ssaTransactions));
+                    
+                    updateSSAAccountsTable();
+                    updateSSATransactionsTable();
+                    
+                    // Registrar log de auditoria
+                    logAudit('DELETE_SSA_TRANSACTION', `Eliminou transação SSA ID: ${id}`);
+                }
+            }
+        }
+        
+        function filterSSATransactions() {
+            updateSSATransactionsTable();
+        }
+        
+        function saveSubchannel() {
+            const id = document.getElementById('subchannelId').value;
+            const type = document.getElementById('subchannelType').value;
+            const code = document.getElementById('subchannelCode').value;
+            const name = document.getElementById('subchannelName').value;
+            const ssa = document.getElementById('subchannelSSA').value;
+            const balance = parseFloat(document.getElementById('subchannelBalance').value) || 0;
+            const status = document.getElementById('subchannelStatus').value;
+            
+            // Verificar se código já existe
+            const existingSubchannel = subchannels.find(sc => sc.code === code && sc.id != id);
+            if (existingSubchannel) {
+                alert('Já existe um subcanal com este código!');
+                return;
+            }
+            
+            if (id) {
+                // Atualizar subcanal existente
+                const index = subchannels.findIndex(sc => sc.id == id);
+                if (index !== -1) {
+                    subchannels[index] = { 
+                        ...subchannels[index], 
+                        type, code, name, ssa, balance, status
+                    };
+                }
+            } else {
+                // Criar novo subcanal
+                const newSubchannel = {
+                    id: Date.now(),
+                    type,
+                    code,
+                    name,
+                    ssa,
+                    balance,
+                    status,
+                    createdAt: new Date().toISOString()
+                };
+                
+                subchannels.push(newSubchannel);
+                
+                // Registrar log de auditoria
+                logAudit('CREATE_SUBCHANNEL', `Criou subcanal: ${name} (${code}) - ${type}`);
+            }
+            
+            localStorage.setItem('subchannels', JSON.stringify(subchannels));
+            updateSubchannelsTable();
+            clearSubchannelForm();
+            
+            alert(id ? 'Subcanal atualizado com sucesso!' : 'Subcanal registado com sucesso!');
+        }
+        
+        function clearSubchannelForm() {
+            document.getElementById('subchannelId').value = '';
+            document.getElementById('subchannelForm').reset();
+            document.getElementById('subchannelBalance').value = '0';
+        }
+        
+        function updateSubchannelsTable() {
+            const tbody = document.getElementById('subchannelsTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            let stCount = 0;
+            let sagCount = 0;
+            let agCount = 0;
+            
+            subchannels.forEach(subchannel => {
+                // Contar por tipo
+                if (subchannel.type === 'ST') stCount++;
+                else if (subchannel.type === 'SAG') sagCount++;
+                else if (subchannel.type === 'AG') agCount++;
+                
+                const ssaAccount = ssaAccounts.find(acc => acc.id == subchannel.ssa);
+                const ssaName = ssaAccount ? ssaAccount.name : 'N/A';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${subchannel.type}</td>
+                    <td>${subchannel.code}</td>
+                    <td>${subchannel.name}</td>
+                    <td>${ssaName}</td>
+                    <td>MT ${subchannel.balance.toFixed(2)}</td>
+                    <td><span class="status ${subchannel.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${subchannel.status}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editSubchannel(${subchannel.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleSubchannelStatus(${subchannel.id})">
+                            ${subchannel.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Atualizar resumo
+            document.getElementById('totalST').textContent = stCount;
+            document.getElementById('totalSAG').textContent = sagCount;
+            document.getElementById('totalAG').textContent = agCount;
+            
+            // Atualizar top subcanais
+            updateTopSubchannels();
+        }
+        
+        function editSubchannel(id) {
+            const subchannel = subchannels.find(sc => sc.id === id);
+            if (subchannel) {
+                document.getElementById('subchannelId').value = subchannel.id;
+                document.getElementById('subchannelType').value = subchannel.type;
+                document.getElementById('subchannelCode').value = subchannel.code;
+                document.getElementById('subchannelName').value = subchannel.name;
+                document.getElementById('subchannelSSA').value = subchannel.ssa;
+                document.getElementById('subchannelBalance').value = subchannel.balance;
+                document.getElementById('subchannelStatus').value = subchannel.status;
+                
+                // Scroll para o formulário
+                document.getElementById('subchannelForm').scrollIntoView();
+            }
+        }
+        
+        function toggleSubchannelStatus(id) {
+            const subchannel = subchannels.find(sc => sc.id === id);
+            if (subchannel) {
+                subchannel.status = subchannel.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('subchannels', JSON.stringify(subchannels));
+                updateSubchannelsTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_SUBCHANNEL_STATUS', `${subchannel.status === 'Ativo' ? 'Ativou' : 'Desativou'} subcanal: ${subchannel.name} (${subchannel.code})`);
+            }
+        }
+        
+        function updateTopSubchannels() {
+            const container = document.getElementById('topSubchannels');
+            
+            // Ordenar subcanais por saldo (maior primeiro)
+            const sortedSubchannels = [...subchannels]
+                .filter(sc => sc.status === 'Ativo')
+                .sort((a, b) => b.balance - a.balance)
+                .slice(0, 5);
+            
+            if (sortedSubchannels.length > 0) {
+                let html = '';
+                sortedSubchannels.forEach((subchannel, index) => {
+                    html += `
+                        <div style="padding: 8px; border-bottom: 1px solid #eee; ${index === 0 ? 'background: var(--light);' : ''}">
+                            <div style="font-weight: bold;">${subchannel.code} - ${subchannel.name}</div>
+                            <div style="font-size: 12px; color: #28a745;">MT ${subchannel.balance.toFixed(2)}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p class="small muted">Nenhum subcanal ativo</p>';
+            }
+        }
+        
+        function generateAccountStatement() {
+            const accountId = document.getElementById('ssaReportAccount').value;
+            
+            if (!accountId) {
+                alert('Selecione uma conta!');
+                return;
+            }
+            
+            const account = ssaAccounts.find(acc => acc.id == accountId);
+            const transactions = ssaTransactions.filter(t => 
+                t.fromAccountId == accountId || t.toAccountId == accountId
+            );
+            
+            let html = `<h4>Extrato da Conta: ${account.code} - ${account.name}</h4>`;
+            html += `<p>Saldo Atual: MT ${account.balance.toFixed(2)}</p>`;
+            html += `<table><thead><tr><th>Data</th><th>Descrição</th><th>Débito</th><th>Crédito</th><th>Saldo</th></tr></thead><tbody>`;
+            
+            let runningBalance = 0;
+            
+            transactions
+                .sort((a, b) => new Date(a.date) - new Date(b.date))
+                .forEach(transaction => {
+                    let debit = 0;
+                    let credit = 0;
+                    
+                    if (transaction.fromAccountId == accountId) {
+                        debit = transaction.amount;
+                        runningBalance -= transaction.amount;
+                    } else {
+                        credit = transaction.amount;
+                        runningBalance += transaction.amount;
+                    }
+                    
+                    html += `
+                        <tr>
+                            <td>${transaction.date}</td>
+                            <td>${transaction.description || transaction.observations || 'Transação'}</td>
+                            <td>${debit > 0 ? `MT ${debit.toFixed(2)}` : '-'}</td>
+                            <td>${credit > 0 ? `MT ${credit.toFixed(2)}` : '-'}</td>
+                            <td>MT ${runningBalance.toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+            
+            html += '</tbody></table>';
+            
+            document.getElementById('ssaReportResult').innerHTML = html;
+        }
+        
+        function generateYieldReport() {
+            alert('Relatório de rendimentos em desenvolvimento');
+        }
+        
+        function generateConsolidatedReport() {
+            alert('Relatório consolidado em desenvolvimento');
+        }
+        
+        function exportSSAExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+        
+        function exportSSACSV() {
+            let csvContent = 'Código,Nome,Saldo,Taxa,Status\n';
+            
+            ssaAccounts.forEach(account => {
+                csvContent += `"${account.code}","${account.name}","${account.balance}","${account.rate}","${account.status}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `ssa_contas_${Date.now()}.csv`);
+        }
+        
+        // ========== FUNÇÕES DE CONTABILIDADE ==========
+        function saveTransaction() {
+            const id = document.getElementById('txnId').value;
+            const type = document.getElementById('txnType').value;
+            const category = document.getElementById('txnCategory').value;
+            const description = document.getElementById('txnDesc').value;
+            const value = parseFloat(document.getElementById('txnValue').value);
+            const date = document.getElementById('txnDate').value;
+            
+            if (id) {
+                // Atualizar transação existente
+                const index = transactions.findIndex(t => t.id == id);
+                if (index !== -1) {
+                    transactions[index] = { ...transactions[index], type, category, description, value, date };
+                }
+            } else {
+                // Criar nova transação
+                const newTransaction = {
+                    id: Date.now(),
+                    type,
+                    category,
+                    description,
+                    value,
+                    date,
+                    userId: currentUser.id,
+                    createdAt: new Date().toISOString()
+                };
+                
+                transactions.push(newTransaction);
+            }
+            
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            updateTransactionsTable();
+            updateAccountingKPIs();
+            document.getElementById('txnForm').reset();
+            document.getElementById('txnId').value = '';
+            document.getElementById('txnDate').value = new Date().toISOString().split('T')[0];
+            
+            alert(id ? 'Transação atualizada com sucesso!' : 'Transação registada com sucesso!');
+        }
+        
+        function updateTransactionsTable() {
+            const tbody = document.getElementById('txnsTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            // Ordenar transações por data (mais recente primeiro)
+            const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            sortedTransactions.forEach(transaction => {
+                const typeText = transaction.type === 'income' ? 'Receita' : 'Despesa';
+                const typeClass = transaction.type === 'income' ? 'status-approved' : 'status-rejected';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${transaction.date}</td>
+                    <td><span class="status ${typeClass}">${typeText}</span></td>
+                    <td>${transaction.category}</td>
+                    <td>${transaction.description}</td>
+                    <td>MT ${transaction.value.toFixed(2)}</td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editTransaction(${transaction.id})">Editar</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteTransaction(${transaction.id})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function editTransaction(id) {
+            const transaction = transactions.find(t => t.id === id);
+            if (transaction) {
+                document.getElementById('txnId').value = transaction.id;
+                document.getElementById('txnType').value = transaction.type;
+                document.getElementById('txnCategory').value = transaction.category;
+                document.getElementById('txnDesc').value = transaction.description;
+                document.getElementById('txnValue').value = transaction.value;
+                document.getElementById('txnDate').value = transaction.date;
+                
+                // Scroll para o formulário
+                document.getElementById('txnForm').scrollIntoView();
+            }
+        }
+        
+        function deleteTransaction(id) {
+            if (confirm('Tem certeza que deseja eliminar esta transação?')) {
+                transactions = transactions.filter(t => t.id !== id);
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                updateTransactionsTable();
+                updateAccountingKPIs();
+            }
+        }
+        
+        function updateAccountingKPIs() {
+            const income = transactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.value, 0);
+                
+            const expense = transactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.value, 0);
+                
+            const balance = income - expense;
+            
+            document.getElementById('kpiIncome').textContent = `MT ${income.toFixed(2)}`;
+            document.getElementById('kpiExpense').textContent = `MT ${expense.toFixed(2)}`;
+            document.getElementById('kpiBalance').textContent = `MT ${balance.toFixed(2)}`;
+        }
+        
+        function updateAccountingData() {
+            updateTransactionsTable();
+            updateAccountingKPIs();
+            updatePlanoContasTree();
+            updateLancamentosTable();
+        }
+        
+        // ========== FUNÇÕES DO PLANO DE CONTAS ==========
+        function updatePlanoContasTree() {
+            const container = document.getElementById('planoContasTree');
+            container.innerHTML = '';
+            
+            // Agrupar contas por tipo
+            const contasPorTipo = {};
+            planoContas.forEach(conta => {
+                if (!contasPorTipo[conta.tipo]) {
+                    contasPorTipo[conta.tipo] = [];
+                }
+                contasPorTipo[conta.tipo].push(conta);
+            });
+            
+            // Renderizar por tipo
+            Object.keys(contasPorTipo).forEach(tipo => {
+                const tipoDiv = document.createElement('div');
+                tipoDiv.className = 'account-class';
+                tipoDiv.textContent = tipo;
+                container.appendChild(tipoDiv);
+                
+                // Encontrar contas principais (sem pai)
+                const contasPrincipais = contasPorTipo[tipo].filter(conta => !conta.pai);
+                
+                contasPrincipais.forEach(conta => {
+                    renderConta(container, conta, 0);
+                });
+            });
+        }
+        
+        function renderConta(container, conta, nivel) {
+            const contaDiv = document.createElement('div');
+            contaDiv.className = 'account-item';
+            contaDiv.style.marginLeft = `${nivel * 20}px`;
+            
+            contaDiv.innerHTML = `
+                <div>
+                    <span class="account-code">${conta.codigo}</span> - ${conta.nome}
+                    <span style="float: right;">
+                        <button class="btn btn-small btn-primary" onclick="editConta(${conta.id})">Editar</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteConta(${conta.id})">Eliminar</button>
+                    </span>
+                </div>
+                ${conta.descricao ? `<div class="small">${conta.descricao}</div>` : ''}
+            `;
+            
+            container.appendChild(contaDiv);
+            
+            // Encontrar e renderizar contas filhas
+            const contasFilhas = planoContas.filter(c => c.pai === conta.id);
+            contasFilhas.forEach(filha => {
+                renderConta(container, filha, nivel + 1);
+            });
+        }
+        
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        function saveConta() {
+            const id = document.getElementById('contaId').value;
+            const codigo = document.getElementById('contaCodigo').value;
+            const nome = document.getElementById('contaNome').value;
+            const tipo = document.getElementById('contaTipo').value;
+            const pai = document.getElementById('contaPai').value || null;
+            const descricao = document.getElementById('contaDescricao').value;
+            
+            // Validar código único
+            const codigoExistente = planoContas.find(c => c.codigo === codigo && c.id != id);
+            if (codigoExistente) {
+                alert('Já existe uma conta com este código!');
+                return;
+            }
+            
+            if (id) {
+                // Atualizar conta existente
+                const index = planoContas.findIndex(c => c.id == id);
+                if (index !== -1) {
+                    planoContas[index] = { ...planoContas[index], codigo, nome, tipo, pai: pai ? parseInt(pai) : null, descricao };
+                }
+            } else {
+                // Criar nova conta
+                const newConta = {
+                    id: Date.now(),
+                    codigo,
+                    nome,
+                    tipo,
+                    pai: pai ? parseInt(pai) : null,
+                    descricao
+                };
+                
+                planoContas.push(newConta);
+            }
+            
+            localStorage.setItem('planoContas', JSON.stringify(planoContas));
+            updatePlanoContasTree();
+            loadPlanoContasForDropdown();
+            closeModal('novaConta');
+            document.getElementById('contaForm').reset();
+            document.getElementById('contaId').value = '';
+            
+            alert(id ? 'Conta atualizada com sucesso!' : 'Conta criada com sucesso!');
+        }
+        
+        function editConta(id) {
+            const conta = planoContas.find(c => c.id === id);
+            if (conta) {
+                document.getElementById('contaId').value = conta.id;
+                document.getElementById('contaCodigo').value = conta.codigo;
+                document.getElementById('contaNome').value = conta.nome;
+                document.getElementById('contaTipo').value = conta.tipo;
+                document.getElementById('contaPai').value = conta.pai || '';
+                document.getElementById('contaDescricao').value = conta.descricao || '';
+                
+                showModal('novaConta');
+            }
+        }
+        
+        function deleteConta(id) {
+            // Verificar se a conta tem contas filhas
+            const contasFilhas = planoContas.filter(c => c.pai === id);
+            if (contasFilhas.length > 0) {
+                alert('Não é possível eliminar uma conta que tem contas filhas!');
+                return;
+            }
+            
+            if (confirm('Tem certeza que deseja eliminar esta conta?')) {
+                planoContas = planoContas.filter(c => c.id !== id);
+                localStorage.setItem('planoContas', JSON.stringify(planoContas));
+                updatePlanoContasTree();
+                loadPlanoContasForDropdown();
+            }
+        }
+        
+        function loadPlanoContasForDropdown() {
+            const debitoSelect = document.getElementById('lancamentoDebito');
+            const creditoSelect = document.getElementById('lancamentoCredito');
+            const contaPaiSelect = document.getElementById('contaPai');
+            const filterContaSelect = document.getElementById('filterConta');
+            
+            // Limpar selects
+            debitoSelect.innerHTML = '<option value="">Selecionar conta débito</option>';
+            creditoSelect.innerHTML = '<option value="">Selecionar conta crédito</option>';
+            contaPaiSelect.innerHTML = '<option value="">Nenhuma (Conta Principal)</option>';
+            filterContaSelect.innerHTML = '<option value="">Todas as contas</option>';
+            
+            // Popular selects
+            planoContas.forEach(conta => {
+                const optionText = `${conta.codigo} - ${conta.nome}`;
+                
+                // Para débito e crédito
+                const optionDebito = document.createElement('option');
+                optionDebito.value = conta.id;
+                optionDebito.textContent = optionText;
+                debitoSelect.appendChild(optionDebito);
+                
+                const optionCredito = document.createElement('option');
+                optionCredito.value = conta.id;
+                optionCredito.textContent = optionText;
+                creditoSelect.appendChild(optionCredito);
+                
+                // Para conta pai (apenas contas do mesmo tipo)
+                const optionPai = document.createElement('option');
+                optionPai.value = conta.id;
+                optionPai.textContent = optionText;
+                contaPaiSelect.appendChild(optionPai);
+                
+                // Para filtro
+                const optionFiltro = document.createElement('option');
+                optionFiltro.value = conta.id;
+                optionFiltro.textContent = optionText;
+                filterContaSelect.appendChild(optionFiltro);
+            });
+        }
+        
+        function exportPlanoContas() {
+            const dataStr = JSON.stringify(planoContas, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            downloadFile(dataBlob, `plano_contas_${Date.now()}.json`);
+        }
+        
+        function importPlanoContas() {
+            const fileInput = document.getElementById('importPlanoFile');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        planoContas = importedData;
+                        localStorage.setItem('planoContas', JSON.stringify(planoContas));
+                        updatePlanoContasTree();
+                        loadPlanoContasForDropdown();
+                        alert('Plano de contas importado com sucesso!');
+                    } catch (error) {
+                        alert('Erro ao importar ficheiro: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+        
+        // ========== FUNÇÕES DE RELATÓRIOS ==========
+        function generateBalanceSheet() {
+            const reportResult = document.getElementById('reportResult');
+            reportResult.innerHTML = '<h4>Balanço Patrimonial</h4><p>Relatório gerado com sucesso. Esta funcionalidade está em desenvolvimento.</p>';
+        }
+        
+        function generateIncomeStatement() {
+            const reportResult = document.getElementById('reportResult');
+            reportResult.innerHTML = '<h4>Demonstração de Resultados</h4><p>Relatório gerado com sucesso. Esta funcionalidade está em desenvolvimento.</p>';
+        }
+        
+        function generateCashFlow() {
+            const reportResult = document.getElementById('reportResult');
+            reportResult.innerHTML = '<h4>Fluxo de Caixa</h4><p>Relatório gerado com sucesso. Esta funcionalidade está em desenvolvimento.</p>';
+        }
+        
+        // ========== FUNÇÕES DE LANÇAMENTOS ==========
+        function saveLancamento() {
+            const data = document.getElementById('lancamentoData').value;
+            const descricao = document.getElementById('lancamentoDescricao').value;
+            const debito = document.getElementById('lancamentoDebito').value;
+            const credito = document.getElementById('lancamentoCredito').value;
+            const valor = parseFloat(document.getElementById('lancamentoValor').value);
+            
+            if (debito === credito) {
+                alert('As contas de débito e crédito não podem ser iguais!');
+                return;
+            }
+            
+            const novoLancamento = {
+                id: Date.now(),
+                data,
+                descricao,
+                debito: parseInt(debito),
+                credito: parseInt(credito),
+                valor,
+                userId: currentUser.id,
+                createdAt: new Date().toISOString()
+            };
+            
+            lancamentos.push(novoLancamento);
+            localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+            
+            updateLancamentosTable();
+            document.getElementById('lancamentoForm').reset();
+            document.getElementById('lancamentoData').value = new Date().toISOString().split('T')[0];
+            
+            alert('Lançamento registado com sucesso!');
+        }
+        
+        function updateLancamentosTable() {
+            const tbody = document.getElementById('lancamentosTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            // Aplicar filtros
+            let filteredLancamentos = [...lancamentos];
+            
+            const dataInicio = document.getElementById('filterDataInicio').value;
+            const dataFim = document.getElementById('filterDataFim').value;
+            const contaFiltro = document.getElementById('filterConta').value;
+            
+            if (dataInicio) {
+                filteredLancamentos = filteredLancamentos.filter(l => l.data >= dataInicio);
+            }
+            
+            if (dataFim) {
+                filteredLancamentos = filteredLancamentos.filter(l => l.data <= dataFim);
+            }
+            
+            if (contaFiltro) {
+                const contaId = parseInt(contaFiltro);
+                filteredLancamentos = filteredLancamentos.filter(l => 
+                    l.debito === contaId || l.credito === contaId
+                );
+            }
+            
+            // Ordenar por data (mais recente primeiro)
+            filteredLancamentos.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            filteredLancamentos.forEach(lancamento => {
+                const contaDebito = planoContas.find(c => c.id === lancamento.debito);
+                const contaCredito = planoContas.find(c => c.id === lancamento.credito);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${lancamento.data}</td>
+                    <td>${lancamento.descricao}</td>
+                    <td>${contaDebito ? `${contaDebito.codigo} - ${contaDebito.nome}` : 'N/A'}</td>
+                    <td>${contaCredito ? `${contaCredito.codigo} - ${contaCredito.nome}` : 'N/A'}</td>
+                    <td>MT ${lancamento.valor.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function filtrarLancamentos() {
+            updateLancamentosTable();
+        }
+        
+        // ========== FUNÇÕES AUXILIARES ==========
+        function loadUserSpecificData() {
+            // Esta função carrega dados específicos do utilizador logado
+            if (currentUser.role === 'viewer' || currentUser.username === 'investidor') {
+                // Carregar apenas os investimentos do utilizador
+                // Esta lógica já está implementada em updateMyInvestments()
+            }
+            // Outras personalizações podem ser adicionadas aqui
+        }
+        
         function exportBackup() {
             const backupData = {
                 users,
@@ -935,9 +4021,63 @@
                 auditLogs,
                 exportDate: new Date().toISOString()
             };
+            
             const dataStr = JSON.stringify(backupData, null, 2);
             const dataBlob = new Blob([dataStr], { type: 'application/json' });
             downloadFile(dataBlob, `great_mola_backup_${Date.now()}.json`);
+        }
+        
+        function importBackup() {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.json';
+            
+            fileInput.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const backupData = JSON.parse(e.target.result);
+                            
+                            // Atualizar todos os dados
+                            if (backupData.users) users = backupData.users;
+                            if (backupData.investors) investors = backupData.investors;
+                            if (backupData.agents) agents = backupData.agents;
+                            if (backupData.ssaAccounts) ssaAccounts = backupData.ssaAccounts;
+                            if (backupData.ssaTransactions) ssaTransactions = backupData.ssaTransactions;
+                            if (backupData.subchannels) subchannels = backupData.subchannels;
+                            if (backupData.approvals) approvals = backupData.approvals;
+                            if (backupData.transactions) transactions = backupData.transactions;
+                            if (backupData.planoContas) planoContas = backupData.planoContas;
+                            if (backupData.lancamentos) lancamentos = backupData.lancamentos;
+                            if (backupData.auditLogs) auditLogs = backupData.auditLogs;
+                            
+                            // Salvar no localStorage
+                            localStorage.setItem('users', JSON.stringify(users));
+                            localStorage.setItem('investors', JSON.stringify(investors));
+                            localStorage.setItem('agents', JSON.stringify(agents));
+                            localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+                            localStorage.setItem('ssaTransactions', JSON.stringify(ssaTransactions));
+                            localStorage.setItem('subchannels', JSON.stringify(subchannels));
+                            localStorage.setItem('approvals', JSON.stringify(approvals));
+                            localStorage.setItem('transactions', JSON.stringify(transactions));
+                            localStorage.setItem('planoContas', JSON.stringify(planoContas));
+                            localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+                            localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
+                            
+                            // Recarregar a interface
+                            loadInitialData();
+                            alert('Backup restaurado com sucesso!');
+                        } catch (error) {
+                            alert('Erro ao restaurar backup: ' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            
+            fileInput.click();
         }
         
         function downloadFile(blob, filename) {
@@ -950,9 +4090,6 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
-        
-        // [TODO: Adicionar todas as outras funções JavaScript do sistema]
-        
     </script>
 </body>
 </html>
