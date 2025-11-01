@@ -6,11 +6,1734 @@
     <title>Great Mola - Sistema Completo</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>" type="image/svg+xml">
     <style>
-        /* ... (todo o CSS permanece igual) ... */
+        :root {
+            --primary: #c81f1f;
+            --secondary: #007bff;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --muted: #666;
+            --bg: #f5f7fb;
+            --card: #fff;
+            --accent: #ffbe21;
+            --blue: #007bff;
+            --orange: #fd7e14;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: var(--light);
+            border-bottom: 2px solid #dee2e6;
+            flex-wrap: wrap;
+        }
+        
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            background: white;
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+            min-height: 500px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #a61c1c;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid #d6dbe8;
+            color: var(--dark);
+        }
+        
+        .btn-small {
+            padding: 6px 8px;
+            font-size: 13px;
+            border-radius: 8px;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .grid-3 {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        
+        .grid-4 {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+        }
+        
+        .kpi-card {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .kpi-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .kpi-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        th {
+            background: var(--light);
+            font-weight: 600;
+        }
+        
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background: #d1edff;
+            color: #0c5460;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-active {
+            background: #d1edff;
+            color: #0c5460;
+        }
+        
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+        
+        .badge-admin {
+            background: var(--danger);
+            color: #fff;
+        }
+        
+        .badge-manager {
+            background: var(--orange);
+            color: #fff;
+        }
+        
+        .badge-analyst {
+            background: var(--success);
+            color: #fff;
+        }
+        
+        .badge-agent {
+            background: #6f42c1;
+            color: #fff;
+        }
+        
+        .badge-investor {
+            background: var(--secondary);
+            color: #fff;
+        }
+        
+        .alert {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .success {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #bee5eb;
+        }
+        
+        .muted {
+            color: var(--muted);
+            font-size: 13px;
+        }
+        
+        .small {
+            font-size: 13px;
+            color: var(--muted);
+        }
+        
+        .inline {
+            display: inline-block;
+            width: auto;
+        }
+        
+        input[type=file] {
+            padding: 6px;
+        }
+        
+        .footer {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 16px;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .results-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+        
+        .result-item {
+            flex: 1;
+            min-width: 180px;
+            padding: 12px;
+            border-radius: 8px;
+            background: linear-gradient(180deg,#fff,#fbfdff);
+            border: 1px solid #eef2f8;
+        }
+        
+        .result-item h3 {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .kpi {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        
+        .note {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+        
+        .sub-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .sub-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .sub-tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .sub-content {
+            display: none;
+        }
+        
+        .sub-content.active {
+            display: block;
+        }
+        
+        .account-tree {
+            margin-left: 20px;
+        }
+        
+        .account-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .account-code {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .account-class {
+            font-weight: bold;
+            color: var(--dark);
+            margin-top: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .account-group {
+            font-weight: 600;
+            color: var(--muted);
+            margin-top: 10px;
+            padding-left: 10px;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .nav-tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+            
+            .results-row {
+                flex-direction: column;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- ... (todo o HTML permanece igual) ... -->
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="login-container">
+        <div style="margin-bottom: 30px;">
+            <div style="font-size: 48px; color: var(--primary); margin-bottom: 10px;">💼</div>
+            <h1 style="color: var(--primary); margin-bottom: 10px;">Great Mola</h1>
+            <p style="color: var(--dark); opacity: 0.7;">Sistema Integrado de Gestão</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Utilizador</label>
+                <input type="text" id="username" placeholder="Nome de utilizador" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Palavra-passe</label>
+                <input type="password" id="password" placeholder="Palavra-passe" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar no Sistema</button>
+        </form>
+        
+        <div style="margin-top: 30px; padding: 20px; background: var(--light); border-radius: 8px;">
+            <h4 style="margin-bottom: 15px; color: var(--dark);">Utilizadores de Demonstração:</h4>
+            <div style="text-align: left; font-size: 12px; line-height: 1.6;">
+                <div><strong>Admin:</strong> admin / admin123</div>
+                <div><strong>Gestor:</strong> gestor / gestor123</div>
+                <div><strong>Analista:</strong> analista / analista123</div>
+                <div><strong>Agente:</strong> agente / agente123</div>
+                <div><strong>Investidor:</strong> investidor / invest123</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aplicação Principal -->
+    <div id="app" class="container" style="display: none;">
+        <!-- Cabeçalho -->
+        <div class="header">
+            <div class="logo">Great Mola 💼 - Sistema Completo</div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div>
+                        <div id="userName">Utilizador</div>
+                        <div style="font-size: 12px; opacity: 0.8;" id="userRole">Admin</div>
+                    </div>
+                </div>
+                <button class="btn btn-warning" onclick="exportBackup()">💾 Backup</button>
+                <button class="btn btn-secondary" onclick="importBackup()">📥 Restaurar</button>
+                <button class="btn btn-warning" onclick="logout()" style="margin-left: 15px;">Sair</button>
+            </div>
+        </div>
+
+        <!-- Navegação -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="switchTab('accounting')">📈 Contabilidade & Finanças</button>
+            <button class="nav-tab" onclick="switchTab('investors')">👥 Investidores</button>
+            <button class="nav-tab" onclick="switchTab('agents')">🤝 Agentes</button>
+            <button class="nav-tab" onclick="switchTab('users')" id="usersTab" style="display: none;">👤 Utilizadores</button>
+            <button class="nav-tab" onclick="switchTab('approvals')" id="approvalsTab" style="display: none;">✅ Aprovações</button>
+            <button class="nav-tab" onclick="switchTab('ssa')">💼 SSA</button>
+        </div>
+
+        <!-- Conteúdo das Tabs -->
+        <div class="tab-content active" id="dashboard">
+            <h2>Dashboard do Sistema</h2>
+            <div class="grid grid-3">
+                <div class="kpi-card">
+                    <div class="kpi-label">Total Investido</div>
+                    <div class="kpi-value" id="totalInvested">MT 0.00</div>
+                    <div class="kpi-label">Por todos os investidores</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Comissões Pendentes</div>
+                    <div class="kpi-value" id="pendingCommissions">MT 0.00</div>
+                    <div class="kpi-label">Aguardando pagamento</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Aprovações</div>
+                    <div class="kpi-value" id="pendingApprovals">0</div>
+                    <div class="kpi-label">Aguardando revisão</div>
+                </div>
+            </div>
+
+            <div class="grid grid-2" style="margin-top: 30px;">
+                <div class="card">
+                    <h3>📈 Meus Investimentos</h3>
+                    <div id="myInvestmentsList">
+                        <p style="color: #6c757d; text-align: center; padding: 20px;">
+                            Carregando seus investimentos...
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>💰 Minhas Comissões</h3>
+                    <div id="myCommissionsList">
+                        <p style="color: #6c757d; text-align: center; padding: 20px;">
+                            Carregando suas comissões...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Contabilidade & Finanças -->
+        <div class="tab-content" id="accounting">
+            <h2>Contabilidade & Finanças</h2>
+            
+            <div class="sub-tabs">
+                <button class="sub-tab active" onclick="switchSubTab('planning')">Planejamento Financeiro</button>
+                <button class="sub-tab" onclick="switchSubTab('chartOfAccounts')">Plano de Contas</button>
+                <button class="sub-tab" onclick="switchSubTab('reports')">Relatórios Financeiros</button>
+                <button class="sub-tab" onclick="switchSubTab('transactions')">Transações</button>
+                <button class="sub-tab" onclick="switchSubTab('internalControl')">Controlo Interno</button>
+                <button class="sub-tab" onclick="switchSubTab('accountingEntries')">Lançamentos</button>
+            </div>
+            
+            <!-- Sub-tab Planejamento Financeiro -->
+            <div class="sub-content active" id="planning">
+                <div class="card">
+                    <h3>Planejamento Financeiro</h3>
+                    <p>Funcionalidade em desenvolvimento.</p>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Plano de Contas -->
+            <div class="sub-content" id="chartOfAccounts">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2>Plano de Contas</h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="showModal('novaConta')">➕ Nova Conta</button>
+                            <button class="btn btn-secondary" onclick="exportPlanoContas()">📤 Exportar</button>
+                            <input type="file" id="importPlanoFile" accept=".csv,.json" style="display: none;" onchange="importPlanoContas()">
+                            <button class="btn btn-success" onclick="document.getElementById('importPlanoFile').click()">📥 Importar</button>
+                            <button class="btn btn-warning" onclick="importPlanoContasFromCSV()">📋 Carregar CSV</button>
+                        </div>
+                    </div>
+                    
+                    <div id="planoContasTree" style="max-height: 600px; overflow-y: auto;">
+                        <!-- Hierarquia do plano de contas será renderizada aqui -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Relatórios Financeiros -->
+            <div class="sub-content" id="reports">
+                <div class="card">
+                    <h3>Relatórios Financeiros</h3>
+                    <div class="grid grid-3">
+                        <div class="result-item">
+                            <h3>Balanço</h3>
+                            <p>Relatório da posição financeira</p>
+                            <button class="btn btn-primary" onclick="generateBalanceSheet()">Gerar</button>
+                        </div>
+                        <div class="result-item">
+                            <h3>Demonstração de Resultados</h3>
+                            <p>Relatório de receitas e despesas</p>
+                            <button class="btn btn-primary" onclick="generateIncomeStatement()">Gerar</button>
+                        </div>
+                        <div class="result-item">
+                            <h3>Fluxo de Caixa</h3>
+                            <p>Relatório de entradas e saídas</p>
+                            <button class="btn btn-primary" onclick="generateCashFlow()">Gerar</button>
+                        </div>
+                    </div>
+                    
+                    <div id="reportResult" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Transações -->
+            <div class="sub-content" id="transactions">
+                <div class="card">
+                    <h3>Diário de Movimentos</h3>
+                    <table id="journalTable">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Conta Débito</th>
+                                <th>Conta Crédito</th>
+                                <th>Valor (MZN)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Controlo Interno -->
+            <div class="sub-content" id="internalControl">
+                <div class="card">
+                    <h3>⚙️ Sistema de Controlo Interno</h3>
+                    <p>Esta funcionalidade requer aprovação administrativa para acesso completo.</p>
+                    <div style="background: var(--light); padding: 20px; border-radius: 8px; margin-top: 15px;">
+                        <h4>🔒 Fluxos de Aprovação Ativos:</h4>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Transações financeiras acima de MT 10,000</li>
+                            <li>Todos os novos investimentos</li>
+                            <li>Depósitos de agentes para comissões</li>
+                            <li>Alterações no plano de contas</li>
+                            <li>Relatórios financeiros trimestrais</li>
+                            <li>Reconciliações bancárias</li>
+                        </ul>
+                        
+                        <h4 style="margin-top: 20px;">📋 Procedimentos de Controlo Interno:</h4>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Reconciliação diária de caixa</li>
+                            <li>Verificação de assinaturas duplas para pagamentos acima de MT 5,000</li>
+                            <li>Auditoria interna mensal</li>
+                            <li>Separação de funções (tesouraria vs contabilidade)</li>
+                            <li>Controlo de acesso por níveis de autorização</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Lançamentos -->
+            <div class="sub-content" id="accountingEntries">
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h2>Novo Lançamento</h2>
+                        <form id="lancamentoForm">
+                            <div class="form-group">
+                                <label>Data (dd/mm/aaaa)</label>
+                                <input type="date" id="lancamentoData" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <input type="text" id="lancamentoDescricao" placeholder="Descrição do lançamento" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Conta Débito</label>
+                                <select id="lancamentoDebito" required>
+                                    <option value="">Selecionar conta débito</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Conta Crédito</label>
+                                <select id="lancamentoCredito" required>
+                                    <option value="">Selecionar conta crédito</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Valor (MZN)</label>
+                                <input type="number" id="lancamentoValor" step="0.01" min="0.01" placeholder="0,00" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registar Lançamento</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h2>Filtros</h2>
+                        <div class="filters">
+                            <div class="filter-group">
+                                <label>Data Início</label>
+                                <input type="date" id="filterDataInicio" onchange="filtrarLancamentos()">
+                            </div>
+                            <div class="filter-group">
+                                <label>Data Fim</label>
+                                <input type="date" id="filterDataFim" onchange="filtrarLancamentos()">
+                            </div>
+                            <div class="filter-group">
+                                <label>Conta</label>
+                                <select id="filterConta" onchange="filtrarLancamentos()">
+                                    <option value="">Todas as contas</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h3>Últimos Lançamentos</h3>
+                            <table id="lancamentosTable">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Descrição</th>
+                                        <th>Débito</th>
+                                        <th>Crédito</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Investidores -->
+        <div class="tab-content" id="investors">
+            <h2>Gestão de Investidores</h2>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>➕ Novo Investidor</h3>
+                    <form id="investorForm">
+                        <input type="hidden" id="investorId">
+                        <div class="form-group">
+                            <label>Nome do Investidor</label>
+                            <input type="text" id="investorName" placeholder="Nome completo" required>
+                        </div>
+                        
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Tipo de Documento</label>
+                                <select id="investorDocType" required>
+                                    <option value="">Selecionar</option>
+                                    <option value="BI">BI</option>
+                                    <option value="Passaporte">Passaporte</option>
+                                    <option value="NUIT">NUIT</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Nº do Documento</label>
+                                <input type="text" id="investorDocNumber" placeholder="Número do documento" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Contacto</label>
+                                <input type="tel" id="investorPhone" placeholder="+258 ..." required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="investorEmail" placeholder="email@exemplo.com">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Conta Bancária / eMola</label>
+                            <input type="text" id="investorAccount" placeholder="Número da conta para rendimentos">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Tipo de Capital</label>
+                            <select id="investorCapitalType" required>
+                                <option value="proprio">Capital Próprio</option>
+                                <option value="alheio">Capital Alheio</option>
+                            </select>
+                        </div>
+                        
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Valor do Investimento (MZN)</label>
+                                <input type="number" id="investorAmount" placeholder="10,000" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Taxa de Rendimento (%)</label>
+                                <input type="number" id="investorRate" step="0.01" value="0.5" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Data de Início</label>
+                                <input type="date" id="investorStartDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Ciclo de Investimento</label>
+                                <select id="investorCycle" required>
+                                    <option value="Jan 2025">Jan 2025</option>
+                                    <option value="Fev 2025">Fev 2025</option>
+                                    <option value="Mar 2025">Mar 2025</option>
+                                    <option value="Abr 2025">Abr 2025</option>
+                                    <option value="Mai 2025">Mai 2025</option>
+                                    <option value="Jun 2025">Jun 2025</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>IRPS (%)</label>
+                            <input type="number" id="investorIRPS" step="0.01" value="20.0" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Registar Investidor</button>
+                        <button type="button" class="btn btn-ghost" onclick="clearInvestorForm()">Limpar</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h3>📊 Resumo de Investimentos</h3>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 24px; font-weight: bold; color: var(--primary);" id="summaryInvested">MT 0.00</div>
+                        <div style="color: #6c757d; margin-top: 10px;">Total Aprovado</div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Calculadora de Rendimentos</h4>
+                        <div class="form-group">
+                            <label>Capital (MZN)</label>
+                            <input type="number" id="calcCapital" placeholder="10,000" value="10000">
+                        </div>
+                        <div class="form-group">
+                            <label>Dias Úteis</label>
+                            <input type="number" id="calcDays" placeholder="22" value="22">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Capital</label>
+                            <select id="calcType">
+                                <option value="proprio">Próprio</option>
+                                <option value="alheio">Alheio</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-success" onclick="calculateReturn()">Calcular Rendimento</button>
+                        <div id="calcResult" style="margin-top: 15px; padding: 15px; background: var(--light); border-radius: 8px; display: none;">
+                            <strong>Resultado:</strong> <span id="calcAmount">MT 0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Exportar Dados</h4>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" onclick="exportInvestorsExcel()">📊 Excel</button>
+                            <button class="btn btn-success" onclick="exportInvestorsCSV()">📄 CSV</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📋 Lista de Investidores</h3>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Ciclo</label>
+                        <select id="filterCycle" onchange="filterInvestors()">
+                            <option value="">Todos os ciclos</option>
+                            <option value="Jan 2025">Jan 2025</option>
+                            <option value="Fev 2025">Fev 2025</option>
+                            <option value="Mar 2025">Mar 2025</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Situação</label>
+                        <select id="filterStatus" onchange="filterInvestors()">
+                            <option value="">Todas</option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Renovado">Renovado</option>
+                            <option value="Resgatado">Resgatado</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <table id="investorsTable">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Documento</th>
+                            <th>Contacto</th>
+                            <th>Capital</th>
+                            <th>Valor</th>
+                            <th>Início</th>
+                            <th>Ciclo</th>
+                            <th>Rendimento Bruto</th>
+                            <th>IRPS</th>
+                            <th>Rendimento Líquido</th>
+                            <th>Situação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div class="card">
+                <h3>📈 Histórico de Transações</h3>
+                <table id="investorHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Investidor</th>
+                            <th>Tipo</th>
+                            <th>Valor (MZN)</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Agentes -->
+        <div class="tab-content" id="agents">
+            <h2>Gestão de Agentes</h2>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>➕ Novo Agente</h3>
+                    <form id="agentForm">
+                        <input type="hidden" id="agentId">
+                        <div class="form-group">
+                            <label>Código do Agente</label>
+                            <input type="text" id="agentCode" placeholder="Ex: 91337" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nome do Agente</label>
+                            <input type="text" id="agentName" placeholder="Nome completo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Localização / Filial</label>
+                            <input type="text" id="agentLocation" placeholder="Cidade ou região" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Subordinado a (SSA)</label>
+                            <select id="agentSSA" required>
+                                <option value="">Selecionar SSA</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Contacto</label>
+                            <input type="tel" id="agentPhone" placeholder="+258 ...">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="agentEmail" placeholder="email@exemplo.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Saldo Inicial (MZN)</label>
+                            <input type="number" id="agentInitialBalance" step="0.01" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="agentStatus">
+                                <option value="Ativo">Ativo</option>
+                                <option value="Inativo">Inativo</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Registar Agente</button>
+                        <button type="button" class="btn btn-ghost" onclick="clearAgentForm()">Limpar</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h3>📊 Resumo de Agentes</h3>
+                    <div class="results-row">
+                        <div class="result-item">
+                            <h3>Total de Agentes</h3>
+                            <div class="kpi" id="totalAgents">0</div>
+                        </div>
+                        <div class="result-item">
+                            <h3>Agentes Ativos</h3>
+                            <div class="kpi" id="activeAgents">0</div>
+                        </div>
+                        <div class="result-item">
+                            <h3>Saldo Total</h3>
+                            <div class="kpi" id="totalAgentBalance">MT 0.00</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Exportar Dados</h4>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" onclick="exportAgentsExcel()">📊 Excel</button>
+                            <button class="btn btn-success" onclick="exportAgentsCSV()">📄 CSV</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Estatísticas</h4>
+                        <div class="small muted">Última movimentação: <span id="lastMovement">N/A</span></div>
+                        <div class="small muted">Transações totais: <span id="totalTransactions">0</span></div>
+                        <div class="small muted">Valor total movimentado: <span id="totalMovement">MT 0.00</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📋 Lista de Agentes</h3>
+                <table id="agentsTable">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Localização</th>
+                            <th>SSA</th>
+                            <th>Saldo Atual</th>
+                            <th>Transações</th>
+                            <th>Última Movimentação</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div class="card">
+                <h3>💰 Extrato do Agente</h3>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Agente</label>
+                        <select id="extractAgent" onchange="loadAgentExtract()">
+                            <option value="">Selecionar agente</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Período</label>
+                        <select id="extractPeriod" onchange="loadAgentExtract()">
+                            <option value="7">Últimos 7 dias</option>
+                            <option value="30">Últimos 30 dias</option>
+                            <option value="90">Últimos 90 dias</option>
+                            <option value="all">Todo o período</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <table id="agentExtractTable">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo</th>
+                            <th>Descrição</th>
+                            <th>Valor (MZN)</th>
+                            <th>Saldo (MZN)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Utilizadores -->
+        <div class="tab-content" id="users">
+            <h2>Gestão de Utilizadores</h2>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>➕ Novo Utilizador</h3>
+                    <form id="userForm">
+                        <input type="hidden" id="userId">
+                        <div class="form-group">
+                            <label>Nome do Utilizador</label>
+                            <input type="text" id="userFullName" placeholder="Nome completo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Username / Email</label>
+                            <input type="text" id="userUsername" placeholder="username ou email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Senha</label>
+                            <input type="password" id="userPassword" placeholder="Senha de acesso" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirmar Senha</label>
+                            <input type="password" id="userConfirmPassword" placeholder="Confirmar senha" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Função / Nível de Acesso</label>
+                            <select id="userRole" required>
+                                <option value="">Selecionar função</option>
+                                <option value="admin">Administrador</option>
+                                <option value="manager">Gestor</option>
+                                <option value="accountant">Contabilista</option>
+                                <option value="operator">Operador</option>
+                                <option value="viewer">Visualizador</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="userStatus">
+                                <option value="Ativo">Ativo</option>
+                                <option value="Inativo">Inativo</option>
+                            </select>
+                        </div>
+                        <div id="permissionsSection" style="display: none;">
+                            <h4>Permissões Específicas</h4>
+                            <div id="customPermissions"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Registar Utilizador</button>
+                        <button type="button" class="btn btn-ghost" onclick="clearUserForm()">Limpar</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Resumo de Utilizadores</h3>
+                    <div class="results-row">
+                        <div class="result-item">
+                            <h3>Total</h3>
+                            <div class="kpi" id="totalUsers">0</div>
+                        </div>
+                        <div class="result-item">
+                            <h3>Ativos</h3>
+                            <div class="kpi" id="activeUsers">0</div>
+                        </div>
+                        <div class="result-item">
+                            <h3>Administradores</h3>
+                            <div class="kpi" id="adminUsers">0</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Último Acesso</h4>
+                        <div id="lastAccessInfo">
+                            <p class="small muted">Carregando informações...</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>Exportar Dados</h4>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" onclick="exportUsersExcel()">📊 Excel</button>
+                            <button class="btn btn-success" onclick="exportUsersCSV()">📄 CSV</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Lista de Utilizadores</h3>
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Username</th>
+                            <th>Função</th>
+                            <th>Estado</th>
+                            <th>Data de Criação</th>
+                            <th>Último Acesso</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div class="card">
+                <h3>📊 Logs de Auditoria</h3>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Utilizador</label>
+                        <select id="auditUser" onchange="filterAuditLogs()">
+                            <option value="">Todos os utilizadores</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Período</label>
+                        <select id="auditPeriod" onchange="filterAuditLogs()">
+                            <option value="7">Últimos 7 dias</option>
+                            <option value="30">Últimos 30 dias</option>
+                            <option value="90">Últimos 90 dias</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <table id="auditLogsTable">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Utilizador</th>
+                            <th>Ação</th>
+                            <th>Detalhes</th>
+                            <th>IP</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Aprovações -->
+        <div class="tab-content" id="approvals">
+            <h2>✅ Painel de Aprovações</h2>
+            <div class="card">
+                <h3>📋 Aprovações Pendentes</h3>
+                <div id="approvalsList">
+                    <p style="color: #6c757d; text-align: center; padding: 20px;">
+                        Nenhuma aprovação pendente no momento.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>✅ Histórico de Aprovações</h3>
+                <table id="approvalsHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo</th>
+                            <th>Descrição</th>
+                            <th>Solicitante</th>
+                            <th>Aprovador</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab SSA -->
+        <div class="tab-content" id="ssa">
+            <h2>💼 Gestão SSA (Sub Super Agente)</h2>
+            
+            <div class="sub-tabs">
+                <button class="sub-tab active" onclick="switchSSASubTab('accounts')">Contas SSA</button>
+                <button class="sub-tab" onclick="switchSSASubTab('transactions')">Transações</button>
+                <button class="sub-tab" onclick="switchSSASubTab('subchannels')">Subcanais</button>
+                <button class="sub-tab" onclick="switchSSASubTab('reports')">Relatórios</button>
+            </div>
+            
+            <!-- Sub-tab Contas SSA -->
+            <div class="sub-content active" id="ssaAccounts">
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3>➕ Nova Conta SSA</h3>
+                        <form id="ssaAccountForm">
+                            <input type="hidden" id="ssaAccountId">
+                            <div class="form-group">
+                                <label>Código SSA</label>
+                                <input type="text" id="ssaAccountCode" placeholder="Ex: SOFSSA00035" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nome SSA</label>
+                                <input type="text" id="ssaAccountName" placeholder="Nome completo" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Saldo Inicial (MZN)</label>
+                                <input type="number" id="ssaAccountBalance" step="0.01" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Taxa de Rendimento (%)</label>
+                                <input type="number" id="ssaAccountRate" step="0.01" value="0.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="ssaAccountStatus">
+                                    <option value="Ativo">Ativo</option>
+                                    <option value="Inativo">Inativo</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registar SSA</button>
+                            <button type="button" class="btn btn-ghost" onclick="clearSSAAccountForm()">Limpar</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📊 Resumo SSA</h3>
+                        <div class="results-row">
+                            <div class="result-item">
+                                <h3>Saldo Principal</h3>
+                                <div class="kpi" id="ssaMainBalance">MT 0.00</div>
+                            </div>
+                            <div class="result-item">
+                                <h3>Total Subcanais</h3>
+                                <div class="kpi" id="ssaSubchannels">0</div>
+                            </div>
+                            <div class="result-item">
+                                <h3>Rendimento do Mês</h3>
+                                <div class="kpi" id="ssaMonthlyYield">MT 0.00</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>Estatísticas</h4>
+                            <div class="small muted">Transações hoje: <span id="ssaTodayTxns">0</span></div>
+                            <div class="small muted">Transações este mês: <span id="ssaMonthlyTxns">0</span></div>
+                            <div class="small muted">Saldo total: <span id="ssaTotalBalance">MT 0.00</span></div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>Exportar Dados</h4>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-secondary" onclick="exportSSAExcel()">📊 Excel</button>
+                                <button class="btn btn-success" onclick="exportSSACSV()">📄 CSV</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>📋 Lista de Contas SSA</h3>
+                    <table id="ssaAccountsTable">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>Saldo Atual</th>
+                                <th>Taxa</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Transações -->
+            <div class="sub-content" id="ssaTransactions">
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3>💰 Registar Depósito</h3>
+                        <form id="ssaDepositForm">
+                            <input type="hidden" id="ssaDepositId">
+                            <div class="form-group">
+                                <label>Conta de Origem</label>
+                                <select id="ssaDepositFrom" required>
+                                    <option value="">Selecionar conta</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Conta de Destino</label>
+                                <select id="ssaDepositTo" required>
+                                    <option value="">Selecionar conta</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Valor (MZN)</label>
+                                <input type="number" id="ssaDepositAmount" placeholder="1,000" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Data</label>
+                                <input type="date" id="ssaDepositDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <textarea id="ssaDepositDescription" placeholder="Descrição da transação" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registar Depósito</button>
+                            <button type="button" class="btn btn-ghost" onclick="clearSSADepositForm()">Limpar</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>💸 Registar Recebimento</h3>
+                        <form id="ssaReceiveForm">
+                            <input type="hidden" id="ssaReceiveId">
+                            <div class="form-group">
+                                <label>Origem</label>
+                                <select id="ssaReceiveSource" required>
+                                    <option value="">Selecionar origem</option>
+                                    <option value="Banco">Banco</option>
+                                    <option value="SA">SA (Super Agente)</option>
+                                    <option value="SSA">SSA</option>
+                                    <option value="Cliente">Cliente</option>
+                                    <option value="Investidor">Investidor</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Conta de Destino</label>
+                                <select id="ssaReceiveTo" required>
+                                    <option value="">Selecionar conta</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Valor (MZN)</label>
+                                <input type="number" id="ssaReceiveAmount" placeholder="1,000" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Data</label>
+                                <input type="date" id="ssaReceiveDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Observações</label>
+                                <textarea id="ssaReceiveObservations" placeholder="Observações da transação" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">Registar Recebimento</button>
+                            <button type="button" class="btn btn-ghost" onclick="clearSSAReceiveForm()">Limpar</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>📋 Histórico de Transações</h3>
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>Conta</label>
+                            <select id="ssaTransactionAccount" onchange="filterSSATransactions()">
+                                <option value="">Todas as contas</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Tipo</label>
+                            <select id="ssaTransactionType" onchange="filterSSATransactions()">
+                                <option value="">Todos os tipos</option>
+                                <option value="deposit">Depósito</option>
+                                <option value="receive">Recebimento</option>
+                                <option value="transfer">Transferência</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Período</label>
+                            <select id="ssaTransactionPeriod" onchange="filterSSATransactions()">
+                                <option value="7">Últimos 7 dias</option>
+                                <option value="30">Últimos 30 dias</option>
+                                <option value="90">Últimos 90 dias</option>
+                                <option value="all">Todo o período</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <table id="ssaTransactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Origem</th>
+                                <th>Destino</th>
+                                <th>Tipo</th>
+                                <th>Valor (MZN)</th>
+                                <th>Rendimento</th>
+                                <th>Observações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Subcanais -->
+            <div class="sub-content" id="ssaSubchannels">
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3>➕ Novo Subcanal</h3>
+                        <form id="subchannelForm">
+                            <input type="hidden" id="subchannelId">
+                            <div class="form-group">
+                                <label>Tipo de Subcanal</label>
+                                <select id="subchannelType" required>
+                                    <option value="">Selecionar tipo</option>
+                                    <option value="ST">ST (Colaborador SSA)</option>
+                                    <option value="SAG">SAG (Sub Canal Agente)</option>
+                                    <option value="AG">AG (Agente Emola)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Código</label>
+                                <input type="text" id="subchannelCode" placeholder="Código único" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <input type="text" id="subchannelName" placeholder="Nome completo" required>
+                            </div>
+                            <div class="form-group">
+                                <label>SSA Principal</label>
+                                <select id="subchannelSSA" required>
+                                    <option value="">Selecionar SSA</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Saldo Inicial (MZN)</label>
+                                <input type="number" id="subchannelBalance" step="0.01" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="subchannelStatus">
+                                    <option value="Ativo">Ativo</option>
+                                    <option value="Inativo">Inativo</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registar Subcanal</button>
+                            <button type="button" class="btn btn-ghost" onclick="clearSubchannelForm()">Limpar</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📊 Resumo de Subcanais</h3>
+                        <div class="results-row">
+                            <div class="result-item">
+                                <h3>Total ST</h3>
+                                <div class="kpi" id="totalST">0</div>
+                            </div>
+                            <div class="result-item">
+                                <h3>Total SAG</h3>
+                                <div class="kpi" id="totalSAG">0</div>
+                            </div>
+                            <div class="result-item">
+                                <h3>Total AG</h3>
+                                <div class="kpi" id="totalAG">0</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>Top Subcanais por Rendimento</h4>
+                            <div id="topSubchannels">
+                                <p class="small muted">Carregando dados...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>📋 Lista de Subcanais</h3>
+                    <table id="subchannelsTable">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>SSA Principal</th>
+                                <th>Saldo Atual</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Relatórios -->
+            <div class="sub-content" id="ssaReports">
+                <div class="card">
+                    <h3>📊 Relatórios SSA</h3>
+                    <div class="grid grid-3">
+                        <div class="result-item">
+                            <h3>Extrato por Conta</h3>
+                            <p>Extrato detalhado de uma conta específica</p>
+                            <select id="ssaReportAccount" style="margin-bottom: 10px;">
+                                <option value="">Selecionar conta</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="generateAccountStatement()">Gerar</button>
+                        </div>
+                        <div class="result-item">
+                            <h3>Relatório de Rendimentos</h3>
+                            <p>Rendimentos por período</p>
+                            <button class="btn btn-primary" onclick="generateYieldReport()">Gerar</button>
+                        </div>
+                        <div class="result-item">
+                            <h3>Relatório Consolidado</h3>
+                            <p>Visão geral de todas as contas</p>
+                            <button class="btn btn-primary" onclick="generateConsolidatedReport()">Gerar</button>
+                        </div>
+                    </div>
+                    
+                    <div id="ssaReportResult" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modais -->
+    <div id="novaConta" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nova Conta Contábil</h3>
+                <span class="close" onclick="closeModal('novaConta')">&times;</span>
+            </div>
+            <form id="contaForm">
+                <input type="hidden" id="contaId">
+                <div class="form-group">
+                    <label>Código da Conta</label>
+                    <input type="text" id="contaCodigo" required>
+                </div>
+                <div class="form-group">
+                    <label>Nome da Conta</label>
+                    <input type="text" id="contaNome" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Conta</label>
+                    <select id="contaTipo" required>
+                        <option value="Ativo">Ativo</option>
+                        <option value="Passivo">Passivo</option>
+                        <option value="Patrimonio">Patrimônio Líquido</option>
+                        <option value="Receita">Receita</option>
+                        <option value="Despesa">Despesa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Conta Pai</label>
+                    <select id="contaPai">
+                        <option value="">Nenhuma (Conta Principal)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="contaDescricao" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Salvar Conta</button>
+                <button type="button" class="btn btn-ghost" onclick="closeModal('novaConta')">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="backupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Backup & Restauro</h3>
+                <span class="close" onclick="closeModal('backupModal')">&times;</span>
+            </div>
+            <div class="grid grid-2">
+                <div>
+                    <h4>Exportar Backup</h4>
+                    <p>Faça uma cópia de segurança de todos os dados do sistema.</p>
+                    <button class="btn btn-primary" onclick="exportBackup()">Exportar Backup</button>
+                </div>
+                <div>
+                    <h4>Importar Backup</h4>
+                    <p>Restaurar dados a partir de um backup anterior.</p>
+                    <input type="file" id="backupFile" accept=".json" style="margin-bottom: 10px;">
+                    <button class="btn btn-success" onclick="importBackup()">Importar Backup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // ========== VARIÁVEIS GLOBAIS ==========
@@ -736,37 +2459,6 @@
             localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
         }
 
-        // ========== INICIALIZAÇÃO DO SISTEMA ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar dados padrão
-            initializeDefaultData();
-            
-            // Configurar event listeners
-            document.getElementById('loginForm').addEventListener('submit', login);
-            document.getElementById('investorForm').addEventListener('submit', saveInvestor);
-            document.getElementById('agentForm').addEventListener('submit', saveAgent);
-            document.getElementById('userForm').addEventListener('submit', saveUser);
-            document.getElementById('ssaAccountForm').addEventListener('submit', saveSSAAccount);
-            document.getElementById('contaForm').addEventListener('submit', saveConta);
-            document.getElementById('lancamentoForm').addEventListener('submit', saveLancamento);
-            
-            // Configurar data atual nos formulários
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('investorStartDate').value = today;
-            document.getElementById('txnDate').value = today;
-            document.getElementById('lancamentoData').value = today;
-            document.getElementById('ssaDepositDate').value = today;
-            document.getElementById('ssaReceiveDate').value = today;
-            
-            // Carregar plano de contas se existir
-            if (planoContas.length > 0) {
-                renderPlanoContasTree();
-                loadPlanoContasForDropdown();
-            }
-            
-            console.log('Sistema Great Mola inicializado com sucesso!');
-        });
-
         // ========== FUNÇÕES DE NAVEGAÇÃO ==========
         function switchTab(tabName) {
             // Esconder todas as tabs
@@ -840,7 +2532,997 @@
             }
         }
 
-        // ... (o resto das funções permanece igual) ...
+        function switchSSASubTab(subTabName) {
+            // Esconder todos os sub-conteúdos SSA
+            document.querySelectorAll('#ssa .sub-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remover classe active de todos os botões SSA
+            document.querySelectorAll('#ssa .sub-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar sub-tab selecionada
+            const elementId = 'ssa' + subTabName.charAt(0).toUpperCase() + subTabName.slice(1);
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.classList.add('active');
+            }
+            
+            // Ativar botão selecionado
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+        }
+
+        // ========== FUNÇÕES DO DASHBOARD ==========
+        function updateDashboard() {
+            updateKPIs();
+            updateMyInvestments();
+            updateMyCommissions();
+        }
+
+        function updateKPIs() {
+            // Calcular total investido
+            const totalInvested = investors
+                .filter(inv => inv.status === 'Ativo')
+                .reduce((sum, inv) => sum + parseFloat(inv.amount), 0);
+            const totalInvestedElement = document.getElementById('totalInvested');
+            if (totalInvestedElement) {
+                totalInvestedElement.textContent = `MT ${totalInvested.toFixed(2)}`;
+            }
+            
+            // Calcular comissões pendentes (simulado)
+            const pendingCommissions = agents
+                .filter(agent => agent.status === 'Ativo')
+                .length * 500;
+            const pendingCommissionsElement = document.getElementById('pendingCommissions');
+            if (pendingCommissionsElement) {
+                pendingCommissionsElement.textContent = `MT ${pendingCommissions.toFixed(2)}`;
+            }
+            
+            // Calcular aprovações pendentes
+            const pendingApprovals = approvals.filter(app => app.status === 'Pendente').length;
+            const pendingApprovalsElement = document.getElementById('pendingApprovals');
+            if (pendingApprovalsElement) {
+                pendingApprovalsElement.textContent = pendingApprovals;
+            }
+        }
+
+        function updateMyInvestments() {
+            const container = document.getElementById('myInvestmentsList');
+            if (!container) return;
+            
+            if (currentUser && (currentUser.role === 'viewer' || currentUser.username === 'investidor')) {
+                // Mostrar apenas investimentos do utilizador atual
+                const myInvestments = investors.filter(inv => 
+                    inv.userId === currentUser.id && inv.status === 'Ativo'
+                );
+                
+                if (myInvestments.length > 0) {
+                    let html = '';
+                    myInvestments.forEach(inv => {
+                        const days = calculateBusinessDays(new Date(inv.startDate), new Date());
+                        const grossYield = inv.amount * (inv.rate / 100) * days;
+                        const irps = grossYield * (inv.irps / 100);
+                        const netYield = grossYield - irps;
+                        
+                        html += `
+                            <div style="padding: 10px; border-bottom: 1px solid #eee;">
+                                <div style="font-weight: bold;">${inv.name}</div>
+                                <div style="color: #28a745;">MT ${parseFloat(inv.amount).toFixed(2)}</div>
+                                <div style="font-size: 12px; color: #6c757d;">
+                                    Rendimento líquido: MT ${netYield.toFixed(2)} | ${inv.cycle}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p style="color: #6c757d; text-align: center; padding: 20px;">Nenhum investimento ativo</p>';
+                }
+            } else {
+                // Para outros tipos de utilizador, mostrar investimentos recentes
+                const recentInvestments = investors
+                    .filter(inv => inv.status === 'Ativo')
+                    .slice(0, 5);
+                
+                if (recentInvestments.length > 0) {
+                    let html = '';
+                    recentInvestments.forEach(inv => {
+                        html += `
+                            <div style="padding: 10px; border-bottom: 1px solid #eee;">
+                                <div style="font-weight: bold;">${inv.name}</div>
+                                <div style="color: #28a745;">MT ${parseFloat(inv.amount).toFixed(2)}</div>
+                                <div style="font-size: 12px; color: #6c757d;">${inv.startDate} | ${inv.cycle}</div>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p style="color: #6c757d; text-align: center; padding: 20px;">Nenhum investimento registado</p>';
+                }
+            }
+        }
+
+        function updateMyCommissions() {
+            const container = document.getElementById('myCommissionsList');
+            if (!container) return;
+            
+            if (currentUser && (currentUser.role === 'operator' || currentUser.username === 'agente')) {
+                // Mostrar comissões do agente atual
+                const agent = agents.find(a => a.userId === currentUser.id);
+                
+                if (agent) {
+                    const myCommissions = [
+                        { id: 1, description: 'Comissão de Vendas', amount: 1250.00, status: 'Pendente', date: '2023-10-15' },
+                        { id: 2, description: 'Comissão de Investimento', amount: 750.50, status: 'Pago', date: '2023-10-10' }
+                    ];
+                    
+                    let html = '';
+                    myCommissions.forEach(comm => {
+                        const statusClass = comm.status === 'Pago' ? 'status-approved' : 'status-pending';
+                        
+                        html += `
+                            <div style="padding: 10px; border-bottom: 1px solid #eee;">
+                                <div style="font-weight: bold;">${comm.description}</div>
+                                <div style="color: #28a745;">MT ${comm.amount.toFixed(2)}</div>
+                                <div><span class="status ${statusClass}">${comm.status}</span></div>
+                                <div style="font-size: 12px; color: #6c757d;">${comm.date}</div>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p style="color: #6c757d; text-align: center; padding: 20px;">Nenhum agente associado</p>';
+                }
+            } else {
+                container.innerHTML = '<p style="color: #6c757d; text-align: center; padding: 20px;">Apenas disponível para agentes</p>';
+            }
+        }
+
+        // ========== FUNÇÕES DE AUTENTICAÇÃO ==========
+        function login(event) {
+            if (event) event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Garantir que os dados padrão estão inicializados
+            initializeDefaultData();
+            
+            // Recarregar os usuários do localStorage
+            users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            const user = users.find(u => u.username === username && u.password === password && u.status === 'Ativo');
+            
+            if (user) {
+                currentUser = user;
+                
+                // Atualizar último acesso
+                user.lastAccess = new Date().toISOString();
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                // Registrar log de auditoria
+                logAudit('LOGIN', `Utilizador ${user.username} fez login`);
+                
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                
+                // Atualizar informações do utilizador
+                document.getElementById('userName').textContent = user.fullName;
+                document.getElementById('userRole').textContent = getRoleName(user.role);
+                document.getElementById('userAvatar').textContent = user.fullName.charAt(0).toUpperCase();
+                
+                // Mostrar/ocultar tabs baseado no tipo de utilizador
+                if (user.role === 'admin' || user.role === 'manager') {
+                    document.getElementById('usersTab').style.display = 'block';
+                    document.getElementById('approvalsTab').style.display = 'block';
+                } else {
+                    document.getElementById('usersTab').style.display = 'none';
+                    document.getElementById('approvalsTab').style.display = 'none';
+                }
+                
+                // Carregar dados específicos do utilizador
+                loadUserSpecificData();
+                
+                // Mostrar mensagem de boas-vindas
+                alert(`Bem-vindo, ${user.fullName}!`);
+            } else {
+                alert('Credenciais inválidas ou utilizador inativo!');
+            }
+        }
+
+        function logout() {
+            if (currentUser) {
+                logAudit('LOGOUT', `Utilizador ${currentUser.username} fez logout`);
+            }
+            currentUser = null;
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('app').style.display = 'none';
+            document.getElementById('loginForm').reset();
+        }
+
+        function loadUserSpecificData() {
+            // Esta função carrega dados específicos do utilizador logado
+            if (currentUser && (currentUser.role === 'viewer' || currentUser.username === 'investidor')) {
+                // Carregar apenas os investimentos do utilizador
+                // Esta lógica já está implementada em updateMyInvestments()
+            }
+            // Outras personalizações podem ser adicionadas aqui
+        }
+
+        // ========== FUNÇÕES DE INVESTIDORES ==========
+        function saveInvestor(event) {
+            if (event) event.preventDefault();
+            
+            const id = document.getElementById('investorId').value;
+            const name = document.getElementById('investorName').value;
+            const docType = document.getElementById('investorDocType').value;
+            const docNumber = document.getElementById('investorDocNumber').value;
+            const phone = document.getElementById('investorPhone').value;
+            const email = document.getElementById('investorEmail').value;
+            const account = document.getElementById('investorAccount').value;
+            const capitalType = document.getElementById('investorCapitalType').value;
+            const amount = parseFloat(document.getElementById('investorAmount').value);
+            const rate = parseFloat(document.getElementById('investorRate').value);
+            const startDate = document.getElementById('investorStartDate').value;
+            const cycle = document.getElementById('investorCycle').value;
+            const irps = parseFloat(document.getElementById('investorIRPS').value);
+            
+            if (id) {
+                // Atualizar investidor existente
+                const index = investors.findIndex(inv => inv.id == id);
+                if (index !== -1) {
+                    investors[index] = { 
+                        ...investors[index], 
+                        name, docType, docNumber, phone, email, account,
+                        capitalType, amount, rate, startDate, cycle, irps
+                    };
+                }
+            } else {
+                // Criar novo investidor
+                const newInvestor = {
+                    id: Date.now(),
+                    name,
+                    docType,
+                    docNumber,
+                    phone,
+                    email,
+                    account,
+                    capitalType,
+                    amount,
+                    rate,
+                    startDate,
+                    cycle,
+                    irps,
+                    status: 'Ativo',
+                    userId: currentUser.id,
+                    createdAt: new Date().toISOString()
+                };
+                
+                investors.push(newInvestor);
+                
+                // Registrar log de auditoria
+                logAudit('CREATE_INVESTOR', `Criou investidor: ${name}`);
+            }
+            
+            localStorage.setItem('investors', JSON.stringify(investors));
+            updateInvestorsTable();
+            clearInvestorForm();
+            
+            alert(id ? 'Investidor atualizado com sucesso!' : 'Investidor registado com sucesso!');
+        }
+
+        function clearInvestorForm() {
+            document.getElementById('investorId').value = '';
+            document.getElementById('investorForm').reset();
+            document.getElementById('investorRate').value = '0.5';
+            document.getElementById('investorIRPS').value = '20.0';
+            document.getElementById('investorStartDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function updateInvestorsTable() {
+            const tbody = document.getElementById('investorsTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            // Aplicar filtros
+            let filteredInvestors = [...investors];
+            const cycleFilter = document.getElementById('filterCycle')?.value;
+            const statusFilter = document.getElementById('filterStatus')?.value;
+            
+            if (cycleFilter) {
+                filteredInvestors = filteredInvestors.filter(inv => inv.cycle === cycleFilter);
+            }
+            
+            if (statusFilter) {
+                filteredInvestors = filteredInvestors.filter(inv => inv.status === statusFilter);
+            }
+            
+            filteredInvestors.forEach(investor => {
+                // Calcular rendimentos
+                const days = calculateBusinessDays(new Date(investor.startDate), new Date());
+                const grossYield = investor.amount * (investor.rate / 100) * days;
+                const irpsAmount = grossYield * (investor.irps / 100);
+                const netYield = grossYield - irpsAmount;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${investor.name}</td>
+                    <td>${investor.docType}: ${investor.docNumber}</td>
+                    <td>${investor.phone}</td>
+                    <td>${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}</td>
+                    <td>MT ${parseFloat(investor.amount).toFixed(2)}</td>
+                    <td>${investor.startDate}</td>
+                    <td>${investor.cycle}</td>
+                    <td>MT ${grossYield.toFixed(2)}</td>
+                    <td>MT ${irpsAmount.toFixed(2)}</td>
+                    <td>MT ${netYield.toFixed(2)}</td>
+                    <td><span class="status status-active">${investor.status}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editInvestor(${investor.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleInvestorStatus(${investor.id})">
+                            ${investor.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Atualizar resumo
+            const totalApproved = investors
+                .filter(inv => inv.status === 'Ativo')
+                .reduce((sum, inv) => sum + parseFloat(inv.amount), 0);
+            const summaryElement = document.getElementById('summaryInvested');
+            if (summaryElement) {
+                summaryElement.textContent = `MT ${totalApproved.toFixed(2)}`;
+            }
+        }
+
+        function editInvestor(id) {
+            const investor = investors.find(inv => inv.id === id);
+            if (investor) {
+                document.getElementById('investorId').value = investor.id;
+                document.getElementById('investorName').value = investor.name;
+                document.getElementById('investorDocType').value = investor.docType;
+                document.getElementById('investorDocNumber').value = investor.docNumber;
+                document.getElementById('investorPhone').value = investor.phone;
+                document.getElementById('investorEmail').value = investor.email || '';
+                document.getElementById('investorAccount').value = investor.account || '';
+                document.getElementById('investorCapitalType').value = investor.capitalType;
+                document.getElementById('investorAmount').value = investor.amount;
+                document.getElementById('investorRate').value = investor.rate;
+                document.getElementById('investorStartDate').value = investor.startDate;
+                document.getElementById('investorCycle').value = investor.cycle;
+                document.getElementById('investorIRPS').value = investor.irps;
+                
+                // Scroll para o formulário
+                document.getElementById('investorForm').scrollIntoView();
+            }
+        }
+
+        function toggleInvestorStatus(id) {
+            const investor = investors.find(inv => inv.id === id);
+            if (investor) {
+                investor.status = investor.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('investors', JSON.stringify(investors));
+                updateInvestorsTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_INVESTOR_STATUS', `${investor.status === 'Ativo' ? 'Ativou' : 'Desativou'} investidor: ${investor.name}`);
+            }
+        }
+
+        function filterInvestors() {
+            updateInvestorsTable();
+        }
+
+        function calculateReturn() {
+            const capital = parseFloat(document.getElementById('calcCapital').value);
+            const days = parseInt(document.getElementById('calcDays').value);
+            const type = document.getElementById('calcType').value;
+            
+            // Taxa diária baseada no tipo de capital
+            const dailyRate = type === 'proprio' ? 0.5 : 0.3;
+            
+            const returnAmount = capital * (dailyRate / 100) * days;
+            
+            document.getElementById('calcAmount').textContent = `MT ${returnAmount.toFixed(2)}`;
+            document.getElementById('calcResult').style.display = 'block';
+        }
+
+        function exportInvestorsExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+
+        function exportInvestorsCSV() {
+            let csvContent = 'Nome,Documento,Contacto,Capital,Valor,Início,Ciclo,Rendimento Bruto,IRPS,Rendimento Líquido,Situação\n';
+            
+            investors.forEach(investor => {
+                const days = calculateBusinessDays(new Date(investor.startDate), new Date());
+                const grossYield = investor.amount * (investor.rate / 100) * days;
+                const irpsAmount = grossYield * (investor.irps / 100);
+                const netYield = grossYield - irpsAmount;
+                
+                csvContent += `"${investor.name}","${investor.docType}: ${investor.docNumber}","${investor.phone}","${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}","${investor.amount}","${investor.startDate}","${investor.cycle}","${grossYield.toFixed(2)}","${irpsAmount.toFixed(2)}","${netYield.toFixed(2)}","${investor.status}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `investidores_${Date.now()}.csv`);
+        }
+
+        // ========== FUNÇÕES DE AGENTES ==========
+        function saveAgent(event) {
+            if (event) event.preventDefault();
+            
+            const id = document.getElementById('agentId').value;
+            const code = document.getElementById('agentCode').value;
+            const name = document.getElementById('agentName').value;
+            const location = document.getElementById('agentLocation').value;
+            const ssa = document.getElementById('agentSSA').value;
+            const phone = document.getElementById('agentPhone').value;
+            const email = document.getElementById('agentEmail').value;
+            const initialBalance = parseFloat(document.getElementById('agentInitialBalance').value) || 0;
+            const status = document.getElementById('agentStatus').value;
+            
+            if (id) {
+                // Atualizar agente existente
+                const index = agents.findIndex(agent => agent.id == id);
+                if (index !== -1) {
+                    agents[index] = { 
+                        ...agents[index], 
+                        code, name, location, ssa, phone, email, 
+                        balance: initialBalance, status
+                    };
+                }
+            } else {
+                // Criar novo agente
+                const newAgent = {
+                    id: Date.now(),
+                    code,
+                    name,
+                    location,
+                    ssa,
+                    phone,
+                    email,
+                    balance: initialBalance,
+                    transactions: 0,
+                    lastMovement: null,
+                    status,
+                    userId: currentUser.id,
+                    createdAt: new Date().toISOString()
+                };
+                
+                agents.push(newAgent);
+                
+                // Registrar log de auditoria
+                logAudit('CREATE_AGENT', `Criou agente: ${name} (${code})`);
+            }
+            
+            localStorage.setItem('agents', JSON.stringify(agents));
+            updateAgentsTable();
+            clearAgentForm();
+            
+            alert(id ? 'Agente atualizado com sucesso!' : 'Agente registado com sucesso!');
+        }
+
+        function clearAgentForm() {
+            document.getElementById('agentId').value = '';
+            document.getElementById('agentForm').reset();
+            document.getElementById('agentInitialBalance').value = '0';
+        }
+
+        function updateAgentsTable() {
+            const tbody = document.getElementById('agentsTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            let totalBalance = 0;
+            let activeCount = 0;
+            let totalTransactions = 0;
+            
+            agents.forEach(agent => {
+                if (agent.status === 'Ativo') {
+                    totalBalance += agent.balance;
+                    activeCount++;
+                    totalTransactions += agent.transactions || 0;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${agent.code}</td>
+                    <td>${agent.name}</td>
+                    <td>${agent.location}</td>
+                    <td>${agent.ssa}</td>
+                    <td>MT ${agent.balance.toFixed(2)}</td>
+                    <td>${agent.transactions || 0}</td>
+                    <td>${agent.lastMovement || 'N/A'}</td>
+                    <td><span class="status ${agent.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${agent.status}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editAgent(${agent.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleAgentStatus(${agent.id})">
+                            ${agent.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Atualizar resumo
+            document.getElementById('totalAgents').textContent = agents.length;
+            document.getElementById('activeAgents').textContent = activeCount;
+            document.getElementById('totalAgentBalance').textContent = `MT ${totalBalance.toFixed(2)}`;
+            document.getElementById('totalTransactions').textContent = totalTransactions;
+            
+            // Encontrar última movimentação
+            const lastMovement = agents.reduce((latest, agent) => {
+                if (!agent.lastMovement) return latest;
+                const agentDate = new Date(agent.lastMovement);
+                const latestDate = latest ? new Date(latest) : new Date(0);
+                return agentDate > latestDate ? agent.lastMovement : latest;
+            }, null);
+            
+            document.getElementById('lastMovement').textContent = lastMovement || 'N/A';
+            
+            // Atualizar dropdown de agentes
+            loadAgentsForDropdown();
+        }
+
+        function editAgent(id) {
+            const agent = agents.find(agent => agent.id === id);
+            if (agent) {
+                document.getElementById('agentId').value = agent.id;
+                document.getElementById('agentCode').value = agent.code;
+                document.getElementById('agentName').value = agent.name;
+                document.getElementById('agentLocation').value = agent.location;
+                document.getElementById('agentSSA').value = agent.ssa;
+                document.getElementById('agentPhone').value = agent.phone || '';
+                document.getElementById('agentEmail').value = agent.email || '';
+                document.getElementById('agentInitialBalance').value = agent.balance;
+                document.getElementById('agentStatus').value = agent.status;
+                
+                // Scroll para o formulário
+                document.getElementById('agentForm').scrollIntoView();
+            }
+        }
+
+        function toggleAgentStatus(id) {
+            const agent = agents.find(agent => agent.id === id);
+            if (agent) {
+                agent.status = agent.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('agents', JSON.stringify(agents));
+                updateAgentsTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_AGENT_STATUS', `${agent.status === 'Ativo' ? 'Ativou' : 'Desativou'} agente: ${agent.name} (${agent.code})`);
+            }
+        }
+
+        function loadAgentExtract() {
+            alert('Funcionalidade de extrato em desenvolvimento');
+        }
+
+        function exportAgentsExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+
+        function exportAgentsCSV() {
+            let csvContent = 'Código,Nome,Localização,SSA,Saldo,Transações,Última Movimentação,Status\n';
+            
+            agents.forEach(agent => {
+                csvContent += `"${agent.code}","${agent.name}","${agent.location}","${agent.ssa}","${agent.balance}","${agent.transactions || 0}","${agent.lastMovement || 'N/A'}","${agent.status}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `agentes_${Date.now()}.csv`);
+        }
+
+        // ========== FUNÇÕES DE UTILIZADORES ==========
+        function saveUser(event) {
+            if (event) event.preventDefault();
+            
+            const id = document.getElementById('userId').value;
+            const fullName = document.getElementById('userFullName').value;
+            const username = document.getElementById('userUsername').value;
+            const password = document.getElementById('userPassword').value;
+            const confirmPassword = document.getElementById('userConfirmPassword').value;
+            const role = document.getElementById('userRole').value;
+            const status = document.getElementById('userStatus').value;
+            
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+            
+            // Verificar se username já existe
+            const existingUser = users.find(u => u.username === username && u.id != id);
+            if (existingUser) {
+                alert('Já existe um utilizador com este username!');
+                return;
+            }
+            
+            if (id) {
+                // Atualizar utilizador existente
+                const index = users.findIndex(user => user.id == id);
+                if (index !== -1) {
+                    users[index] = { 
+                        ...users[index], 
+                        fullName, username, role, status
+                    };
+                    
+                    // Atualizar senha apenas se foi alterada
+                    if (password) {
+                        users[index].password = password;
+                    }
+                }
+            } else {
+                // Criar novo utilizador
+                const newUser = {
+                    id: Date.now(),
+                    fullName,
+                    username,
+                    password,
+                    role,
+                    status,
+                    createdAt: new Date().toISOString(),
+                    lastAccess: null
+                };
+                
+                users.push(newUser);
+                
+                // Registrar log de auditoria
+                logAudit('CREATE_USER', `Criou utilizador: ${fullName} (${username})`);
+            }
+            
+            localStorage.setItem('users', JSON.stringify(users));
+            updateUsersTable();
+            clearUserForm();
+            
+            alert(id ? 'Utilizador atualizado com sucesso!' : 'Utilizador registado com sucesso!');
+        }
+
+        function clearUserForm() {
+            document.getElementById('userId').value = '';
+            document.getElementById('userForm').reset();
+        }
+
+        function updateUsersTable() {
+            const tbody = document.getElementById('usersTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            let totalCount = 0;
+            let activeCount = 0;
+            let adminCount = 0;
+            
+            users.forEach(user => {
+                totalCount++;
+                if (user.status === 'Ativo') activeCount++;
+                if (user.role === 'admin') adminCount++;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.fullName}</td>
+                    <td>${user.username}</td>
+                    <td><span class="badge badge-${user.role}">${getRoleName(user.role)}</span></td>
+                    <td><span class="status ${user.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${user.status}</span></td>
+                    <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                    <td>${user.lastAccess ? new Date(user.lastAccess).toLocaleDateString() : 'Nunca'}</td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editUser(${user.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleUserStatus(${user.id})">
+                            ${user.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>
+                        ${currentUser && currentUser.id !== user.id ? `
+                            <button class="btn btn-small btn-danger" onclick="deleteUser(${user.id})">Eliminar</button>
+                        ` : ''}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Atualizar resumo
+            document.getElementById('totalUsers').textContent = totalCount;
+            document.getElementById('activeUsers').textContent = activeCount;
+            document.getElementById('adminUsers').textContent = adminCount;
+            
+            // Atualizar informações de último acesso
+            updateLastAccessInfo();
+            
+            // Atualizar dropdown de auditoria
+            updateAuditUserDropdown();
+        }
+
+        function editUser(id) {
+            const user = users.find(user => user.id === id);
+            if (user) {
+                document.getElementById('userId').value = user.id;
+                document.getElementById('userFullName').value = user.fullName;
+                document.getElementById('userUsername').value = user.username;
+                document.getElementById('userPassword').value = '';
+                document.getElementById('userConfirmPassword').value = '';
+                document.getElementById('userRole').value = user.role;
+                document.getElementById('userStatus').value = user.status;
+                
+                // Scroll para o formulário
+                document.getElementById('userForm').scrollIntoView();
+            }
+        }
+
+        function toggleUserStatus(id) {
+            const user = users.find(user => user.id === id);
+            if (user) {
+                user.status = user.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('users', JSON.stringify(users));
+                updateUsersTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_USER_STATUS', `${user.status === 'Ativo' ? 'Ativou' : 'Desativou'} utilizador: ${user.username}`);
+            }
+        }
+
+        function deleteUser(id) {
+            if (confirm('Tem certeza que deseja eliminar este utilizador?')) {
+                users = users.filter(user => user.id !== id);
+                localStorage.setItem('users', JSON.stringify(users));
+                updateUsersTable();
+                
+                // Registrar log de auditoria
+                logAudit('DELETE_USER', `Eliminou utilizador com ID: ${id}`);
+            }
+        }
+
+        function updateLastAccessInfo() {
+            const container = document.getElementById('lastAccessInfo');
+            if (!container) return;
+            
+            const sortedUsers = [...users].sort((a, b) => {
+                const dateA = a.lastAccess ? new Date(a.lastAccess) : new Date(0);
+                const dateB = b.lastAccess ? new Date(b.lastAccess) : new Date(0);
+                return dateB - dateA;
+            });
+            
+            if (sortedUsers.length > 0 && sortedUsers[0].lastAccess) {
+                const lastUser = sortedUsers[0];
+                container.innerHTML = `
+                    <div class="small muted"><strong>${lastUser.fullName}</strong></div>
+                    <div class="small muted">${new Date(lastUser.lastAccess).toLocaleString()}</div>
+                `;
+            } else {
+                container.innerHTML = '<p class="small muted">Nenhum acesso registado</p>';
+            }
+        }
+
+        function updateAuditUserDropdown() {
+            const select = document.getElementById('auditUser');
+            if (select) {
+                select.innerHTML = '<option value="">Todos os utilizadores</option>';
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = user.username;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        function updateAuditLogs() {
+            const tbody = document.getElementById('auditLogsTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            let filteredLogs = [...auditLogs];
+            
+            // Aplicar filtros
+            const userFilter = document.getElementById('auditUser')?.value;
+            const periodFilter = document.getElementById('auditPeriod')?.value;
+            
+            if (userFilter) {
+                filteredLogs = filteredLogs.filter(log => log.userId == userFilter);
+            }
+            
+            if (periodFilter) {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - parseInt(periodFilter));
+                filteredLogs = filteredLogs.filter(log => new Date(log.timestamp) >= cutoffDate);
+            }
+            
+            // Ordenar por data (mais recente primeiro)
+            filteredLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            // Mostrar apenas os últimos 100 registros
+            filteredLogs.slice(0, 100).forEach(log => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${new Date(log.timestamp).toLocaleString()}</td>
+                    <td>${log.username}</td>
+                    <td>${log.action}</td>
+                    <td>${log.details}</td>
+                    <td>${log.ip}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterAuditLogs() {
+            updateAuditLogs();
+        }
+
+        function exportUsersExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+
+        function exportUsersCSV() {
+            let csvContent = 'Nome,Username,Função,Estado,Data Criação,Último Acesso\n';
+            
+            users.forEach(user => {
+                csvContent += `"${user.fullName}","${user.username}","${getRoleName(user.role)}","${user.status}","${new Date(user.createdAt).toLocaleDateString()}","${user.lastAccess ? new Date(user.lastAccess).toLocaleDateString() : 'Nunca'}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `utilizadores_${Date.now()}.csv`);
+        }
+
+        // ========== FUNÇÕES DE SSA ==========
+        function saveSSAAccount(event) {
+            if (event) event.preventDefault();
+            alert('Funcionalidade SSA em desenvolvimento');
+        }
+
+        function clearSSAAccountForm() {
+            document.getElementById('ssaAccountForm').reset();
+        }
+
+        function updateSSAAccountsTable() {
+            const tbody = document.getElementById('ssaAccountsTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #6c757d;">Nenhuma conta SSA registada</td></tr>';
+        }
+
+        function updateSubchannelsTable() {
+            const tbody = document.getElementById('subchannelsTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #6c757d;">Nenhum subcanal registado</td></tr>';
+        }
+
+        // ========== FUNÇÕES DE MODAIS ==========
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // ========== FUNÇÕES DE BACKUP ==========
+        function exportBackup() {
+            const backupData = {
+                users,
+                investors,
+                agents,
+                ssaAccounts,
+                ssaTransactions,
+                subchannels,
+                approvals,
+                transactions,
+                planoContas,
+                lancamentos,
+                auditLogs,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(backupData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            downloadFile(dataBlob, `great_mola_backup_${Date.now()}.json`);
+            
+            // Registrar log de auditoria
+            logAudit('EXPORT_BACKUP', 'Exportou backup do sistema');
+        }
+
+        function importBackup() {
+            const fileInput = document.getElementById('backupFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Por favor, selecione um arquivo de backup');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    
+                    // Validar estrutura do backup
+                    if (!backupData.users || !backupData.investors) {
+                        throw new Error('Arquivo de backup inválido');
+                    }
+                    
+                    // Restaurar dados
+                    users = backupData.users;
+                    investors = backupData.investors || [];
+                    agents = backupData.agents || [];
+                    ssaAccounts = backupData.ssaAccounts || [];
+                    ssaTransactions = backupData.ssaTransactions || [];
+                    subchannels = backupData.subchannels || [];
+                    approvals = backupData.approvals || [];
+                    transactions = backupData.transactions || [];
+                    planoContas = backupData.planoContas || [];
+                    lancamentos = backupData.lancamentos || [];
+                    auditLogs = backupData.auditLogs || [];
+                    
+                    // Salvar no localStorage
+                    localStorage.setItem('users', JSON.stringify(users));
+                    localStorage.setItem('investors', JSON.stringify(investors));
+                    localStorage.setItem('agents', JSON.stringify(agents));
+                    localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+                    localStorage.setItem('ssaTransactions', JSON.stringify(ssaTransactions));
+                    localStorage.setItem('subchannels', JSON.stringify(subchannels));
+                    localStorage.setItem('approvals', JSON.stringify(approvals));
+                    localStorage.setItem('transactions', JSON.stringify(transactions));
+                    localStorage.setItem('planoContas', JSON.stringify(planoContas));
+                    localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+                    localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
+                    
+                    // Registrar log de auditoria
+                    logAudit('IMPORT_BACKUP', 'Importou backup do sistema');
+                    
+                    alert('Backup restaurado com sucesso!');
+                    fileInput.value = '';
+                    
+                    // Recarregar dados na interface
+                    if (currentUser) {
+                        updateDashboard();
+                        updateInvestorsTable();
+                        updateAgentsTable();
+                        updateUsersTable();
+                    }
+                    
+                } catch (error) {
+                    alert('Erro ao restaurar backup: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ========== INICIALIZAÇÃO DO SISTEMA ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar dados padrão
+            initializeDefaultData();
+            
+            // Configurar event listeners
+            document.getElementById('loginForm').addEventListener('submit', login);
+            document.getElementById('investorForm').addEventListener('submit', saveInvestor);
+            document.getElementById('agentForm').addEventListener('submit', saveAgent);
+            document.getElementById('userForm').addEventListener('submit', saveUser);
+            document.getElementById('ssaAccountForm').addEventListener('submit', saveSSAAccount);
+            document.getElementById('contaForm').addEventListener('submit', saveConta);
+            document.getElementById('lancamentoForm').addEventListener('submit', saveLancamento);
+            
+            // Configurar data atual nos formulários
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('investorStartDate').value = today;
+            document.getElementById('lancamentoData').value = today;
+            document.getElementById('ssaDepositDate').value = today;
+            document.getElementById('ssaReceiveDate').value = today;
+            
+            // Carregar plano de contas se existir
+            if (planoContas.length > 0) {
+                renderPlanoContasTree();
+                loadPlanoContasForDropdown();
+            }
+            
+            console.log('Sistema Great Mola inicializado com sucesso!');
+        });
     </script>
 </body>
 </html>
