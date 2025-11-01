@@ -1,21 +1,21 @@
 {
-  "name": "great-mola",
+  "name": "great-mola-erp",
   "version": "1.0.0",
-  "description": "Sistema Integrado de Gestão Financeira",
+  "description": "Sistema ERP Great Mola - Gestão Integrada de Investimentos, Agentes e Contabilidade",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js",
-    "build": "echo 'No build needed for static site'"
+    "dev": "nodemon server.js"
   },
-  "keywords": ["finance", "management", "accounting", "investors", "agents"],
-  "author": "Great Mola",
+  "keywords": ["erp", "finance", "investment", "management", "mozambique"],
+  "author": "Great Mola Team",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "cors": "^2.8.5"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   }
 }
