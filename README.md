@@ -1,39 +1,27 @@
-# Great Mola - Sistema Integrado de Gestão
+# 💼 Great Mola - Sistema ERP Completo
 
-Sistema completo de gestão financeira, contabilidade, investidores e agentes.
+Sistema integrado de gestão para investimentos, agentes e contabilidade.
 
-## 🚀 Deploy no Render
+## 🌐 Deploy no Render.com
 
-1. **Acesse** [render.com](https://render.com)
-2. **Clique** em "New" → "Web Service"
-3. **Conecte** sua conta GitHub
-4. **Selecione** este repositório
-5. **Configure**:
-   - **Name**: `great-mola`
-   - **Environment**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
-6. **Clique** em "Create Web Service"
+### Configuração do Web Service no Render:
 
-## 📋 Credenciais de Acesso
+1. **Build Command**: `npm install`
+2. **Start Command**: `npm start`
+3. **Environment**: Node.js
+4. **Plan**: Free
 
-- **Administrador:** admin / admin123
-- **Gestor:** gestor / gestor123  
-- **Analista:** analista / analista123
-- **Agente:** agente / agente123
-- **Investidor:** investidor / invest123
+### URL do Sistema:
+https://great-mola-erp-system.onrender.com/
 
-## 🛠️ Funcionalidades
+## 🚀 Como executar localmente
 
-- ✅ Sistema de autenticação
-- 📊 Dashboard com KPIs
-- 📈 Gestão de investidores
-- 🤝 Gestão de agentes
-- 💼 Sistema SSA (Sub Super Agente)
-- 📋 Contabilidade completa
-- 👤 Gestão de utilizadores
-- 🔒 Sistema de aprovações
+```bash
+# Instalar dependências
+npm install
 
-## 💾 Backup
+# Executar em desenvolvimento
+npm run dev
 
-O sistema salva automaticamente todos os dados no localStorage do navegador.
+# Executar em produção
+npm start
