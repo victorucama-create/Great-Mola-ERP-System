@@ -1837,6 +1837,98 @@
         let lancamentos = JSON.parse(localStorage.getItem('lancamentos') || '[]');
         let auditLogs = JSON.parse(localStorage.getItem('auditLogs') || '[]');
         
+        // ========== INICIALIZAÇÃO DE DADOS PADRÃO ==========
+        function initializeDefaultData() {
+            // Verificar se já existem dados
+            if (users.length === 0) {
+                console.log('Inicializando dados padrão...');
+                
+                // Criar utilizadores padrão
+                const defaultUsers = [
+                    {
+                        id: 1,
+                        fullName: 'Administrador',
+                        username: 'admin',
+                        password: 'admin123',
+                        role: 'admin',
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString(),
+                        lastAccess: null
+                    },
+                    {
+                        id: 2,
+                        fullName: 'Gestor Financeiro',
+                        username: 'gestor',
+                        password: 'gestor123',
+                        role: 'manager',
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString(),
+                        lastAccess: null
+                    },
+                    {
+                        id: 3,
+                        fullName: 'Analista Contabilístico',
+                        username: 'analista',
+                        password: 'analista123',
+                        role: 'accountant',
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString(),
+                        lastAccess: null
+                    },
+                    {
+                        id: 4,
+                        fullName: 'Agente Comercial',
+                        username: 'agente',
+                        password: 'agente123',
+                        role: 'operator',
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString(),
+                        lastAccess: null
+                    },
+                    {
+                        id: 5,
+                        fullName: 'Investidor',
+                        username: 'investidor',
+                        password: 'invest123',
+                        role: 'viewer',
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString(),
+                        lastAccess: null
+                    }
+                ];
+
+                users = defaultUsers;
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                // Inicializar outras estruturas de dados vazias
+                localStorage.setItem('investors', JSON.stringify([]));
+                localStorage.setItem('agents', JSON.stringify([]));
+                localStorage.setItem('ssaAccounts', JSON.stringify([]));
+                localStorage.setItem('ssaTransactions', JSON.stringify([]));
+                localStorage.setItem('subchannels', JSON.stringify([]));
+                localStorage.setItem('approvals', JSON.stringify([]));
+                localStorage.setItem('transactions', JSON.stringify([]));
+                localStorage.setItem('planoContas', JSON.stringify([]));
+                localStorage.setItem('lancamentos', JSON.stringify([]));
+                localStorage.setItem('auditLogs', JSON.stringify([]));
+                
+                console.log('Dados padrão inicializados com sucesso!');
+            }
+            
+            // Recarregar dados do localStorage
+            users = JSON.parse(localStorage.getItem('users') || '[]');
+            investors = JSON.parse(localStorage.getItem('investors') || '[]');
+            agents = JSON.parse(localStorage.getItem('agents') || '[]');
+            ssaAccounts = JSON.parse(localStorage.getItem('ssaAccounts') || '[]');
+            ssaTransactions = JSON.parse(localStorage.getItem('ssaTransactions') || '[]');
+            subchannels = JSON.parse(localStorage.getItem('subchannels') || '[]');
+            approvals = JSON.parse(localStorage.getItem('approvals') || '[]');
+            transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+            planoContas = JSON.parse(localStorage.getItem('planoContas') || '[]');
+            lancamentos = JSON.parse(localStorage.getItem('lancamentos') || '[]');
+            auditLogs = JSON.parse(localStorage.getItem('auditLogs') || '[]');
+        }
+
         // ========== FUNÇÕES AUXILIARES ==========
         function getRoleName(role) {
             const roles = {
@@ -2179,7 +2271,9 @@
         }
 
         // ========== FUNÇÕES DE AUTENTICAÇÃO ==========
-        function login() {
+        function login(event) {
+            if (event) event.preventDefault();
+            
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
@@ -2248,7 +2342,9 @@
         }
 
         // ========== FUNÇÕES DE INVESTIDORES ==========
-        function saveInvestor() {
+        function saveInvestor(event) {
+            if (event) event.preventDefault();
+            
             const id = document.getElementById('investorId').value;
             const name = document.getElementById('investorName').value;
             const docType = document.getElementById('investorDocType').value;
@@ -2447,7 +2543,9 @@
         }
 
         // ========== FUNÇÕES DE AGENTES ==========
-        function saveAgent() {
+        function saveAgent(event) {
+            if (event) event.preventDefault();
+            
             const id = document.getElementById('agentId').value;
             const code = document.getElementById('agentCode').value;
             const name = document.getElementById('agentName').value;
@@ -2612,7 +2710,9 @@
         }
 
         // ========== FUNÇÕES DE UTILIZADORES ==========
-        function saveUser() {
+        function saveUser(event) {
+            if (event) event.preventDefault();
+            
             const id = document.getElementById('userId').value;
             const fullName = document.getElementById('userFullName').value;
             const username = document.getElementById('userUsername').value;
@@ -2722,4 +2822,288 @@
             // Atualizar informações de último acesso
             updateLastAccessInfo();
             
-            //
+            // Atualizar dropdown de auditoria
+            updateAuditUserDropdown();
+        }
+
+        function editUser(id) {
+            const user = users.find(user => user.id === id);
+            if (user) {
+                document.getElementById('userId').value = user.id;
+                document.getElementById('userFullName').value = user.fullName;
+                document.getElementById('userUsername').value = user.username;
+                document.getElementById('userPassword').value = '';
+                document.getElementById('userConfirmPassword').value = '';
+                document.getElementById('userRole').value = user.role;
+                document.getElementById('userStatus').value = user.status;
+                
+                // Scroll para o formulário
+                document.getElementById('userForm').scrollIntoView();
+            }
+        }
+
+        function toggleUserStatus(id) {
+            const user = users.find(user => user.id === id);
+            if (user) {
+                user.status = user.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('users', JSON.stringify(users));
+                updateUsersTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_USER_STATUS', `${user.status === 'Ativo' ? 'Ativou' : 'Desativou'} utilizador: ${user.username}`);
+            }
+        }
+
+        function deleteUser(id) {
+            if (confirm('Tem certeza que deseja eliminar este utilizador?')) {
+                users = users.filter(user => user.id !== id);
+                localStorage.setItem('users', JSON.stringify(users));
+                updateUsersTable();
+                
+                // Registrar log de auditoria
+                logAudit('DELETE_USER', `Eliminou utilizador com ID: ${id}`);
+            }
+        }
+
+        function updateLastAccessInfo() {
+            const container = document.getElementById('lastAccessInfo');
+            if (!container) return;
+            
+            const sortedUsers = [...users].sort((a, b) => {
+                const dateA = a.lastAccess ? new Date(a.lastAccess) : new Date(0);
+                const dateB = b.lastAccess ? new Date(b.lastAccess) : new Date(0);
+                return dateB - dateA;
+            });
+            
+            if (sortedUsers.length > 0 && sortedUsers[0].lastAccess) {
+                const lastUser = sortedUsers[0];
+                container.innerHTML = `
+                    <div class="small muted"><strong>${lastUser.fullName}</strong></div>
+                    <div class="small muted">${new Date(lastUser.lastAccess).toLocaleString()}</div>
+                `;
+            } else {
+                container.innerHTML = '<p class="small muted">Nenhum acesso registado</p>';
+            }
+        }
+
+        function updateAuditUserDropdown() {
+            const select = document.getElementById('auditUser');
+            if (select) {
+                select.innerHTML = '<option value="">Todos os utilizadores</option>';
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = user.username;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        function updateAuditLogs() {
+            const tbody = document.getElementById('auditLogsTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            let filteredLogs = [...auditLogs];
+            
+            // Aplicar filtros
+            const userFilter = document.getElementById('auditUser')?.value;
+            const periodFilter = document.getElementById('auditPeriod')?.value;
+            
+            if (userFilter) {
+                filteredLogs = filteredLogs.filter(log => log.userId == userFilter);
+            }
+            
+            if (periodFilter) {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - parseInt(periodFilter));
+                filteredLogs = filteredLogs.filter(log => new Date(log.timestamp) >= cutoffDate);
+            }
+            
+            // Ordenar por data (mais recente primeiro)
+            filteredLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            // Mostrar apenas os últimos 100 registros
+            filteredLogs.slice(0, 100).forEach(log => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${new Date(log.timestamp).toLocaleString()}</td>
+                    <td>${log.username}</td>
+                    <td>${log.action}</td>
+                    <td>${log.details}</td>
+                    <td>${log.ip}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterAuditLogs() {
+            updateAuditLogs();
+        }
+
+        function exportUsersExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+
+        function exportUsersCSV() {
+            let csvContent = 'Nome,Username,Função,Estado,Data Criação,Último Acesso\n';
+            
+            users.forEach(user => {
+                csvContent += `"${user.fullName}","${user.username}","${getRoleName(user.role)}","${user.status}","${new Date(user.createdAt).toLocaleDateString()}","${user.lastAccess ? new Date(user.lastAccess).toLocaleDateString() : 'Nunca'}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `utilizadores_${Date.now()}.csv`);
+        }
+
+        // ========== FUNÇÕES DE SSA ==========
+        function saveSSAAccount(event) {
+            if (event) event.preventDefault();
+            alert('Funcionalidade SSA em desenvolvimento');
+        }
+
+        function clearSSAAccountForm() {
+            document.getElementById('ssaAccountForm').reset();
+        }
+
+        function updateSSAAccountsTable() {
+            const tbody = document.getElementById('ssaAccountsTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #6c757d;">Nenhuma conta SSA registada</td></tr>';
+        }
+
+        function updateSubchannelsTable() {
+            const tbody = document.getElementById('subchannelsTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #6c757d;">Nenhum subcanal registado</td></tr>';
+        }
+
+        // ========== FUNÇÕES DE MODAIS ==========
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // ========== FUNÇÕES DE BACKUP ==========
+        function exportBackup() {
+            const backupData = {
+                users,
+                investors,
+                agents,
+                ssaAccounts,
+                ssaTransactions,
+                subchannels,
+                approvals,
+                transactions,
+                planoContas,
+                lancamentos,
+                auditLogs,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(backupData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            downloadFile(dataBlob, `great_mola_backup_${Date.now()}.json`);
+            
+            // Registrar log de auditoria
+            logAudit('EXPORT_BACKUP', 'Exportou backup do sistema');
+        }
+
+        function importBackup() {
+            const fileInput = document.getElementById('backupFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Por favor, selecione um arquivo de backup');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    
+                    // Validar estrutura do backup
+                    if (!backupData.users || !backupData.investors) {
+                        throw new Error('Arquivo de backup inválido');
+                    }
+                    
+                    // Restaurar dados
+                    users = backupData.users;
+                    investors = backupData.investors || [];
+                    agents = backupData.agents || [];
+                    ssaAccounts = backupData.ssaAccounts || [];
+                    ssaTransactions = backupData.ssaTransactions || [];
+                    subchannels = backupData.subchannels || [];
+                    approvals = backupData.approvals || [];
+                    transactions = backupData.transactions || [];
+                    planoContas = backupData.planoContas || [];
+                    lancamentos = backupData.lancamentos || [];
+                    auditLogs = backupData.auditLogs || [];
+                    
+                    // Salvar no localStorage
+                    localStorage.setItem('users', JSON.stringify(users));
+                    localStorage.setItem('investors', JSON.stringify(investors));
+                    localStorage.setItem('agents', JSON.stringify(agents));
+                    localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+                    localStorage.setItem('ssaTransactions', JSON.stringify(ssaTransactions));
+                    localStorage.setItem('subchannels', JSON.stringify(subchannels));
+                    localStorage.setItem('approvals', JSON.stringify(approvals));
+                    localStorage.setItem('transactions', JSON.stringify(transactions));
+                    localStorage.setItem('planoContas', JSON.stringify(planoContas));
+                    localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+                    localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
+                    
+                    // Registrar log de auditoria
+                    logAudit('IMPORT_BACKUP', 'Importou backup do sistema');
+                    
+                    alert('Backup restaurado com sucesso!');
+                    fileInput.value = '';
+                    
+                    // Recarregar dados na interface
+                    if (currentUser) {
+                        updateDashboard();
+                        updateInvestorsTable();
+                        updateAgentsTable();
+                        updateUsersTable();
+                    }
+                    
+                } catch (error) {
+                    alert('Erro ao restaurar backup: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ========== INICIALIZAÇÃO DO SISTEMA ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar dados padrão
+            initializeDefaultData();
+            
+            // Configurar event listeners
+            document.getElementById('loginForm').addEventListener('submit', login);
+            document.getElementById('investorForm').addEventListener('submit', saveInvestor);
+            document.getElementById('agentForm').addEventListener('submit', saveAgent);
+            document.getElementById('userForm').addEventListener('submit', saveUser);
+            document.getElementById('ssaAccountForm').addEventListener('submit', saveSSAAccount);
+            
+            // Configurar data atual nos formulários
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('investorStartDate').value = today;
+            document.getElementById('txnDate').value = today;
+            document.getElementById('lancamentoData').value = today;
+            document.getElementById('ssaDepositDate').value = today;
+            document.getElementById('ssaReceiveDate').value = today;
+            
+            console.log('Sistema Great Mola inicializado com sucesso!');
+        });
+    </script>
+</body>
+</html>
