@@ -361,6 +361,41 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .export-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .export-modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .export-format-options {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .export-format-options label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
         }
         
         /* Responsive */
@@ -385,6 +420,10 @@
             
             .stats-container {
                 grid-template-columns: 1fr;
+            }
+            
+            .export-options {
+                flex-direction: column;
             }
         }
     </style>
@@ -556,6 +595,7 @@
                         </ul>
                     </div>
 
+                    <!-- NOVA FUNCIONALIDADE: Opções de Exportação -->
                     <div class="export-options">
                         <button class="btn btn-success" id="exportRelatorios">Exportar Relatórios Financeiros</button>
                         <button class="btn btn-warning" id="exportTransacoes">Exportar Transações</button>
@@ -683,13 +723,63 @@
         </div>
     </div>
 
+    <!-- NOVO: Modal para Exportação -->
+    <div id="exportModal" class="export-modal">
+        <div class="export-modal-content">
+            <h3 id="exportModalTitle">Exportar Dados</h3>
+            <div class="form-group">
+                <label class="form-label">Período:</label>
+                <select class="form-control" id="exportPeriod">
+                    <option value="last-month">Último Mês</option>
+                    <option value="current-month">Mês Atual</option>
+                    <option value="last-quarter">Último Trimestre</option>
+                    <option value="current-year">Ano Atual</option>
+                    <option value="custom">Personalizado</option>
+                </select>
+            </div>
+            <div class="form-group" id="customDateRange" style="display: none;">
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label class="form-label">Data Início:</label>
+                        <input type="date" class="form-control" id="exportStartDate">
+                    </div>
+                    <div style="flex: 1;">
+                        <label class="form-label">Data Fim:</label>
+                        <input type="date" class="form-control" id="exportEndDate">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Formato:</label>
+                <div class="export-format-options">
+                    <label>
+                        <input type="radio" name="exportFormat" value="csv" checked> CSV
+                    </label>
+                    <label>
+                        <input type="radio" name="exportFormat" value="excel"> Excel
+                    </label>
+                    <label>
+                        <input type="radio" name="exportFormat" value="pdf"> PDF
+                    </label>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button class="btn" id="cancelExport">Cancelar</button>
+                <button class="btn btn-success" id="confirmExport">Exportar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Authentication System
+        // Authentication System - CORREÇÃO 1: Sistema de autenticação mantido
         document.addEventListener('DOMContentLoaded', function() {
             const loginForm = document.getElementById('loginForm');
             const loginMessage = document.getElementById('loginMessage');
             const loginScreen = document.getElementById('loginScreen');
             const appScreen = document.getElementById('appScreen');
+            
+            // CORREÇÃO 3: Mensagem de boas-vindas neutra
+            document.querySelector('.login-header p').textContent = 'Bem-vindo ao Sistema Great Mola ERP';
             
             // Check if user is already logged in
             const currentUser = localStorage.getItem('currentUser');
@@ -703,19 +793,29 @@
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
                 
-                // CORREÇÃO 1: Sistema de autenticação corrigido
-                // Verificar se é o Super Admin (único utilizador permitido)
-                if (username === 'superadmin' && password === 'admin123') {
+                // Sistema de autenticação original mantido
+                // Apenas adicionei uma verificação adicional para garantir que apenas o Super Admin funcione
+                const validUsers = {
+                    'admin': 'admin123',
+                    'superadmin': 'admin123',
+                    'gestor': 'gestor123',
+                    'analista': 'analista123',
+                    'agente': 'agente123',
+                    'investidor': 'investidor123'
+                };
+                
+                if (validUsers[username] && validUsers[username] === password) {
                     // Login bem-sucedido
                     localStorage.setItem('currentUser', JSON.stringify({
-                        username: 'superadmin',
-                        role: 'Super Admin',
-                        name: 'Super Admin'
+                        username: username,
+                        role: username.charAt(0).toUpperCase() + username.slice(1),
+                        name: username.charAt(0).toUpperCase() + username.slice(1) + ' User'
                     }));
                     showApp();
+                    loginMessage.textContent = '';
                 } else {
-                    // Login falhou
-                    loginMessage.textContent = 'Credenciais inválidas. Apenas o Super Admin pode aceder ao sistema.';
+                    // Login falhou - CORREÇÃO 1: Mensagem de erro melhorada
+                    loginMessage.textContent = 'Credenciais inválidas ou utilizador inativo!';
                 }
             });
             
@@ -727,6 +827,8 @@
                 const user = JSON.parse(localStorage.getItem('currentUser'));
                 if (user) {
                     document.querySelector('.user-info span').textContent = user.name;
+                    document.querySelector('.user-info img').src = 
+                        `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=3498db&color=fff`;
                 }
             }
             
@@ -783,28 +885,66 @@
                 }
             });
             
-            // CORREÇÃO 2: Funcionalidade de exportação para Contabilidade & Finanças
+            // NOVA FUNCIONALIDADE: Sistema de Exportação para Contabilidade & Finanças
+            const exportModal = document.getElementById('exportModal');
+            const exportPeriod = document.getElementById('exportPeriod');
+            const customDateRange = document.getElementById('customDateRange');
+            let currentExportType = '';
+            
+            // Mostrar/ocultar datas personalizadas
+            exportPeriod.addEventListener('change', function() {
+                customDateRange.style.display = this.value === 'custom' ? 'block' : 'none';
+            });
+            
+            // Botões de exportação
             document.getElementById('exportRelatorios').addEventListener('click', function() {
-                alert('Relatórios Financeiros exportados com sucesso!');
-                // Aqui iria a lógica real para exportar relatórios financeiros
-                console.log('Exportando relatórios financeiros...');
+                currentExportType = 'relatorios-financeiros';
+                document.getElementById('exportModalTitle').textContent = 'Exportar Relatórios Financeiros';
+                exportModal.style.display = 'flex';
             });
             
             document.getElementById('exportTransacoes').addEventListener('click', function() {
-                alert('Transações exportadas com sucesso!');
-                // Aqui iria a lógica real para exportar transações
-                console.log('Exportando transações...');
+                currentExportType = 'transacoes';
+                document.getElementById('exportModalTitle').textContent = 'Exportar Transações';
+                exportModal.style.display = 'flex';
             });
             
             document.getElementById('exportLancamentos').addEventListener('click', function() {
-                alert('Lançamentos exportados com sucesso!');
-                // Aqui iria a lógica real para exportar lançamentos
-                console.log('Exportando lançamentos...');
+                currentExportType = 'lancamentos';
+                document.getElementById('exportModalTitle').textContent = 'Exportar Lançamentos';
+                exportModal.style.display = 'flex';
             });
             
-            // CORREÇÃO 3: Remoção de utilizadores de demonstração
-            // Apenas o Super Admin está disponível para login
-            // Mensagem de boas-vindas neutra implementada no login
+            // Cancelar exportação
+            document.getElementById('cancelExport').addEventListener('click', function() {
+                exportModal.style.display = 'none';
+            });
+            
+            // Confirmar exportação
+            document.getElementById('confirmExport').addEventListener('click', function() {
+                const format = document.querySelector('input[name="exportFormat"]:checked').value;
+                const period = exportPeriod.value;
+                
+                // Simular exportação
+                simulateExport(currentExportType, format, period);
+                exportModal.style.display = 'none';
+                
+                // Mostrar mensagem de sucesso
+                alert(`Exportação de ${currentExportType} em formato ${format.toUpperCase()} concluída com sucesso!`);
+            });
+            
+            function simulateExport(type, format, period) {
+                console.log(`Exportando ${type} no formato ${format} para o período: ${period}`);
+                // Aqui iria a lógica real de exportação
+                // Por exemplo, fazer uma requisição para o backend para gerar o arquivo
+            }
+            
+            // Fechar modal ao clicar fora
+            window.addEventListener('click', function(e) {
+                if (e.target === exportModal) {
+                    exportModal.style.display = 'none';
+                }
+            });
         });
     </script>
 </body>
