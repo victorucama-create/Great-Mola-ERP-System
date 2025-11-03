@@ -508,6 +508,23 @@
             min-width: 200px;
         }
         
+        .password-toggle {
+            position: relative;
+        }
+        
+        .password-toggle input {
+            padding-right: 40px;
+        }
+        
+        .password-toggle .toggle-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--muted);
+        }
+        
         @media (max-width: 768px) {
             .grid-2, .grid-3, .grid-4 {
                 grid-template-columns: 1fr;
@@ -564,6 +581,7 @@
                 <div><strong>Analista:</strong> analista / analista123</div>
                 <div><strong>Agente:</strong> agente / agente123</div>
                 <div><strong>Investidor:</strong> investidor / invest123</div>
+                <div><strong>SSA:</strong> ssa / ssa123</div>
             </div>
         </div>
     </div>
@@ -595,7 +613,8 @@
             <button class="nav-tab" onclick="switchTab('agents')">🤝 Agentes</button>
             <button class="nav-tab" onclick="switchTab('users')" id="usersTab" style="display: none;">👤 Utilizadores</button>
             <button class="nav-tab" onclick="switchTab('approvals')" id="approvalsTab" style="display: none;">✅ Aprovações</button>
-            <button class="nav-tab" onclick="switchTab('ssa')">💼 SSA</button>
+            <button class="nav-tab" onclick="switchTab('ssa')" id="ssaTab" style="display: none;">💼 SSA</button>
+            <button class="nav-tab" onclick="switchTab('settings')" id="settingsTab" style="display: none;">⚙️ Configurações</button>
         </div>
 
         <!-- Conteúdo das Tabs -->
@@ -1281,6 +1300,7 @@
                                 <option value="accountant">Contabilista</option>
                                 <option value="operator">Operador</option>
                                 <option value="viewer">Visualizador</option>
+                                <option value="ssa">SSA</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1442,6 +1462,12 @@
                                 <input type="text" id="ssaAccountName" placeholder="Nome completo" required>
                             </div>
                             <div class="form-group">
+                                <label>Utilizador Associado</label>
+                                <select id="ssaAccountUser" required>
+                                    <option value="">Selecionar utilizador</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label>Saldo Inicial (MZN)</label>
                                 <input type="number" id="ssaAccountBalance" step="0.01" value="0">
                             </div>
@@ -1502,6 +1528,7 @@
                             <tr>
                                 <th>Código</th>
                                 <th>Nome</th>
+                                <th>Utilizador</th>
                                 <th>Saldo Atual</th>
                                 <th>Taxa</th>
                                 <th>Status</th>
@@ -1517,19 +1544,19 @@
             <div class="sub-content" id="ssaTransactions">
                 <div class="grid grid-2">
                     <div class="card">
-                        <h3>💰 Registar Depósito</h3>
+                        <h3>💰 Registar Depósito para Agente</h3>
                         <form id="ssaDepositForm">
                             <input type="hidden" id="ssaDepositId">
                             <div class="form-group">
-                                <label>Conta de Origem</label>
+                                <label>Conta SSA</label>
                                 <select id="ssaDepositFrom" required>
-                                    <option value="">Selecionar conta</option>
+                                    <option value="">Selecionar conta SSA</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Conta de Destino</label>
+                                <label>Agente Destino</label>
                                 <select id="ssaDepositTo" required>
-                                    <option value="">Selecionar conta</option>
+                                    <option value="">Selecionar agente</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -1639,24 +1666,15 @@
             <div class="sub-content" id="ssaSubchannels">
                 <div class="grid grid-2">
                     <div class="card">
-                        <h3>➕ Novo Subcanal</h3>
+                        <h3>➕ Novo Agente (Subcanal)</h3>
                         <form id="subchannelForm">
                             <input type="hidden" id="subchannelId">
                             <div class="form-group">
-                                <label>Tipo de Subcanal</label>
-                                <select id="subchannelType" required>
-                                    <option value="">Selecionar tipo</option>
-                                    <option value="ST">ST (Colaborador SSA)</option>
-                                    <option value="SAG">SAG (Sub Canal Agente)</option>
-                                    <option value="AG">AG (Agente Emola)</option>
-                                </select>
+                                <label>Código do Agente</label>
+                                <input type="text" id="subchannelCode" placeholder="Ex: 91337" required>
                             </div>
                             <div class="form-group">
-                                <label>Código</label>
-                                <input type="text" id="subchannelCode" placeholder="Código único" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Nome</label>
+                                <label>Nome do Agente</label>
                                 <input type="text" id="subchannelName" placeholder="Nome completo" required>
                             </div>
                             <div class="form-group">
@@ -1664,6 +1682,14 @@
                                 <select id="subchannelSSA" required>
                                     <option value="">Selecionar SSA</option>
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Localização</label>
+                                <input type="text" id="subchannelLocation" placeholder="Cidade ou região" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Contacto</label>
+                                <input type="tel" id="subchannelPhone" placeholder="+258 ...">
                             </div>
                             <div class="form-group">
                                 <label>Saldo Inicial (MZN)</label>
@@ -1676,7 +1702,7 @@
                                     <option value="Inativo">Inativo</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary">Registar Subcanal</button>
+                            <button type="submit" class="btn btn-primary">Registar Agente</button>
                             <button type="button" class="btn btn-ghost" onclick="clearSubchannelForm()">Limpar</button>
                         </form>
                     </div>
@@ -1685,21 +1711,21 @@
                         <h3>📊 Resumo de Subcanais</h3>
                         <div class="results-row">
                             <div class="result-item">
-                                <h3>Total ST</h3>
-                                <div class="kpi" id="totalST">0</div>
+                                <h3>Total Agentes</h3>
+                                <div class="kpi" id="totalAgentsSSA">0</div>
                             </div>
                             <div class="result-item">
-                                <h3>Total SAG</h3>
-                                <div class="kpi" id="totalSAG">0</div>
+                                <h3>Agentes Ativos</h3>
+                                <div class="kpi" id="activeAgentsSSA">0</div>
                             </div>
                             <div class="result-item">
-                                <h3>Total AG</h3>
-                                <div class="kpi" id="totalAG">0</div>
+                                <h3>Saldo Total</h3>
+                                <div class="kpi" id="totalAgentBalanceSSA">MT 0.00</div>
                             </div>
                         </div>
                         
                         <div style="margin-top: 20px;">
-                            <h4>Top Subcanais por Rendimento</h4>
+                            <h4>Top Agentes por Saldo</h4>
                             <div id="topSubchannels">
                                 <p class="small muted">Carregando dados...</p>
                             </div>
@@ -1708,14 +1734,14 @@
                 </div>
                 
                 <div class="card">
-                    <h3>📋 Lista de Subcanais</h3>
+                    <h3>📋 Lista de Agentes (Subcanais)</h3>
                     <table id="subchannelsTable">
                         <thead>
                             <tr>
-                                <th>Tipo</th>
                                 <th>Código</th>
                                 <th>Nome</th>
                                 <th>SSA Principal</th>
+                                <th>Localização</th>
                                 <th>Saldo Atual</th>
                                 <th>Status</th>
                                 <th>Ações</th>
@@ -1752,6 +1778,394 @@
                     </div>
                     
                     <div id="ssaReportResult" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Configurações -->
+        <div class="tab-content" id="settings">
+            <h2>⚙️ Configurações do Sistema</h2>
+            
+            <div class="sub-tabs">
+                <button class="sub-tab active" onclick="switchSettingsSubTab('general')">Geral</button>
+                <button class="sub-tab" onclick="switchSettingsSubTab('financial')">Financeiro</button>
+                <button class="sub-tab" onclick="switchSettingsSubTab('users')">Utilizadores</button>
+                <button class="sub-tab" onclick="switchSettingsSubTab('security')">Segurança</button>
+                <button class="sub-tab" onclick="switchSettingsSubTab('backup')">Backup</button>
+                <button class="sub-tab" onclick="switchSettingsSubTab('integrations')">Integrações</button>
+            </div>
+            
+            <!-- Sub-tab Geral -->
+            <div class="sub-content active" id="settingsGeneral">
+                <div class="card">
+                    <h3>Configurações Gerais</h3>
+                    <form id="generalSettingsForm">
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Nome da Empresa</label>
+                                <input type="text" id="companyName" placeholder="Great Mola Lda" required>
+                            </div>
+                            <div class="form-group">
+                                <label>NIF</label>
+                                <input type="text" id="companyNIF" placeholder="Número de identificação fiscal">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Endereço</label>
+                            <textarea id="companyAddress" placeholder="Endereço completo" rows="2"></textarea>
+                        </div>
+                        
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Contacto</label>
+                                <input type="tel" id="companyPhone" placeholder="+258 ...">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="companyEmail" placeholder="empresa@exemplo.com">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-3">
+                            <div class="form-group">
+                                <label>Moeda Padrão</label>
+                                <select id="defaultCurrency">
+                                    <option value="MZN">MZN - Metical</option>
+                                    <option value="USD">USD - Dólar Americano</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Formato de Data</label>
+                                <select id="dateFormat">
+                                    <option value="dd/mm/yyyy">dd/mm/aaaa</option>
+                                    <option value="yyyy-mm-dd">aaaa-mm-dd</option>
+                                    <option value="mm/dd/yyyy">mm/dd/aaaa</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Idioma</label>
+                                <select id="language">
+                                    <option value="pt">Português</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Tema Visual</label>
+                            <select id="theme">
+                                <option value="light">Claro</option>
+                                <option value="dark">Escuro</option>
+                                <option value="auto">Automático</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">💾 Salvar Configurações Gerais</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Financeiro -->
+            <div class="sub-content" id="settingsFinancial">
+                <div class="card">
+                    <h3>Configurações Financeiras</h3>
+                    <form id="financialSettingsForm">
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Taxa de Rendimento Padrão (%)</label>
+                                <input type="number" id="defaultRate" step="0.01" value="0.5" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Taxa de IRPS (%)</label>
+                                <input type="number" id="defaultIRPS" step="0.01" value="20.0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Dias Úteis Considerados</label>
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <div>
+                                    <input type="checkbox" id="countSaturday" checked>
+                                    <label for="countSaturday">Sábados contam como ½ dia</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="countSunday" checked>
+                                    <label for="countSunday">Domingos contam como ½ dia</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Feriados Nacionais (um por linha, formato: AAAA-MM-DD)</label>
+                            <textarea id="nationalHolidays" rows="5" placeholder="Ex:&#10;2024-01-01&#10;2024-02-03&#10;2024-06-25"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Conta SSA Principal</label>
+                            <select id="mainSSAAccount">
+                                <option value="">Selecionar conta SSA</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Política de Fecho de Mês</label>
+                            <div>
+                                <input type="checkbox" id="autoCloseMonth">
+                                <label for="autoCloseMonth">Ativar bloqueio automático de lançamentos após fecho mensal</label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">💾 Salvar Configurações Financeiras</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Utilizadores -->
+            <div class="sub-content" id="settingsUsers">
+                <div class="card">
+                    <h3>Configurações de Utilizadores e Permissões</h3>
+                    <form id="usersSettingsForm">
+                        <div class="form-group">
+                            <label>Autenticação</label>
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <div>
+                                    <input type="checkbox" id="requireLogin" checked>
+                                    <label for="requireLogin">Login obrigatório</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="rememberSession" checked>
+                                    <label for="rememberSession">Lembrar sessão</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="allowPasswordReset" checked>
+                                    <label for="allowPasswordReset">Permitir redefinição de senha</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Tempo de Sessão (minutos)</label>
+                            <input type="number" id="sessionTimeout" value="60" min="15" max="480">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Histórico de Acesso</label>
+                            <div>
+                                <input type="checkbox" id="keepAccessLogs" checked>
+                                <label for="keepAccessLogs">Manter registos de acesso e ações (auditoria)</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Dias para manter logs</label>
+                            <input type="number" id="logRetentionDays" value="90" min="7" max="365">
+                        </div>
+                        
+                        <h4 style="margin-top: 20px;">Perfis de Acesso Predefinidos</h4>
+                        <div style="background: var(--light); padding: 15px; border-radius: 8px; margin-top: 10px;">
+                            <div class="grid grid-2">
+                                <div>
+                                    <h5>Administrador</h5>
+                                    <p class="small muted">Acesso completo a todas as funcionalidades</p>
+                                </div>
+                                <div>
+                                    <h5>Gestor</h5>
+                                    <p class="small muted">Gestão financeira e de utilizadores</p>
+                                </div>
+                                <div>
+                                    <h5>Contabilista</h5>
+                                    <p class="small muted">Contabilidade e relatórios</p>
+                                </div>
+                                <div>
+                                    <h5>Operador</h5>
+                                    <p class="small muted">Operações diárias e registos</p>
+                                </div>
+                                <div>
+                                    <h5>Visualizador</h5>
+                                    <p class="small muted">Apenas consulta de dados</p>
+                                </div>
+                                <div>
+                                    <h5>SSA</h5>
+                                    <p class="small muted">Gestão de subcanais e agentes</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">💾 Salvar Configurações de Utilizadores</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Segurança -->
+            <div class="sub-content" id="settingsSecurity">
+                <div class="card">
+                    <h3>Configurações de Segurança e PIN</h3>
+                    <form id="securitySettingsForm">
+                        <div class="form-group">
+                            <label>Definir PIN Principal (Administrador)</label>
+                            <div class="password-toggle">
+                                <input type="password" id="adminPIN" placeholder="PIN de 4-6 dígitos" minlength="4" maxlength="6">
+                                <span class="toggle-icon" onclick="togglePasswordVisibility('adminPIN')">👁️</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Confirmar PIN Principal</label>
+                            <div class="password-toggle">
+                                <input type="password" id="confirmAdminPIN" placeholder="Confirmar PIN" minlength="4" maxlength="6">
+                                <span class="toggle-icon" onclick="togglePasswordVisibility('confirmAdminPIN')">👁️</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Tempo de Expiração de PIN (minutos)</label>
+                            <input type="number" id="pinTimeout" value="30" min="5" max="120">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Validação por PIN</label>
+                            <div>
+                                <input type="checkbox" id="requirePIN" checked>
+                                <label for="requirePIN">Solicitar PIN para operações críticas</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Logs de Tentativas</label>
+                            <div>
+                                <input type="checkbox" id="logPINAttempts" checked>
+                                <label for="logPINAttempts">Registar tentativas de acesso por PIN</label>
+                            </div>
+                        </div>
+                        
+                        <div class="alert" style="margin-top: 20px;">
+                            <strong>⚠️ Importante:</strong> Os PINs são armazenados de forma encriptada e nunca são visíveis em texto puro.
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">💾 Salvar Configurações de Segurança</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Backup -->
+            <div class="sub-content" id="settingsBackup">
+                <div class="card">
+                    <h3>Backup e Restauração</h3>
+                    <div class="grid grid-2">
+                        <div>
+                            <h4>Exportar Dados (Backup)</h4>
+                            <p>Gera um ficheiro completo com todas as informações do sistema.</p>
+                            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                <button class="btn btn-primary" onclick="exportBackup()">📤 Exportar Backup</button>
+                                <button class="btn btn-secondary" onclick="exportBackupCSV()">📄 Exportar CSV</button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4>Importar Dados (Restauração)</h4>
+                            <p>Restaurar dados a partir de um backup anterior.</p>
+                            <div style="margin-top: 15px;">
+                                <input type="file" id="backupFile" accept=".json,.csv" style="margin-bottom: 10px;">
+                                <button class="btn btn-success" onclick="importBackup()">📥 Importar Backup</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>Backup Automático</label>
+                        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                            <div>
+                                <input type="checkbox" id="autoBackup">
+                                <label for="autoBackup">Ativar backup automático</label>
+                            </div>
+                            <div>
+                                <select id="backupFrequency">
+                                    <option value="daily">Diário</option>
+                                    <option value="weekly">Semanal</option>
+                                    <option value="monthly">Mensal</option>
+                                </select>
+                            </div>
+                            <div>
+                                <input type="time" id="backupTime" value="02:00">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert" style="margin-top: 20px;">
+                        <strong>💡 Dica:</strong> Faça backups regulares para proteger os seus dados. Os backups automáticos são executados localmente no seu navegador.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Integrações -->
+            <div class="sub-content" id="settingsIntegrations">
+                <div class="card">
+                    <h3>Configurações de Integrações</h3>
+                    <form id="integrationsSettingsForm">
+                        <div class="form-group">
+                            <label>Integração com API (futuro)</label>
+                            <input type="url" id="apiEndpoint" placeholder="https://api.exemplo.com/v1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Chave da API</label>
+                            <div class="password-toggle">
+                                <input type="password" id="apiKey" placeholder="Chave de API">
+                                <span class="toggle-icon" onclick="togglePasswordVisibility('apiKey')">👁️</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Sincronização Automática</label>
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <div>
+                                    <input type="checkbox" id="autoSync">
+                                    <label for="autoSync">Ativar sincronização periódica</label>
+                                </div>
+                                <div>
+                                    <select id="syncFrequency">
+                                        <option value="15">15 minutos</option>
+                                        <option value="30">30 minutos</option>
+                                        <option value="60">1 hora</option>
+                                        <option value="240">4 horas</option>
+                                        <option value="1440">1 dia</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Exportações Automáticas</label>
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <div>
+                                    <input type="checkbox" id="autoExport">
+                                    <label for="autoExport">Gerar ficheiros automaticamente</label>
+                                </div>
+                                <div>
+                                    <select id="exportFormat">
+                                        <option value="csv">CSV</option>
+                                        <option value="json">JSON</option>
+                                        <option value="xlsx">Excel</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select id="exportFrequency">
+                                        <option value="daily">Diário</option>
+                                        <option value="weekly">Semanal</option>
+                                        <option value="monthly">Mensal</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert">
+                            <strong>🔒 Segurança:</strong> As credenciais de API são armazenadas localmente de forma segura.
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">💾 Salvar Configurações de Integrações</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -1800,28 +2214,6 @@
         </div>
     </div>
 
-    <div id="backupModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Backup & Restauro</h3>
-                <span class="close" onclick="closeModal('backupModal')">&times;</span>
-            </div>
-            <div class="grid grid-2">
-                <div>
-                    <h4>Exportar Backup</h4>
-                    <p>Faça uma cópia de segurança de todos os dados do sistema.</p>
-                    <button class="btn btn-primary" onclick="exportBackup()">Exportar Backup</button>
-                </div>
-                <div>
-                    <h4>Importar Backup</h4>
-                    <p>Restaurar dados a partir de um backup anterior.</p>
-                    <input type="file" id="backupFile" accept=".json" style="margin-bottom: 10px;">
-                    <button class="btn btn-success" onclick="importBackup()">Importar Backup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         // ========== VARIÁVEIS GLOBAIS ==========
         let currentUser = null;
@@ -1836,6 +2228,7 @@
         let planoContas = JSON.parse(localStorage.getItem('planoContas') || '[]');
         let lancamentos = JSON.parse(localStorage.getItem('lancamentos') || '[]');
         let auditLogs = JSON.parse(localStorage.getItem('auditLogs') || '[]');
+        let settings = JSON.parse(localStorage.getItem('settings') || '{}');
         
         // ========== INICIALIZAÇÃO DE DADOS PADRÃO ==========
         function initializeDefaultData() {
@@ -1894,6 +2287,16 @@
                         status: 'Ativo',
                         createdAt: new Date().toISOString(),
                         lastAccess: null
+                    },
+                    {
+                        id: 6,
+                        fullName: 'SSA Manager',
+                        username: 'ssa',
+                        password: 'ssa123',
+                        role: 'ssa',
+                        status: 'Ativo',
+                        createdAt: new Date().toISOString(),
+                        lastAccess: null
                     }
                 ];
 
@@ -1912,6 +2315,9 @@
                 localStorage.setItem('lancamentos', JSON.stringify([]));
                 localStorage.setItem('auditLogs', JSON.stringify([]));
                 
+                // Inicializar configurações padrão
+                initializeDefaultSettings();
+                
                 console.log('Dados padrão inicializados com sucesso!');
             }
             
@@ -1927,11 +2333,68 @@
             planoContas = JSON.parse(localStorage.getItem('planoContas') || '[]');
             lancamentos = JSON.parse(localStorage.getItem('lancamentos') || '[]');
             auditLogs = JSON.parse(localStorage.getItem('auditLogs') || '[]');
+            settings = JSON.parse(localStorage.getItem('settings') || '{}');
             
             // Verificar se o plano de contas está vazio e carregar o padrão
             if (planoContas.length === 0) {
                 loadDefaultPlanoContas();
             }
+        }
+
+        function initializeDefaultSettings() {
+            const defaultSettings = {
+                general: {
+                    companyName: 'Great Mola Lda',
+                    companyNIF: '',
+                    companyAddress: '',
+                    companyPhone: '',
+                    companyEmail: '',
+                    defaultCurrency: 'MZN',
+                    dateFormat: 'dd/mm/yyyy',
+                    language: 'pt',
+                    theme: 'light'
+                },
+                financial: {
+                    defaultRate: 0.5,
+                    defaultIRPS: 20.0,
+                    countSaturday: true,
+                    countSunday: true,
+                    nationalHolidays: '2024-01-01\n2024-02-03\n2024-06-25',
+                    mainSSAAccount: '',
+                    autoCloseMonth: false
+                },
+                users: {
+                    requireLogin: true,
+                    rememberSession: true,
+                    allowPasswordReset: true,
+                    sessionTimeout: 60,
+                    keepAccessLogs: true,
+                    logRetentionDays: 90
+                },
+                security: {
+                    adminPIN: '',
+                    pinTimeout: 30,
+                    requirePIN: true,
+                    logPINAttempts: true
+                },
+                backup: {
+                    autoBackup: false,
+                    backupFrequency: 'daily',
+                    backupTime: '02:00'
+                },
+                integrations: {
+                    apiEndpoint: '',
+                    apiKey: '',
+                    autoSync: false,
+                    syncFrequency: '60',
+                    autoExport: false,
+                    exportFormat: 'csv',
+                    exportFrequency: 'daily'
+                }
+            };
+            
+            settings = defaultSettings;
+            localStorage.setItem('settings', JSON.stringify(settings));
         }
 
         // ========== FUNÇÕES DO PLANO DE CONTAS ==========
@@ -2293,7 +2756,8 @@
                 'manager': 'Gestor',
                 'accountant': 'Contabilista',
                 'operator': 'Operador',
-                'viewer': 'Visualizador'
+                'viewer': 'Visualizador',
+                'ssa': 'SSA'
             };
             return roles[role] || 'Utilizador';
         }
@@ -2342,6 +2806,15 @@
             localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
         }
 
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+
         // ========== FUNÇÕES DE NAVEGAÇÃO ==========
         function switchTab(tabName) {
             // Esconder todas as tabs
@@ -2382,6 +2855,8 @@
                 updateSSAAccountsTable();
                 updateSubchannelsTable();
                 loadSSAForDropdowns();
+            } else if (tabName === 'settings') {
+                loadSettings();
             }
         }
 
@@ -2429,6 +2904,30 @@
             
             // Mostrar sub-tab selecionada
             const elementId = 'ssa' + subTabName.charAt(0).toUpperCase() + subTabName.slice(1);
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.classList.add('active');
+            }
+            
+            // Ativar botão selecionado
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+        }
+
+        function switchSettingsSubTab(subTabName) {
+            // Esconder todos os sub-conteúdos de configurações
+            document.querySelectorAll('#settings .sub-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remover classe active de todos os botões de configurações
+            document.querySelectorAll('#settings .sub-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar sub-tab selecionada
+            const elementId = 'settings' + subTabName.charAt(0).toUpperCase() + subTabName.slice(1);
             const element = document.getElementById(elementId);
             if (element) {
                 element.classList.add('active');
@@ -2571,7 +3070,7 @@
             const dropdowns = [
                 'agentSSA', 'ssaDepositFrom', 'ssaDepositTo', 
                 'ssaReceiveTo', 'subchannelSSA', 'ssaTransactionAccount',
-                'ssaReportAccount'
+                'ssaReportAccount', 'mainSSAAccount'
             ];
             
             dropdowns.forEach(dropdownId => {
@@ -2601,6 +3100,22 @@
                     option.value = agent.id;
                     option.textContent = `${agent.code} - ${agent.name}`;
                     select.appendChild(option);
+                });
+            }
+        }
+
+        function loadSSAUsersForDropdown() {
+            const select = document.getElementById('ssaAccountUser');
+            if (select) {
+                select.innerHTML = '<option value="">Selecionar utilizador</option>';
+                
+                users
+                    .filter(user => user.role === 'ssa' && user.status === 'Ativo')
+                    .forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = `${user.username} - ${user.fullName}`;
+                        select.appendChild(option);
                 });
             }
         }
@@ -2642,9 +3157,18 @@
                 if (user.role === 'admin' || user.role === 'manager') {
                     document.getElementById('usersTab').style.display = 'block';
                     document.getElementById('approvalsTab').style.display = 'block';
+                    document.getElementById('settingsTab').style.display = 'block';
+                    document.getElementById('ssaTab').style.display = 'block';
+                } else if (user.role === 'ssa') {
+                    document.getElementById('ssaTab').style.display = 'block';
+                    document.getElementById('usersTab').style.display = 'none';
+                    document.getElementById('approvalsTab').style.display = 'none';
+                    document.getElementById('settingsTab').style.display = 'none';
                 } else {
                     document.getElementById('usersTab').style.display = 'none';
                     document.getElementById('approvalsTab').style.display = 'none';
+                    document.getElementById('settingsTab').style.display = 'none';
+                    document.getElementById('ssaTab').style.display = 'none';
                 }
                 
                 // Carregar dados específicos do utilizador
@@ -3295,25 +3819,516 @@
         // ========== FUNÇÕES DE SSA ==========
         function saveSSAAccount(event) {
             if (event) event.preventDefault();
-            alert('Funcionalidade SSA em desenvolvimento');
+            
+            const id = document.getElementById('ssaAccountId').value;
+            const code = document.getElementById('ssaAccountCode').value;
+            const name = document.getElementById('ssaAccountName').value;
+            const userId = document.getElementById('ssaAccountUser').value;
+            const balance = parseFloat(document.getElementById('ssaAccountBalance').value) || 0;
+            const rate = parseFloat(document.getElementById('ssaAccountRate').value) || 0.5;
+            const status = document.getElementById('ssaAccountStatus').value;
+            
+            if (id) {
+                // Atualizar conta SSA existente
+                const index = ssaAccounts.findIndex(acc => acc.id == id);
+                if (index !== -1) {
+                    ssaAccounts[index] = { 
+                        ...ssaAccounts[index], 
+                        code, name, userId, balance, rate, status
+                    };
+                }
+            } else {
+                // Criar nova conta SSA
+                const newAccount = {
+                    id: Date.now(),
+                    code,
+                    name,
+                    userId,
+                    balance,
+                    rate,
+                    status,
+                    createdAt: new Date().toISOString()
+                };
+                
+                ssaAccounts.push(newAccount);
+                
+                // Registrar log de auditoria
+                logAudit('CREATE_SSA_ACCOUNT', `Criou conta SSA: ${name} (${code})`);
+            }
+            
+            localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+            updateSSAAccountsTable();
+            clearSSAAccountForm();
+            
+            alert(id ? 'Conta SSA atualizada com sucesso!' : 'Conta SSA registada com sucesso!');
         }
 
         function clearSSAAccountForm() {
+            document.getElementById('ssaAccountId').value = '';
             document.getElementById('ssaAccountForm').reset();
+            document.getElementById('ssaAccountBalance').value = '0';
+            document.getElementById('ssaAccountRate').value = '0.5';
         }
 
         function updateSSAAccountsTable() {
             const tbody = document.getElementById('ssaAccountsTable').querySelector('tbody');
             if (!tbody) return;
             
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #6c757d;">Nenhuma conta SSA registada</td></tr>';
+            tbody.innerHTML = '';
+            
+            ssaAccounts.forEach(account => {
+                const user = users.find(u => u.id == account.userId);
+                const userName = user ? user.fullName : 'N/A';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${account.code}</td>
+                    <td>${account.name}</td>
+                    <td>${userName}</td>
+                    <td>MT ${account.balance.toFixed(2)}</td>
+                    <td>${account.rate}%</td>
+                    <td><span class="status ${account.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${account.status}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editSSAAccount(${account.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleSSAAccountStatus(${account.id})">
+                            ${account.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Atualizar dropdowns
+            loadSSAForDropdowns();
+            loadSSAUsersForDropdown();
+        }
+
+        function editSSAAccount(id) {
+            const account = ssaAccounts.find(acc => acc.id === id);
+            if (account) {
+                document.getElementById('ssaAccountId').value = account.id;
+                document.getElementById('ssaAccountCode').value = account.code;
+                document.getElementById('ssaAccountName').value = account.name;
+                document.getElementById('ssaAccountUser').value = account.userId;
+                document.getElementById('ssaAccountBalance').value = account.balance;
+                document.getElementById('ssaAccountRate').value = account.rate;
+                document.getElementById('ssaAccountStatus').value = account.status;
+                
+                // Scroll para o formulário
+                document.getElementById('ssaAccountForm').scrollIntoView();
+            }
+        }
+
+        function toggleSSAAccountStatus(id) {
+            const account = ssaAccounts.find(acc => acc.id === id);
+            if (account) {
+                account.status = account.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+                updateSSAAccountsTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_SSA_ACCOUNT_STATUS', `${account.status === 'Ativo' ? 'Ativou' : 'Desativou'} conta SSA: ${account.name} (${account.code})`);
+            }
+        }
+
+        function saveSubchannel(event) {
+            if (event) event.preventDefault();
+            
+            const id = document.getElementById('subchannelId').value;
+            const code = document.getElementById('subchannelCode').value;
+            const name = document.getElementById('subchannelName').value;
+            const ssa = document.getElementById('subchannelSSA').value;
+            const location = document.getElementById('subchannelLocation').value;
+            const phone = document.getElementById('subchannelPhone').value;
+            const balance = parseFloat(document.getElementById('subchannelBalance').value) || 0;
+            const status = document.getElementById('subchannelStatus').value;
+            
+            if (id) {
+                // Atualizar subcanal existente
+                const index = subchannels.findIndex(sc => sc.id == id);
+                if (index !== -1) {
+                    subchannels[index] = { 
+                        ...subchannels[index], 
+                        code, name, ssa, location, phone, balance, status
+                    };
+                }
+            } else {
+                // Criar novo subcanal (agente)
+                const newSubchannel = {
+                    id: Date.now(),
+                    code,
+                    name,
+                    ssa,
+                    location,
+                    phone,
+                    balance,
+                    status,
+                    createdAt: new Date().toISOString()
+                };
+                
+                subchannels.push(newSubchannel);
+                
+                // Registrar log de auditoria
+                logAudit('CREATE_SUBCHANNEL', `Criou subcanal: ${name} (${code})`);
+            }
+            
+            localStorage.setItem('subchannels', JSON.stringify(subchannels));
+            updateSubchannelsTable();
+            clearSubchannelForm();
+            
+            alert(id ? 'Agente atualizado com sucesso!' : 'Agente registado com sucesso!');
+        }
+
+        function clearSubchannelForm() {
+            document.getElementById('subchannelId').value = '';
+            document.getElementById('subchannelForm').reset();
+            document.getElementById('subchannelBalance').value = '0';
         }
 
         function updateSubchannelsTable() {
             const tbody = document.getElementById('subchannelsTable').querySelector('tbody');
             if (!tbody) return;
             
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #6c757d;">Nenhum subcanal registado</td></tr>';
+            tbody.innerHTML = '';
+            
+            let totalBalance = 0;
+            let activeCount = 0;
+            
+            subchannels.forEach(subchannel => {
+                if (subchannel.status === 'Ativo') {
+                    totalBalance += subchannel.balance;
+                    activeCount++;
+                }
+                
+                const ssaAccount = ssaAccounts.find(acc => acc.id == subchannel.ssa);
+                const ssaName = ssaAccount ? ssaAccount.name : 'N/A';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${subchannel.code}</td>
+                    <td>${subchannel.name}</td>
+                    <td>${ssaName}</td>
+                    <td>${subchannel.location}</td>
+                    <td>MT ${subchannel.balance.toFixed(2)}</td>
+                    <td><span class="status ${subchannel.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${subchannel.status}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editSubchannel(${subchannel.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleSubchannelStatus(${subchannel.id})">
+                            ${subchannel.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Atualizar resumo
+            document.getElementById('totalAgentsSSA').textContent = subchannels.length;
+            document.getElementById('activeAgentsSSA').textContent = activeCount;
+            document.getElementById('totalAgentBalanceSSA').textContent = `MT ${totalBalance.toFixed(2)}`;
+            
+            // Atualizar dropdown de agentes para depósitos
+            const depositSelect = document.getElementById('ssaDepositTo');
+            if (depositSelect) {
+                depositSelect.innerHTML = '<option value="">Selecionar agente</option>';
+                subchannels
+                    .filter(sc => sc.status === 'Ativo')
+                    .forEach(subchannel => {
+                        const option = document.createElement('option');
+                        option.value = subchannel.id;
+                        option.textContent = `${subchannel.code} - ${subchannel.name}`;
+                        depositSelect.appendChild(option);
+                });
+            }
+        }
+
+        function editSubchannel(id) {
+            const subchannel = subchannels.find(sc => sc.id === id);
+            if (subchannel) {
+                document.getElementById('subchannelId').value = subchannel.id;
+                document.getElementById('subchannelCode').value = subchannel.code;
+                document.getElementById('subchannelName').value = subchannel.name;
+                document.getElementById('subchannelSSA').value = subchannel.ssa;
+                document.getElementById('subchannelLocation').value = subchannel.location;
+                document.getElementById('subchannelPhone').value = subchannel.phone || '';
+                document.getElementById('subchannelBalance').value = subchannel.balance;
+                document.getElementById('subchannelStatus').value = subchannel.status;
+                
+                // Scroll para o formulário
+                document.getElementById('subchannelForm').scrollIntoView();
+            }
+        }
+
+        function toggleSubchannelStatus(id) {
+            const subchannel = subchannels.find(sc => sc.id === id);
+            if (subchannel) {
+                subchannel.status = subchannel.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('subchannels', JSON.stringify(subchannels));
+                updateSubchannelsTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_SUBCHANNEL_STATUS', `${subchannel.status === 'Ativo' ? 'Ativou' : 'Desativou'} subcanal: ${subchannel.name} (${subchannel.code})`);
+            }
+        }
+
+        function saveSSADeposit(event) {
+            if (event) event.preventDefault();
+            
+            const fromSSA = document.getElementById('ssaDepositFrom').value;
+            const toAgent = document.getElementById('ssaDepositTo').value;
+            const amount = parseFloat(document.getElementById('ssaDepositAmount').value);
+            const date = document.getElementById('ssaDepositDate').value;
+            const description = document.getElementById('ssaDepositDescription').value;
+            
+            // Validar saldo da conta SSA
+            const ssaAccount = ssaAccounts.find(acc => acc.id == fromSSA);
+            if (!ssaAccount || ssaAccount.balance < amount) {
+                alert('Saldo insuficiente na conta SSA!');
+                return;
+            }
+            
+            // Atualizar saldos
+            ssaAccount.balance -= amount;
+            
+            const agent = subchannels.find(sc => sc.id == toAgent);
+            if (agent) {
+                agent.balance += amount;
+            }
+            
+            // Registrar transação
+            const transaction = {
+                id: Date.now(),
+                type: 'deposit',
+                fromAccount: fromSSA,
+                toAccount: toAgent,
+                amount,
+                date,
+                description,
+                createdAt: new Date().toISOString()
+            };
+            
+            ssaTransactions.push(transaction);
+            
+            // Salvar dados
+            localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+            localStorage.setItem('subchannels', JSON.stringify(subchannels));
+            localStorage.setItem('ssaTransactions', JSON.stringify(ssaTransactions));
+            
+            updateSSAAccountsTable();
+            updateSubchannelsTable();
+            clearSSADepositForm();
+            
+            alert('Depósito registado com sucesso!');
+            
+            // Registrar log de auditoria
+            logAudit('SSA_DEPOSIT', `Depósito de MT ${amount} para agente ${agent ? agent.name : 'N/A'}`);
+        }
+
+        function clearSSADepositForm() {
+            document.getElementById('ssaDepositForm').reset();
+            document.getElementById('ssaDepositDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function filterSSATransactions() {
+            // Implementar filtragem de transações SSA
+            alert('Funcionalidade de filtro em desenvolvimento');
+        }
+
+        function exportSSAExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+
+        function exportSSACSV() {
+            let csvContent = 'Data,Tipo,Origem,Destino,Valor,Descrição\n';
+            
+            ssaTransactions.forEach(transaction => {
+                const fromAccount = ssaAccounts.find(acc => acc.id == transaction.fromAccount);
+                const toAccount = subchannels.find(sc => sc.id == transaction.toAccount) || 
+                                 ssaAccounts.find(acc => acc.id == transaction.toAccount);
+                
+                const fromName = fromAccount ? fromAccount.name : 'N/A';
+                const toName = toAccount ? toAccount.name : 'N/A';
+                
+                csvContent += `"${transaction.date}","${transaction.type}","${fromName}","${toName}","${transaction.amount}","${transaction.description}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `transacoes_ssa_${Date.now()}.csv`);
+        }
+
+        // ========== FUNÇÕES DE CONFIGURAÇÕES ==========
+        function loadSettings() {
+            // Carregar configurações gerais
+            if (settings.general) {
+                document.getElementById('companyName').value = settings.general.companyName || '';
+                document.getElementById('companyNIF').value = settings.general.companyNIF || '';
+                document.getElementById('companyAddress').value = settings.general.companyAddress || '';
+                document.getElementById('companyPhone').value = settings.general.companyPhone || '';
+                document.getElementById('companyEmail').value = settings.general.companyEmail || '';
+                document.getElementById('defaultCurrency').value = settings.general.defaultCurrency || 'MZN';
+                document.getElementById('dateFormat').value = settings.general.dateFormat || 'dd/mm/yyyy';
+                document.getElementById('language').value = settings.general.language || 'pt';
+                document.getElementById('theme').value = settings.general.theme || 'light';
+            }
+            
+            // Carregar configurações financeiras
+            if (settings.financial) {
+                document.getElementById('defaultRate').value = settings.financial.defaultRate || 0.5;
+                document.getElementById('defaultIRPS').value = settings.financial.defaultIRPS || 20.0;
+                document.getElementById('countSaturday').checked = settings.financial.countSaturday !== false;
+                document.getElementById('countSunday').checked = settings.financial.countSunday !== false;
+                document.getElementById('nationalHolidays').value = settings.financial.nationalHolidays || '';
+                document.getElementById('mainSSAAccount').value = settings.financial.mainSSAAccount || '';
+                document.getElementById('autoCloseMonth').checked = settings.financial.autoCloseMonth || false;
+            }
+            
+            // Carregar configurações de utilizadores
+            if (settings.users) {
+                document.getElementById('requireLogin').checked = settings.users.requireLogin !== false;
+                document.getElementById('rememberSession').checked = settings.users.rememberSession !== false;
+                document.getElementById('allowPasswordReset').checked = settings.users.allowPasswordReset !== false;
+                document.getElementById('sessionTimeout').value = settings.users.sessionTimeout || 60;
+                document.getElementById('keepAccessLogs').checked = settings.users.keepAccessLogs !== false;
+                document.getElementById('logRetentionDays').value = settings.users.logRetentionDays || 90;
+            }
+            
+            // Carregar configurações de segurança
+            if (settings.security) {
+                // Não carregar PIN por segurança
+                document.getElementById('pinTimeout').value = settings.security.pinTimeout || 30;
+                document.getElementById('requirePIN').checked = settings.security.requirePIN !== false;
+                document.getElementById('logPINAttempts').checked = settings.security.logPINAttempts !== false;
+            }
+            
+            // Carregar configurações de backup
+            if (settings.backup) {
+                document.getElementById('autoBackup').checked = settings.backup.autoBackup || false;
+                document.getElementById('backupFrequency').value = settings.backup.backupFrequency || 'daily';
+                document.getElementById('backupTime').value = settings.backup.backupTime || '02:00';
+            }
+            
+            // Carregar configurações de integrações
+            if (settings.integrations) {
+                document.getElementById('apiEndpoint').value = settings.integrations.apiEndpoint || '';
+                // Não carregar API key por segurança
+                document.getElementById('autoSync').checked = settings.integrations.autoSync || false;
+                document.getElementById('syncFrequency').value = settings.integrations.syncFrequency || '60';
+                document.getElementById('autoExport').checked = settings.integrations.autoExport || false;
+                document.getElementById('exportFormat').value = settings.integrations.exportFormat || 'csv';
+                document.getElementById('exportFrequency').value = settings.integrations.exportFrequency || 'daily';
+            }
+        }
+
+        function saveGeneralSettings(event) {
+            if (event) event.preventDefault();
+            
+            settings.general = {
+                companyName: document.getElementById('companyName').value,
+                companyNIF: document.getElementById('companyNIF').value,
+                companyAddress: document.getElementById('companyAddress').value,
+                companyPhone: document.getElementById('companyPhone').value,
+                companyEmail: document.getElementById('companyEmail').value,
+                defaultCurrency: document.getElementById('defaultCurrency').value,
+                dateFormat: document.getElementById('dateFormat').value,
+                language: document.getElementById('language').value,
+                theme: document.getElementById('theme').value
+            };
+            
+            localStorage.setItem('settings', JSON.stringify(settings));
+            alert('Configurações gerais salvas com sucesso!');
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_GENERAL_SETTINGS', 'Atualizou configurações gerais');
+        }
+
+        function saveFinancialSettings(event) {
+            if (event) event.preventDefault();
+            
+            settings.financial = {
+                defaultRate: parseFloat(document.getElementById('defaultRate').value),
+                defaultIRPS: parseFloat(document.getElementById('defaultIRPS').value),
+                countSaturday: document.getElementById('countSaturday').checked,
+                countSunday: document.getElementById('countSunday').checked,
+                nationalHolidays: document.getElementById('nationalHolidays').value,
+                mainSSAAccount: document.getElementById('mainSSAAccount').value,
+                autoCloseMonth: document.getElementById('autoCloseMonth').checked
+            };
+            
+            localStorage.setItem('settings', JSON.stringify(settings));
+            alert('Configurações financeiras salvas com sucesso!');
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_FINANCIAL_SETTINGS', 'Atualizou configurações financeiras');
+        }
+
+        function saveUsersSettings(event) {
+            if (event) event.preventDefault();
+            
+            settings.users = {
+                requireLogin: document.getElementById('requireLogin').checked,
+                rememberSession: document.getElementById('rememberSession').checked,
+                allowPasswordReset: document.getElementById('allowPasswordReset').checked,
+                sessionTimeout: parseInt(document.getElementById('sessionTimeout').value),
+                keepAccessLogs: document.getElementById('keepAccessLogs').checked,
+                logRetentionDays: parseInt(document.getElementById('logRetentionDays').value)
+            };
+            
+            localStorage.setItem('settings', JSON.stringify(settings));
+            alert('Configurações de utilizadores salvas com sucesso!');
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_USERS_SETTINGS', 'Atualizou configurações de utilizadores');
+        }
+
+        function saveSecuritySettings(event) {
+            if (event) event.preventDefault();
+            
+            const adminPIN = document.getElementById('adminPIN').value;
+            const confirmAdminPIN = document.getElementById('confirmAdminPIN').value;
+            
+            if (adminPIN && adminPIN !== confirmAdminPIN) {
+                alert('Os PINs não coincidem!');
+                return;
+            }
+            
+            settings.security = {
+                adminPIN: adminPIN ? btoa(adminPIN) : settings.security.adminPIN, // Encriptação básica
+                pinTimeout: parseInt(document.getElementById('pinTimeout').value),
+                requirePIN: document.getElementById('requirePIN').checked,
+                logPINAttempts: document.getElementById('logPINAttempts').checked
+            };
+            
+            localStorage.setItem('settings', JSON.stringify(settings));
+            alert('Configurações de segurança salvas com sucesso!');
+            
+            // Limpar campos de PIN
+            document.getElementById('adminPIN').value = '';
+            document.getElementById('confirmAdminPIN').value = '';
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_SECURITY_SETTINGS', 'Atualizou configurações de segurança');
+        }
+
+        function saveIntegrationsSettings(event) {
+            if (event) event.preventDefault();
+            
+            settings.integrations = {
+                apiEndpoint: document.getElementById('apiEndpoint').value,
+                apiKey: document.getElementById('apiKey').value ? btoa(document.getElementById('apiKey').value) : settings.integrations.apiKey,
+                autoSync: document.getElementById('autoSync').checked,
+                syncFrequency: document.getElementById('syncFrequency').value,
+                autoExport: document.getElementById('autoExport').checked,
+                exportFormat: document.getElementById('exportFormat').value,
+                exportFrequency: document.getElementById('exportFrequency').value
+            };
+            
+            localStorage.setItem('settings', JSON.stringify(settings));
+            alert('Configurações de integrações salvas com sucesso!');
+            
+            // Limpar campo de API key
+            document.getElementById('apiKey').value = '';
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_INTEGRATIONS_SETTINGS', 'Atualizou configurações de integrações');
         }
 
         // ========== FUNÇÕES DE MODAIS ==========
@@ -3339,6 +4354,17 @@
                 planoContas,
                 lancamentos,
                 auditLogs,
+                settings: {
+                    ...settings,
+                    security: {
+                        ...settings.security,
+                        adminPIN: undefined // Não exportar PIN por segurança
+                    },
+                    integrations: {
+                        ...settings.integrations,
+                        apiKey: undefined // Não exportar API key por segurança
+                    }
+                },
                 exportDate: new Date().toISOString(),
                 version: '1.0'
             };
@@ -3349,6 +4375,10 @@
             
             // Registrar log de auditoria
             logAudit('EXPORT_BACKUP', 'Exportou backup do sistema');
+        }
+
+        function exportBackupCSV() {
+            alert('Exportação para CSV será implementada');
         }
 
         function importBackup() {
@@ -3382,6 +4412,7 @@
                     planoContas = backupData.planoContas || [];
                     lancamentos = backupData.lancamentos || [];
                     auditLogs = backupData.auditLogs || [];
+                    settings = backupData.settings || {};
                     
                     // Salvar no localStorage
                     localStorage.setItem('users', JSON.stringify(users));
@@ -3395,6 +4426,7 @@
                     localStorage.setItem('planoContas', JSON.stringify(planoContas));
                     localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
                     localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
+                    localStorage.setItem('settings', JSON.stringify(settings));
                     
                     // Registrar log de auditoria
                     logAudit('IMPORT_BACKUP', 'Importou backup do sistema');
@@ -3410,6 +4442,9 @@
                         updateUsersTable();
                         renderPlanoContas();
                         loadPlanoContasForDropdown();
+                        updateSSAAccountsTable();
+                        updateSubchannelsTable();
+                        loadSettings();
                     }
                     
                 } catch (error) {
@@ -3463,6 +4498,8 @@
             document.getElementById('agentForm').addEventListener('submit', saveAgent);
             document.getElementById('userForm').addEventListener('submit', saveUser);
             document.getElementById('ssaAccountForm').addEventListener('submit', saveSSAAccount);
+            document.getElementById('subchannelForm').addEventListener('submit', saveSubchannel);
+            document.getElementById('ssaDepositForm').addEventListener('submit', saveSSADeposit);
             document.getElementById('contaForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 alert('Funcionalidade de criação de contas em desenvolvimento');
@@ -3472,6 +4509,13 @@
                 e.preventDefault();
                 alert('Funcionalidade de lançamentos em desenvolvimento');
             });
+            
+            // Configurar event listeners para configurações
+            document.getElementById('generalSettingsForm').addEventListener('submit', saveGeneralSettings);
+            document.getElementById('financialSettingsForm').addEventListener('submit', saveFinancialSettings);
+            document.getElementById('usersSettingsForm').addEventListener('submit', saveUsersSettings);
+            document.getElementById('securitySettingsForm').addEventListener('submit', saveSecuritySettings);
+            document.getElementById('integrationsSettingsForm').addEventListener('submit', saveIntegrationsSettings);
             
             // Configurar data atual nos formulários
             const today = new Date().toISOString().split('T')[0];
