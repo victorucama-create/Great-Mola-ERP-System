@@ -573,16 +573,8 @@
             <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar no Sistema</button>
         </form>
         
-        <div style="margin-top: 30px; padding: 20px; background: var(--light); border-radius: 8px;">
-            <h4 style="margin-bottom: 15px; color: var(--dark);">Utilizadores de Demonstração:</h4>
-            <div style="text-align: left; font-size: 12px; line-height: 1.6;">
-                <div><strong>Admin:</strong> admin / admin123</div>
-                <div><strong>Gestor:</strong> gestor / gestor123</div>
-                <div><strong>Analista:</strong> analista / analista123</div>
-                <div><strong>Agente:</strong> agente / agente123</div>
-                <div><strong>Investidor:</strong> investidor / invest123</div>
-                <div><strong>SSA:</strong> ssa / ssa123</div>
-            </div>
+        <div class="alert" style="margin-top: 20px;">
+            <strong>Primeiro Acesso:</strong> Contacte o administrador do sistema para criar a sua conta.
         </div>
     </div>
 
@@ -809,6 +801,12 @@
                         </div>
                     </div>
                     
+                    <div class="export-buttons">
+                        <button class="btn btn-secondary" onclick="exportFinancialReports('excel')">📊 Exportar Excel</button>
+                        <button class="btn btn-success" onclick="exportFinancialReports('csv')">📄 Exportar CSV</button>
+                        <button class="btn btn-primary" onclick="exportFinancialReports('pdf')">📑 Exportar PDF</button>
+                    </div>
+                    
                     <div id="reportResult" style="margin-top: 20px;"></div>
                 </div>
             </div>
@@ -817,6 +815,10 @@
             <div class="sub-content" id="transactions">
                 <div class="card">
                     <h3>Diário de Movimentos</h3>
+                    <div class="export-buttons">
+                        <button class="btn btn-secondary" onclick="exportTransactions('excel')">📊 Exportar Excel</button>
+                        <button class="btn btn-success" onclick="exportTransactions('csv')">📄 Exportar CSV</button>
+                    </div>
                     <table id="journalTable">
                         <thead>
                             <tr>
@@ -911,6 +913,11 @@
                                     <option value="">Todas as contas</option>
                                 </select>
                             </div>
+                        </div>
+                        
+                        <div class="export-buttons">
+                            <button class="btn btn-secondary" onclick="exportLancamentos('excel')">📊 Exportar Excel</button>
+                            <button class="btn btn-success" onclick="exportLancamentos('csv')">📄 Exportar CSV</button>
                         </div>
                         
                         <div style="margin-top: 20px;">
@@ -2236,7 +2243,7 @@
             if (users.length === 0) {
                 console.log('Inicializando dados padrão...');
                 
-                // Criar utilizadores padrão
+                // Criar apenas um usuário administrador padrão
                 const defaultUsers = [
                     {
                         id: 1,
@@ -2244,56 +2251,6 @@
                         username: 'admin',
                         password: 'admin123',
                         role: 'admin',
-                        status: 'Ativo',
-                        createdAt: new Date().toISOString(),
-                        lastAccess: null
-                    },
-                    {
-                        id: 2,
-                        fullName: 'Gestor Financeiro',
-                        username: 'gestor',
-                        password: 'gestor123',
-                        role: 'manager',
-                        status: 'Ativo',
-                        createdAt: new Date().toISOString(),
-                        lastAccess: null
-                    },
-                    {
-                        id: 3,
-                        fullName: 'Analista Contabilístico',
-                        username: 'analista',
-                        password: 'analista123',
-                        role: 'accountant',
-                        status: 'Ativo',
-                        createdAt: new Date().toISOString(),
-                        lastAccess: null
-                    },
-                    {
-                        id: 4,
-                        fullName: 'Agente Comercial',
-                        username: 'agente',
-                        password: 'agente123',
-                        role: 'operator',
-                        status: 'Ativo',
-                        createdAt: new Date().toISOString(),
-                        lastAccess: null
-                    },
-                    {
-                        id: 5,
-                        fullName: 'Investidor',
-                        username: 'investidor',
-                        password: 'invest123',
-                        role: 'viewer',
-                        status: 'Ativo',
-                        createdAt: new Date().toISOString(),
-                        lastAccess: null
-                    },
-                    {
-                        id: 6,
-                        fullName: 'SSA Manager',
-                        username: 'ssa',
-                        password: 'ssa123',
-                        role: 'ssa',
                         status: 'Ativo',
                         createdAt: new Date().toISOString(),
                         lastAccess: null
@@ -2747,6 +2704,174 @@
                 // Registrar log de auditoria
                 logAudit('DELETE_CONTA', `Eliminou conta com ID: ${id}`);
             }
+        }
+
+        // ========== FUNÇÕES DE EXPORTAÇÃO DE RELATÓRIOS ==========
+        function exportFinancialReports(format) {
+            let content = '';
+            let filename = '';
+            let mimeType = '';
+            
+            if (format === 'csv') {
+                // Gerar CSV para relatórios financeiros
+                content = 'Tipo,Descrição,Valor,Data,Status\n';
+                
+                // Adicionar dados de exemplo (substituir por dados reais)
+                content += 'Receita,Vendas do mês,15000.00,2024-01-15,Concluído\n';
+                content += 'Despesa,Salários,8000.00,2024-01-05,Pago\n';
+                content += 'Receita,Serviços prestados,12000.00,2024-01-20,Concluído\n';
+                content += 'Despesa,Aluguel,2000.00,2024-01-10,Pago\n';
+                
+                filename = `relatorios_financeiros_${Date.now()}.csv`;
+                mimeType = 'text/csv;charset=utf-8;';
+            } else if (format === 'excel') {
+                // Para Excel, criar um CSV que pode ser aberto no Excel
+                content = 'Tipo\tDescrição\tValor\tData\tStatus\n';
+                
+                // Adicionar dados de exemplo
+                content += 'Receita\tVendas do mês\t15000.00\t2024-01-15\tConcluído\n';
+                content += 'Despesa\tSalários\t8000.00\t2024-01-05\tPago\n';
+                content += 'Receita\tServiços prestados\t12000.00\t2024-01-20\tConcluído\n';
+                content += 'Despesa\tAluguel\t2000.00\t2024-01-10\tPago\n';
+                
+                filename = `relatorios_financeiros_${Date.now()}.xls`;
+                mimeType = 'application/vnd.ms-excel;charset=utf-8;';
+            } else if (format === 'pdf') {
+                // Para PDF, criar um HTML simples que pode ser impresso como PDF
+                content = `
+                    <html>
+                        <head>
+                            <title>Relatórios Financeiros - Great Mola</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; }
+                                table { width: 100%; border-collapse: collapse; }
+                                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                                th { background-color: #f2f2f2; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>Relatórios Financeiros - Great Mola</h1>
+                            <p>Data de emissão: ${new Date().toLocaleDateString()}</p>
+                            <table>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Descrição</th>
+                                    <th>Valor (MZN)</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                </tr>
+                                <tr>
+                                    <td>Receita</td>
+                                    <td>Vendas do mês</td>
+                                    <td>15,000.00</td>
+                                    <td>2024-01-15</td>
+                                    <td>Concluído</td>
+                                </tr>
+                                <tr>
+                                    <td>Despesa</td>
+                                    <td>Salários</td>
+                                    <td>8,000.00</td>
+                                    <td>2024-01-05</td>
+                                    <td>Pago</td>
+                                </tr>
+                                <tr>
+                                    <td>Receita</td>
+                                    <td>Serviços prestados</td>
+                                    <td>12,000.00</td>
+                                    <td>2024-01-20</td>
+                                    <td>Concluído</td>
+                                </tr>
+                                <tr>
+                                    <td>Despesa</td>
+                                    <td>Aluguel</td>
+                                    <td>2,000.00</td>
+                                    <td>2024-01-10</td>
+                                    <td>Pago</td>
+                                </tr>
+                            </table>
+                        </body>
+                    </html>
+                `;
+                filename = `relatorios_financeiros_${Date.now()}.html`;
+                mimeType = 'text/html;charset=utf-8;';
+            }
+            
+            const dataBlob = new Blob([content], { type: mimeType });
+            downloadFile(dataBlob, filename);
+            
+            // Registrar log de auditoria
+            logAudit('EXPORT_FINANCIAL_REPORTS', `Exportou relatórios financeiros em formato ${format}`);
+        }
+
+        function exportTransactions(format) {
+            let content = '';
+            let filename = '';
+            let mimeType = '';
+            
+            if (format === 'csv') {
+                content = 'Data,Descrição,Conta Débito,Conta Crédito,Valor (MZN)\n';
+                
+                // Adicionar transações existentes
+                transactions.forEach(txn => {
+                    content += `"${txn.date}","${txn.description}","${txn.debitAccount}","${txn.creditAccount}","${txn.amount}"\n`;
+                });
+                
+                filename = `transacoes_${Date.now()}.csv`;
+                mimeType = 'text/csv;charset=utf-8;';
+            } else if (format === 'excel') {
+                content = 'Data\tDescrição\tConta Débito\tConta Crédito\tValor (MZN)\n';
+                
+                transactions.forEach(txn => {
+                    content += `${txn.date}\t${txn.description}\t${txn.debitAccount}\t${txn.creditAccount}\t${txn.amount}\n`;
+                });
+                
+                filename = `transacoes_${Date.now()}.xls`;
+                mimeType = 'application/vnd.ms-excel;charset=utf-8;';
+            }
+            
+            const dataBlob = new Blob([content], { type: mimeType });
+            downloadFile(dataBlob, filename);
+            
+            // Registrar log de auditoria
+            logAudit('EXPORT_TRANSACTIONS', `Exportou transações em formato ${format}`);
+        }
+
+        function exportLancamentos(format) {
+            let content = '';
+            let filename = '';
+            let mimeType = '';
+            
+            if (format === 'csv') {
+                content = 'Data,Descrição,Conta Débito,Conta Crédito,Valor (MZN)\n';
+                
+                lancamentos.forEach(lancamento => {
+                    const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                    const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                    
+                    content += `"${lancamento.data}","${lancamento.descricao}","${contaDebito ? contaDebito.nome : 'N/A'}","${contaCredito ? contaCredito.nome : 'N/A'}","${lancamento.valor}"\n`;
+                });
+                
+                filename = `lancamentos_${Date.now()}.csv`;
+                mimeType = 'text/csv;charset=utf-8;';
+            } else if (format === 'excel') {
+                content = 'Data\tDescrição\tConta Débito\tConta Crédito\tValor (MZN)\n';
+                
+                lancamentos.forEach(lancamento => {
+                    const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                    const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                    
+                    content += `${lancamento.data}\t${lancamento.descricao}\t${contaDebito ? contaDebito.nome : 'N/A'}\t${contaCredito ? contaCredito.nome : 'N/A'}\t${lancamento.valor}\n`;
+                });
+                
+                filename = `lancamentos_${Date.now()}.xls`;
+                mimeType = 'application/vnd.ms-excel;charset=utf-8;';
+            }
+            
+            const dataBlob = new Blob([content], { type: mimeType });
+            downloadFile(dataBlob, filename);
+            
+            // Registrar log de auditoria
+            logAudit('EXPORT_LANCAMENTOS', `Exportou lançamentos em formato ${format}`);
         }
 
         // ========== FUNÇÕES AUXILIARES ==========
