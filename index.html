@@ -574,7 +574,7 @@
         </form>
         
         <div class="alert" style="margin-top: 20px;">
-            <strong>Primeiro Acesso:</strong> Contacte o administrador do sistema para criar a sua conta.
+            <strong>Primeiro Acesso:</strong> Utilize admin / admin123
         </div>
     </div>
 
@@ -1011,7 +1011,13 @@
                                 <input type="date" id="investorStartDate" required>
                             </div>
                             <div class="form-group">
-                                <label>Ciclo de Investimento</label>
+                                <label>Data de Fim</label>
+                                <input type="date" id="investorEndDate" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Ciclo de Investimento</label>
                                 <select id="investorCycle" required>
                                     <option value="Jan 2025">Jan 2025</option>
                                     <option value="Fev 2025">Fev 2025</option>
@@ -1021,7 +1027,6 @@
                                     <option value="Jun 2025">Jun 2025</option>
                                 </select>
                             </div>
-                        </div>
                         
                         <div class="form-group">
                             <label>IRPS (%)</label>
@@ -1106,7 +1111,8 @@
                             <th>Capital</th>
                             <th>Valor</th>
                             <th>Início</th>
-                            <th>Ciclo</th>
+                            <th>Fim</th>
+                            <th>Dias Úteis</th>
                             <th>Rendimento Bruto</th>
                             <th>IRPS</th>
                             <th>Rendimento Líquido</th>
@@ -2887,12 +2893,35 @@
             return roles[role] || 'Utilizador';
         }
 
+        // FUNÇÃO MELHORADA PARA CALCULAR DIAS ÚTEIS
         function calculateBusinessDays(startDate, endDate) {
             let count = 0;
             const curDate = new Date(startDate.getTime());
+            
+            // Feriados nacionais de Moçambique (exemplo)
+            const feriados = [
+                '2024-01-01', // Ano Novo
+                '2024-02-03', // Dia dos Heróis Moçambicanos
+                '2024-04-07', // Dia da Mulher Moçambicana
+                '2024-05-01', // Dia do Trabalhador
+                '2024-06-25', // Dia da Independência
+                '2024-09-07', // Dia da Vitória
+                '2024-09-25', // Dia das Forças Armadas
+                '2024-12-25'  // Natal
+            ];
+            
             while (curDate <= endDate) {
                 const dayOfWeek = curDate.getDay();
-                if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
+                const dateString = curDate.toISOString().split('T')[0];
+                
+                // Verificar se não é domingo (0) nem feriado
+                if (dayOfWeek !== 0 && !feriados.includes(dateString)) {
+                    if (dayOfWeek === 6) { // Sábado
+                        count += 0.5; // Sábado conta como 1/2 dia
+                    } else {
+                        count += 1; // Dias de semana completos
+                    }
+                }
                 curDate.setDate(curDate.getDate() + 1);
             }
             return count;
@@ -3340,6 +3369,7 @@
             const amount = parseFloat(document.getElementById('investorAmount').value);
             const rate = parseFloat(document.getElementById('investorRate').value);
             const startDate = document.getElementById('investorStartDate').value;
+            const endDate = document.getElementById('investorEndDate').value;
             const cycle = document.getElementById('investorCycle').value;
             const irps = parseFloat(document.getElementById('investorIRPS').value);
             
@@ -3350,7 +3380,7 @@
                     investors[index] = { 
                         ...investors[index], 
                         name, docType, docNumber, phone, email, account,
-                        capitalType, amount, rate, startDate, cycle, irps
+                        capitalType, amount, rate, startDate, endDate, cycle, irps
                     };
                 }
             } else {
@@ -3367,6 +3397,7 @@
                     amount,
                     rate,
                     startDate,
+                    endDate,
                     cycle,
                     irps,
                     status: 'Ativo',
@@ -3393,6 +3424,11 @@
             document.getElementById('investorRate').value = '0.5';
             document.getElementById('investorIRPS').value = '20.0';
             document.getElementById('investorStartDate').value = new Date().toISOString().split('T')[0];
+            // Definir data de fim padrão para 30 dias após a data de início
+            const startDate = new Date();
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 30);
+            document.getElementById('investorEndDate').value = endDate.toISOString().split('T')[0];
         }
 
         function updateInvestorsTable() {
@@ -3415,8 +3451,12 @@
             }
             
             filteredInvestors.forEach(investor => {
+                // Calcular dias úteis entre data de início e fim
+                const startDate = new Date(investor.startDate);
+                const endDate = new Date(investor.endDate);
+                const days = calculateBusinessDays(startDate, endDate);
+                
                 // Calcular rendimentos
-                const days = calculateBusinessDays(new Date(investor.startDate), new Date());
                 const grossYield = investor.amount * (investor.rate / 100) * days;
                 const irpsAmount = grossYield * (investor.irps / 100);
                 const netYield = grossYield - irpsAmount;
@@ -3429,7 +3469,8 @@
                     <td>${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}</td>
                     <td>MT ${parseFloat(investor.amount).toFixed(2)}</td>
                     <td>${investor.startDate}</td>
-                    <td>${investor.cycle}</td>
+                    <td>${investor.endDate}</td>
+                    <td>${days.toFixed(1)}</td>
                     <td>MT ${grossYield.toFixed(2)}</td>
                     <td>MT ${irpsAmount.toFixed(2)}</td>
                     <td>MT ${netYield.toFixed(2)}</td>
@@ -3468,6 +3509,7 @@
                 document.getElementById('investorAmount').value = investor.amount;
                 document.getElementById('investorRate').value = investor.rate;
                 document.getElementById('investorStartDate').value = investor.startDate;
+                document.getElementById('investorEndDate').value = investor.endDate;
                 document.getElementById('investorCycle').value = investor.cycle;
                 document.getElementById('investorIRPS').value = investor.irps;
                 
@@ -3507,19 +3549,35 @@
         }
 
         function exportInvestorsExcel() {
-            alert('Exportação para Excel será implementada');
-        }
-
-        function exportInvestorsCSV() {
-            let csvContent = 'Nome,Documento,Contacto,Capital,Valor,Início,Ciclo,Rendimento Bruto,IRPS,Rendimento Líquido,Situação\n';
+            let content = 'Nome\tDocumento\tContacto\tCapital\tValor\tInício\tFim\tDias Úteis\tRendimento Bruto\tIRPS\tRendimento Líquido\tSituação\n';
             
             investors.forEach(investor => {
-                const days = calculateBusinessDays(new Date(investor.startDate), new Date());
+                const startDate = new Date(investor.startDate);
+                const endDate = new Date(investor.endDate);
+                const days = calculateBusinessDays(startDate, endDate);
                 const grossYield = investor.amount * (investor.rate / 100) * days;
                 const irpsAmount = grossYield * (investor.irps / 100);
                 const netYield = grossYield - irpsAmount;
                 
-                csvContent += `"${investor.name}","${investor.docType}: ${investor.docNumber}","${investor.phone}","${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}","${investor.amount}","${investor.startDate}","${investor.cycle}","${grossYield.toFixed(2)}","${irpsAmount.toFixed(2)}","${netYield.toFixed(2)}","${investor.status}"\n`;
+                content += `${investor.name}\t${investor.docType}: ${investor.docNumber}\t${investor.phone}\t${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}\t${investor.amount}\t${investor.startDate}\t${investor.endDate}\t${days.toFixed(1)}\t${grossYield.toFixed(2)}\t${irpsAmount.toFixed(2)}\t${netYield.toFixed(2)}\t${investor.status}\n`;
+            });
+            
+            const dataBlob = new Blob([content], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+            downloadFile(dataBlob, `investidores_${Date.now()}.xls`);
+        }
+
+        function exportInvestorsCSV() {
+            let csvContent = 'Nome,Documento,Contacto,Capital,Valor,Início,Fim,Dias Úteis,Rendimento Bruto,IRPS,Rendimento Líquido,Situação\n';
+            
+            investors.forEach(investor => {
+                const startDate = new Date(investor.startDate);
+                const endDate = new Date(investor.endDate);
+                const days = calculateBusinessDays(startDate, endDate);
+                const grossYield = investor.amount * (investor.rate / 100) * days;
+                const irpsAmount = grossYield * (investor.irps / 100);
+                const netYield = grossYield - irpsAmount;
+                
+                csvContent += `"${investor.name}","${investor.docType}: ${investor.docNumber}","${investor.phone}","${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}","${investor.amount}","${investor.startDate}","${investor.endDate}","${days.toFixed(1)}","${grossYield.toFixed(2)}","${irpsAmount.toFixed(2)}","${netYield.toFixed(2)}","${investor.status}"\n`;
             });
             
             const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -4645,6 +4703,10 @@
             // Configurar data atual nos formulários
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('investorStartDate').value = today;
+            // Definir data de fim padrão para 30 dias após a data de início
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 30);
+            document.getElementById('investorEndDate').value = endDate.toISOString().split('T')[0];
             document.getElementById('txnDate').value = today;
             document.getElementById('lancamentoData').value = today;
             document.getElementById('ssaDepositDate').value = today;
