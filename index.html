@@ -1142,7 +1142,7 @@
                         </div>
                         <div class="form-group">
                             <label>Tipo de Capital</label>
-                            <select id="calcType">
+                                <select id="calcType">
                                 <option value="proprio">Próprio</option>
                                 <option value="alheio">Alheio</option>
                             </select>
@@ -1372,6 +1372,7 @@
             <div class="sub-tabs">
                 <button class="sub-tab active" onclick="switchUsersSubTab('users')">Utilizadores</button>
                 <button class="sub-tab" onclick="switchUsersSubTab('roles')">Funções</button>
+                <button class="sub-tab" onclick="switchUsersSubTab('permissions')">Permissões</button>
                 <button class="sub-tab" onclick="switchUsersSubTab('audit')">Auditoria</button>
             </div>
             
@@ -1521,6 +1522,29 @@
                         </thead>
                         <tbody></tbody>
                     </table>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Permissões -->
+            <div class="sub-content" id="usersPermissions">
+                <div class="card">
+                    <h3>🔧 Gestão de Permissões por Módulo</h3>
+                    <p>Configure as permissões de acesso para cada função nos diferentes módulos do sistema.</p>
+                    
+                    <div class="form-group">
+                        <label>Selecionar Função</label>
+                        <select id="permissionRoleSelect" onchange="loadRolePermissions()">
+                            <option value="">Selecionar função</option>
+                        </select>
+                    </div>
+                    
+                    <div id="modulePermissionsContainer">
+                        <p>Selecione uma função para configurar as permissões</p>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button class="btn btn-primary" onclick="saveModulePermissions()" id="savePermissionsBtn" disabled>💾 Salvar Permissões</button>
+                    </div>
                 </div>
             </div>
             
@@ -3505,6 +3529,8 @@
                 updateUsersTable();
                 updateRolesTable();
                 updateAuditLogs();
+                loadRolesForDropdown();
+                loadPermissionRoleDropdown();
             } else if (tabName === 'ssa') {
                 updateSSAAccountsTable();
                 updateSTTable();
@@ -3568,6 +3594,11 @@
             // Ativar botão selecionado
             if (event && event.target) {
                 event.target.classList.add('active');
+            }
+            
+            // Atualizar dados específicos da sub-tab
+            if (subTabName === 'permissions') {
+                loadPermissionRoleDropdown();
             }
         }
 
@@ -3805,6 +3836,20 @@
                 roles.forEach(role => {
                     const option = document.createElement('option');
                     option.value = role.name;
+                    option.textContent = `${role.name} - ${role.description}`;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        function loadPermissionRoleDropdown() {
+            const select = document.getElementById('permissionRoleSelect');
+            if (select) {
+                select.innerHTML = '<option value="">Selecionar função</option>';
+                
+                roles.forEach(role => {
+                    const option = document.createElement('option');
+                    option.value = role.id;
                     option.textContent = `${role.name} - ${role.description}`;
                     select.appendChild(option);
                 });
@@ -4678,6 +4723,7 @@
             
             // Atualizar dropdown de funções
             loadRolesForDropdown();
+            loadPermissionRoleDropdown();
         }
 
         function editRole(id) {
@@ -4789,6 +4835,221 @@
             
             // Registrar log de auditoria
             logAudit('UPDATE_ROLE_PERMISSIONS', `Atualizou permissões da função: ${role.name}`);
+        }
+
+        // ========== FUNÇÕES DE PERMISSÕES POR MÓDULO ==========
+        function loadRolePermissions() {
+            const roleSelect = document.getElementById('permissionRoleSelect');
+            const roleId = roleSelect.value;
+            
+            if (!roleId) {
+                document.getElementById('modulePermissionsContainer').innerHTML = '<p>Selecione uma função para configurar as permissões</p>';
+                document.getElementById('savePermissionsBtn').disabled = true;
+                return;
+            }
+            
+            const role = roles.find(r => r.id == roleId);
+            if (!role) return;
+            
+            let html = `
+                <h4>Permissões para: ${role.name}</h4>
+                <p class="small muted">${role.description}</p>
+                <div class="permissions-grid">
+            `;
+            
+            // Definir módulos e sub-módulos
+            const modules = {
+                'Dashboard': {
+                    'Ver Dashboard': 'dashboard.view'
+                },
+                'Contabilidade & Finanças': {
+                    'Ver Contabilidade': 'accounting.view',
+                    'Editar Contabilidade': 'accounting.edit',
+                    'Eliminar Contabilidade': 'accounting.delete',
+                    'Ver Plano de Contas': 'chartOfAccounts.view',
+                    'Editar Plano de Contas': 'chartOfAccounts.edit',
+                    'Ver Relatórios': 'reports.view',
+                    'Exportar Relatórios': 'reports.export',
+                    'Ver Transações': 'transactions.view',
+                    'Editar Transações': 'transactions.edit',
+                    'Ver Controlo Interno': 'internalControl.view',
+                    'Ver Lançamentos': 'accountingEntries.view',
+                    'Editar Lançamentos': 'accountingEntries.edit'
+                },
+                'Investidores': {
+                    'Ver Investidores': 'investors.view',
+                    'Editar Investidores': 'investors.edit',
+                    'Eliminar Investidores': 'investors.delete',
+                    'Exportar Investidores': 'investors.export'
+                },
+                'Agentes': {
+                    'Ver Agentes': 'agents.view',
+                    'Editar Agentes': 'agents.edit',
+                    'Eliminar Agentes': 'agents.delete',
+                    'Exportar Agentes': 'agents.export',
+                    'Ver Extratos': 'agents.extracts'
+                },
+                'SSA': {
+                    'Ver SSA': 'ssa.view',
+                    'Editar SSA': 'ssa.edit',
+                    'Eliminar SSA': 'ssa.delete',
+                    'Ver ST': 'ssa.st.view',
+                    'Editar ST': 'ssa.st.edit',
+                    'Ver AF': 'ssa.af.view',
+                    'Editar AF': 'ssa.af.edit',
+                    'Ver Subcanais': 'ssa.subchannels.view',
+                    'Editar Subcanais': 'ssa.subchannels.edit',
+                    'Ver Transações SSA': 'ssa.transactions.view',
+                    'Editar Transações SSA': 'ssa.transactions.edit',
+                    'Ver Relatórios SSA': 'ssa.reports.view',
+                    'Exportar Relatórios SSA': 'ssa.reports.export'
+                },
+                'Utilizadores': {
+                    'Ver Utilizadores': 'users.view',
+                    'Editar Utilizadores': 'users.edit',
+                    'Eliminar Utilizadores': 'users.delete',
+                    'Ver Funções': 'users.roles.view',
+                    'Editar Funções': 'users.roles.edit',
+                    'Ver Permissões': 'users.permissions.view',
+                    'Editar Permissões': 'users.permissions.edit',
+                    'Ver Auditoria': 'users.audit.view'
+                },
+                'Aprovações': {
+                    'Ver Aprovações': 'approvals.view',
+                    'Editar Aprovações': 'approvals.edit',
+                    'Eliminar Aprovações': 'approvals.delete'
+                },
+                'Configurações': {
+                    'Ver Configurações': 'settings.view',
+                    'Editar Configurações': 'settings.edit'
+                }
+            };
+            
+            Object.keys(modules).forEach(category => {
+                html += `<div class="permission-category">${category}</div>`;
+                
+                const subModules = modules[category];
+                Object.keys(subModules).forEach(subModule => {
+                    const permissionKey = subModules[subModule];
+                    const isChecked = checkPermission(role, permissionKey);
+                    
+                    html += `
+                        <div class="permission-item">
+                            <input type="checkbox" id="mod_${permissionKey}" ${isChecked ? 'checked' : ''}>
+                            <label for="mod_${permissionKey}">${subModule}</label>
+                        </div>
+                    `;
+                });
+            });
+            
+            html += '</div>';
+            document.getElementById('modulePermissionsContainer').innerHTML = html;
+            document.getElementById('savePermissionsBtn').disabled = false;
+        }
+
+        function checkPermission(role, permissionKey) {
+            // Lógica para verificar se a permissão está ativa
+            const parts = permissionKey.split('.');
+            let current = role.permissions;
+            
+            for (let i = 0; i < parts.length; i++) {
+                if (current[parts[i]] === undefined) {
+                    return false;
+                }
+                if (i === parts.length - 1) {
+                    return current[parts[i]] === true;
+                }
+                current = current[parts[i]];
+            }
+            return false;
+        }
+
+        function saveModulePermissions() {
+            const roleSelect = document.getElementById('permissionRoleSelect');
+            const roleId = roleSelect.value;
+            
+            if (!roleId) {
+                alert('Selecione uma função primeiro!');
+                return;
+            }
+            
+            const role = roles.find(r => r.id == roleId);
+            if (!role) return;
+            
+            // Atualizar permissões baseado nos checkboxes
+            const modules = {
+                'dashboard.view': 'mod_dashboard.view',
+                'accounting.view': 'mod_accounting.view',
+                'accounting.edit': 'mod_accounting.edit',
+                'accounting.delete': 'mod_accounting.delete',
+                'chartOfAccounts.view': 'mod_chartOfAccounts.view',
+                'chartOfAccounts.edit': 'mod_chartOfAccounts.edit',
+                'reports.view': 'mod_reports.view',
+                'reports.export': 'mod_reports.export',
+                'transactions.view': 'mod_transactions.view',
+                'transactions.edit': 'mod_transactions.edit',
+                'internalControl.view': 'mod_internalControl.view',
+                'accountingEntries.view': 'mod_accountingEntries.view',
+                'accountingEntries.edit': 'mod_accountingEntries.edit',
+                'investors.view': 'mod_investors.view',
+                'investors.edit': 'mod_investors.edit',
+                'investors.delete': 'mod_investors.delete',
+                'investors.export': 'mod_investors.export',
+                'agents.view': 'mod_agents.view',
+                'agents.edit': 'mod_agents.edit',
+                'agents.delete': 'mod_agents.delete',
+                'agents.export': 'mod_agents.export',
+                'agents.extracts': 'mod_agents.extracts',
+                'ssa.view': 'mod_ssa.view',
+                'ssa.edit': 'mod_ssa.edit',
+                'ssa.delete': 'mod_ssa.delete',
+                'ssa.st.view': 'mod_ssa.st.view',
+                'ssa.st.edit': 'mod_ssa.st.edit',
+                'ssa.af.view': 'mod_ssa.af.view',
+                'ssa.af.edit': 'mod_ssa.af.edit',
+                'ssa.subchannels.view': 'mod_ssa.subchannels.view',
+                'ssa.subchannels.edit': 'mod_ssa.subchannels.edit',
+                'ssa.transactions.view': 'mod_ssa.transactions.view',
+                'ssa.transactions.edit': 'mod_ssa.transactions.edit',
+                'ssa.reports.view': 'mod_ssa.reports.view',
+                'ssa.reports.export': 'mod_ssa.reports.export',
+                'users.view': 'mod_users.view',
+                'users.edit': 'mod_users.edit',
+                'users.delete': 'mod_users.delete',
+                'users.roles.view': 'mod_users.roles.view',
+                'users.roles.edit': 'mod_users.roles.edit',
+                'users.permissions.view': 'mod_users.permissions.view',
+                'users.permissions.edit': 'mod_users.permissions.edit',
+                'users.audit.view': 'mod_users.audit.view',
+                'approvals.view': 'mod_approvals.view',
+                'approvals.edit': 'mod_approvals.edit',
+                'approvals.delete': 'mod_approvals.delete',
+                'settings.view': 'mod_settings.view',
+                'settings.edit': 'mod_settings.edit'
+            };
+            
+            Object.keys(modules).forEach(permissionKey => {
+                const checkboxId = modules[permissionKey];
+                const checkbox = document.getElementById(checkboxId);
+                const parts = permissionKey.split('.');
+                
+                if (checkbox) {
+                    let current = role.permissions;
+                    for (let i = 0; i < parts.length - 1; i++) {
+                        if (!current[parts[i]]) {
+                            current[parts[i]] = {};
+                        }
+                        current = current[parts[i]];
+                    }
+                    current[parts[parts.length - 1]] = checkbox.checked;
+                }
+            });
+            
+            localStorage.setItem('roles', JSON.stringify(roles));
+            alert('Permissões atualizadas com sucesso!');
+            
+            // Registrar log de auditoria
+            logAudit('UPDATE_MODULE_PERMISSIONS', `Atualizou permissões por módulo para a função: ${role.name}`);
         }
 
         // ========== FUNÇÕES DE SSA ==========
