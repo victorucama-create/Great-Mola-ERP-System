@@ -2613,30 +2613,34 @@
     <script>
         // ========== VARIÁVEIS GLOBAIS ==========
         let currentUser = null;
-        let users = JSON.parse(localStorage.getItem('users') || '[]');
-        let roles = JSON.parse(localStorage.getItem('roles') || '[]');
-        let investors = JSON.parse(localStorage.getItem('investors') || '[]');
-        let agents = JSON.parse(localStorage.getItem('agents') || '[]');
-        let ssaAccounts = JSON.parse(localStorage.getItem('ssaAccounts') || '[]');
-        let stAccounts = JSON.parse(localStorage.getItem('stAccounts') || '[]');
-        let afAccounts = JSON.parse(localStorage.getItem('afAccounts') || '[]');
-        let ssaTransactions = JSON.parse(localStorage.getItem('ssaTransactions') || '[]');
-        let subchannels = JSON.parse(localStorage.getItem('subchannels') || '[]');
-        let approvals = JSON.parse(localStorage.getItem('approvals') || '[]');
-        let transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
-        let planoContas = JSON.parse(localStorage.getItem('planoContas') || '[]');
-        let lancamentos = JSON.parse(localStorage.getItem('lancamentos') || '[]');
-        let auditLogs = JSON.parse(localStorage.getItem('auditLogs') || '[]');
-        let settings = JSON.parse(localStorage.getItem('settings') || '{}');
+        let users = [];
+        let roles = [];
+        let investors = [];
+        let agents = [];
+        let ssaAccounts = [];
+        let stAccounts = [];
+        let afAccounts = [];
+        let ssaTransactions = [];
+        let subchannels = [];
+        let approvals = [];
+        let transactions = [];
+        let planoContas = [];
+        let lancamentos = [];
+        let auditLogs = [];
+        let settings = {};
         
         // ========== INICIALIZAÇÃO DE DADOS PADRÃO ==========
         function initializeDefaultData() {
-            // Verificar se já existem dados
-            if (users.length === 0) {
-                console.log('Inicializando dados padrão...');
+            console.log('Inicializando dados padrão...');
+            
+            // Verificar se já existem dados no localStorage
+            const storedUsers = localStorage.getItem('users');
+            
+            if (!storedUsers) {
+                console.log('Criando dados padrão...');
                 
                 // Criar apenas um usuário administrador padrão
-                const defaultUsers = [
+                users = [
                     {
                         id: 1,
                         fullName: 'Administrador',
@@ -2649,7 +2653,6 @@
                     }
                 ];
 
-                users = defaultUsers;
                 localStorage.setItem('users', JSON.stringify(users));
                 
                 // Inicializar outras estruturas de dados vazias
@@ -2669,15 +2672,25 @@
                 // Inicializar configurações padrão
                 initializeDefaultSettings();
                 
-                console.log('Dados padrão inicializados com sucesso!');
-            }
-            
-            // Inicializar funções padrão se não existirem
-            if (roles.length === 0) {
+                // Inicializar funções padrão
                 initializeDefaultRoles();
+                
+                console.log('Dados padrão inicializados com sucesso!');
+            } else {
+                console.log('Dados já existentes, carregando do localStorage...');
+                users = JSON.parse(storedUsers);
             }
             
             // Recarregar dados do localStorage
+            loadAllDataFromLocalStorage();
+            
+            // Verificar se o plano de contas está vazio e carregar o padrão
+            if (planoContas.length === 0) {
+                loadDefaultPlanoContas();
+            }
+        }
+
+        function loadAllDataFromLocalStorage() {
             users = JSON.parse(localStorage.getItem('users') || '[]');
             roles = JSON.parse(localStorage.getItem('roles') || '[]');
             investors = JSON.parse(localStorage.getItem('investors') || '[]');
@@ -2693,14 +2706,6 @@
             lancamentos = JSON.parse(localStorage.getItem('lancamentos') || '[]');
             auditLogs = JSON.parse(localStorage.getItem('auditLogs') || '[]');
             settings = JSON.parse(localStorage.getItem('settings') || '{}');
-            
-            // Verificar se o plano de contas está vazio e carregar o padrão
-            if (planoContas.length === 0) {
-                loadDefaultPlanoContas();
-            }
-            
-            // CORREÇÃO: Carregar dropdown de funções na inicialização
-            loadRolesForDropdown();
         }
 
         function initializeDefaultRoles() {
@@ -2871,155 +2876,14 @@
 
         // ========== FUNÇÕES DO PLANO DE CONTAS ==========
         function loadDefaultPlanoContas() {
-            // Dados do CSV fornecido
-            const csvData = `Codigo,Nome,Tipo,Descricao,class
-1,1.1.1,Caixa Sede,Ativo,1
-2,1.1.2,Caixa Agentes,Ativo,1
-3,1.1.3,Conta Bancaria Principal,Ativo,1
-4,1.1.4,Conta Bancaria Secundaria,Ativo,1
-5,1.1.5,Conta eMola (Float Geral),Ativo,1
-6,1.1.6,Conta eMola Agente Principal,Ativo,1
-7,1.1.7,Conta Paytek / Parceiro Digital,Ativo,1
-8,1.1.8,Depositos em transito,Ativo,1
-9,1.1.2,Transferencias a Confirmar,Ativo,1
-10,1.1.2,Saques Pendurados,Ativo,1
-11,1.1.2,Depositos em Processamento,Ativo,1
-12,1.1.2,Fundos para Reconciliação,Ativo,1
-13,2.2.1,Float em Circulacao,Ativo,2
-14,2.2.1,Float por Agente,Ativo,2
-15,2.2.1,Float em Reposicao,Ativo,2
-16,2.2.1,Fundos Retidos Temporariamente,Ativo,2
-17,2.2.2,Fundos em Recolha (cash-out),Ativo,2
-18,2.2.2,Fundos em Caixa Maleavel,Ativo,2
-19,2.2.2,Fundos em Rota de Transporte,Ativo,2
-20,2.2.2,Fundos Delivery em Trsinsito,Ativo,2
-21,2.2.2,Fundos Retidos de Seguros,Ativo,2
-22,2.2.3,Saldo em Carteiras Digitais (Clientes),Ativo,2
-23,2.2.3,Saldo em Contas de Investidores,Ativo,2
-24,2.2.3,Creditos Promocionais / Bonus,Ativo,2
-25,3.3.1,Capital Aplicado Internamente,Ativo,3
-26,3.3.1,Aplicacoes de Curto Prazo,Ativo,3
-27,3.3.1,Aplicacoes de Longo Prazo,Ativo,3
-28,3.3.1,Investimentos em Startups / Parcerias,Ativo,3
-29,3.3.1,Investimento em Frota (Motociclos),Ativo,3
-30,3.3.1,Investimento em Expansao Digital (App/ERP),Ativo,3
-31,3.3.2,Capital de Investidores Ativos,Passivo,3
-32,3.3.2,Rendimentos a Pagar (Investidores),Passivo,3
-33,3.3.2,Fundos Captados em Operacoes Especiais,Passivo,3
-34,3.3.3,Juros de Aplicacoes Proprias,Receita,3
-35,3.3.3,Juros de Capital Alheio,Receita,3
-36,3.3.3,Rendimento em Processamento,Receita,3
-37,3.3.4,Depositos a Prazo,Ativo,3
-38,3.3.4,Titulos e Obrigacoes,Ativo,3
-39,3.3.4,Garantias de Contrato,Ativo,3
-40,4.4.1,Clientes eMola (Carteiras Ativas),Ativo,4
-41,4.4.1,Clientes a Receber (Servicos),Ativo,4
-42,4.4.1,Clientes em Atraso,Ativo,4
-43,4.4.1,Clientes Corporativos,Ativo,4
-44,4.4.2,Investidores Ativos,Passivo,4
-45,4.4.2,Investidores a Liquidar,Passivo,4
-46,4.4.2,Investidores Suspensos,Passivo,4
-47,4.4.3,Juros a Pagar,Passivo,4
-48,4.4.3,Agentes Autorizados,Passivo,4
-49,4.4.3,Sub-Agentes,Passivo,4
-50,4.4.3,Comisscoes a Liquidar,Passivo,4
-51,4.4.3,Incentivos Pendentes,Passivo,4
-52,4.4.4,Adiantamentos a Fornecedores,Ativo,4
-53,4.4.4,Funcionarios (Adiantamentos),Ativo,4
-54,4.4.4,Contas de Reconciliacao,Ativo,4
-55,4.4.4,Fornecedores de Delivery,Passivo,4
-56,4.4.4,Colaboradores de Campo,Passivo,4
-57,4.4.4,Clientes Delivery a Receber,Ativo,4
-58,5.5.1,Capital Subscrito,Patrimonio,5
-59,5.5.1,Capital Realizado,Patrimonio,5
-60,5.5.2,Reserva Legal,Patrimonio,5
-61,5.5.2,Reserva de Expansao,Patrimonio,5
-62,5.5.2,Reserva de Contingencia,Patrimonio,5
-63,5.5.3,Resultados Anteriores,Patrimonio,5
-64,5.5.3,Lucros / Prejuizos Acumulados,Patrimonio,5
-65,5.5.4,Resultado Liquido Atual,Patrimonio,5
-66,5.5.4,Resultado Provisorio,Patrimonio,5
-67,6.6.1,Despesas de Operacao eMola,Despesa,6
-68,6.6.1,Taxas de Transacao,Despesa,6
-69,6.6.1,Comissoes de Parceiros,Despesa,6
-70,6.6.1,Despesas de Plataforma,Despesa,6
-71,6.6.2,Salarios e Vencimentos,Despesa,6
-72,6.6.2,Beneficios e Subsidios,Despesa,6
-73,6.6.2,Contribuicoes INSS,Despesa,6
-74,6.6.2,Formacao e Capacitacao,Despesa,6
-75,6.6.3,Juros Pagos a Investidores,Despesa,6
-76,6.6.3,Descontos Financeiros,Despesa,6
-77,6.6.3,Custos Bancarios,Despesa,6
-78,6.6.4,Material de Escritorio,Despesa,6
-79,6.6.4,Servicos de Limpeza e Manutencao,Despesa,6
-80,6.6.4,Telecomunicacao,Despesa,6
-81,6.6.4,Transporte e Logistica,Despesa,6
-82,6.6.4,Combustivel e Lubrificantes,Despesa,6
-83,6.6.4,Pecas e Reparacoes de Motas,Despesa,6
-84,6.6.4,Uniformes e Equipamento de Entrega,Despesa,6
-85,6.6.4,Despesas de Seguro (motorizadas e colaboradores),Despesa,6
-86,6.6.4,Taxas e Licencas de Circulacao,Despesa,6
-87,6.6.5,IRPS Retido,Despesa,6
-88,6.6.5,IVA,Despesa,6
-89,6.6.5,Outras Taxas Fiscais,Despesa,6
-90,6.6.5,Despesas de Seguranca e Vigilancia,Despesa,6
-91,6.6.5,Comissoes Pagas a Sub-Agentes,Despesa,6
-92,6.6.5,Despesas de Marketing Delivery & Digital,Despesa,6
-93,7.7.1,Comissoes Recebidas (Transacoes),Receita,7
-94,7.7.1,Taxas de Servico,Receita,7
-95,7.7.1,Receitas de Sub-Agentes,Receita,7
-96,7.7.2,Juros de Aplicacao,Receita,7
-97,7.7.2,Rendimentos sobre Capital,Receita,7
-98,7.7.2,Descontos Obtidos,Receita,7
-99,7.7.3,Receitas de Parcerias,Receita,7
-100,7.7.3,Receitas de Consultoria Financeira,Receita,7
-101,7.7.3,Ganhos Extraordinarios,Receita,7
-102,7.7.3,Receitas de Delivery (Entregas),Receita,7
-103,7.7.3,Servicos Expresso / Entrega Rapida,Receita,7
-104,7.7.3,Receitas de Recolha de Valores (Cash-in/Cash-out),Receita,7
-105,7.7.3,Parcerias de Logistica e Transporte,Receita,7
-106,7.7.3,"Receitas de Plataforma Digital (app, API, ERP)",Receita,7
-107,7.7.3,Receitas de Formacao / Consultoria Delivery,Receita,7
-108,8.8.1,Resultado Bruto,Patrimonio,8
-109,8.8.1,Resultado Operacional Liquido,Patrimonio,8
-110,8.8.2,Ganhos Financeiros,Receita,8
-111,8.8.2,Custos Financeiros,Despesa,8
-112,8.8.3,Resultado Antes de Impostos,Patrimonio,8
-113,8.8.4,Resultado Liquido do Exercicio,Patrimonio,8
-114,9.9.1,Caucoes Depositadas,Compensacao,9
-115,9.9.1,Caucoes Recebidas,Compensacao,9
-116,9.9.2,Contratos de Agentes,Compensacao,9
-117,9.9.2,Contratos de Investidores,Compensacao,9
-118,9.9.2,Acordos Comerciais,Compensacao,9
-119,9.9.3,Fundos de Terceiros em Gestao,Compensacao,9
-120,9.9.3,Operacoes Conjuntas,Compensacao,9
-121,9.9.4,Notas de Auditoria,Compensacao,9
-122,9.9.4,Notas de Ajuste,Compensacao,9`;
-
-            // Processar dados CSV
-            const lines = csvData.split('\n');
-            const headers = lines[0].split(',');
+            // Dados do CSV fornecido (exemplo simplificado)
+            const defaultPlanoContas = [
+                { id: 1, codigo: '1.1.1', nome: 'Caixa Sede', tipo: 'Ativo', descricao: '', classe: 1, nivel: 0, pai: null },
+                { id: 2, codigo: '1.1.2', nome: 'Caixa Agentes', tipo: 'Ativo', descricao: '', classe: 1, nivel: 0, pai: null },
+                { id: 3, codigo: '1.1.3', nome: 'Conta Bancaria Principal', tipo: 'Ativo', descricao: '', classe: 1, nivel: 0, pai: null }
+            ];
             
-            for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line) continue;
-                
-                const values = line.split(',');
-                const conta = {
-                    id: parseInt(values[0]),
-                    codigo: values[1],
-                    nome: values[2],
-                    tipo: values[3],
-                    descricao: values[4],
-                    classe: parseInt(values[5]),
-                    nivel: 0,
-                    pai: null
-                };
-                
-                planoContas.push(conta);
-            }
-            
-            // Salvar no localStorage
+            planoContas = defaultPlanoContas;
             localStorage.setItem('planoContas', JSON.stringify(planoContas));
             console.log('Plano de contas padrão carregado com sucesso!');
         }
@@ -3028,53 +2892,22 @@
             const container = document.getElementById('planoContasTree');
             if (!container) return;
             
-            // Agrupar contas por classe
-            const contasPorClasse = {};
+            let html = '<div class="account-class">Plano de Contas</div>';
+            
             planoContas.forEach(conta => {
-                if (!contasPorClasse[conta.classe]) {
-                    contasPorClasse[conta.classe] = [];
-                }
-                contasPorClasse[conta.classe].push(conta);
-            });
-            
-            let html = '';
-            
-            // Renderizar por classe
-            Object.keys(contasPorClasse).sort().forEach(classe => {
-                const contasDaClasse = contasPorClasse[classe];
-                
-                html += `<div class="account-class">Classe ${classe}</div>`;
-                
-                // Agrupar por código pai (primeiro nível)
-                const contasPorGrupo = {};
-                contasDaClasse.forEach(conta => {
-                    const grupo = conta.codigo.split('.')[0];
-                    if (!contasPorGrupo[grupo]) {
-                        contasPorGrupo[grupo] = [];
-                    }
-                    contasPorGrupo[grupo].push(conta);
-                });
-                
-                Object.keys(contasPorGrupo).sort().forEach(grupo => {
-                    html += `<div class="account-group">Grupo ${grupo}</div>`;
-                    
-                    const contasDoGrupo = contasPorGrupo[grupo];
-                    contasDoGrupo.forEach(conta => {
-                        const tipoClass = getTipoClass(conta.tipo);
-                        html += `
-                            <div class="account-item">
-                                <div class="account-code">${conta.codigo}</div>
-                                <div>${conta.nome}</div>
-                                <div><span class="status ${tipoClass}">${conta.tipo}</span></div>
-                                <div class="small muted">${conta.descricao}</div>
-                                <div style="margin-top: 5px;">
-                                    <button class="btn btn-small btn-primary" onclick="editConta(${conta.id})">Editar</button>
-                                    <button class="btn btn-small btn-warning" onclick="deleteConta(${conta.id})">Eliminar</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                });
+                const tipoClass = getTipoClass(conta.tipo);
+                html += `
+                    <div class="account-item">
+                        <div class="account-code">${conta.codigo}</div>
+                        <div>${conta.nome}</div>
+                        <div><span class="status ${tipoClass}">${conta.tipo}</span></div>
+                        <div class="small muted">${conta.descricao}</div>
+                        <div style="margin-top: 5px;">
+                            <button class="btn btn-small btn-primary" onclick="editConta(${conta.id})">Editar</button>
+                            <button class="btn btn-small btn-warning" onclick="deleteConta(${conta.id})">Eliminar</button>
+                        </div>
+                    </div>
+                `;
             });
             
             container.innerHTML = html;
@@ -3105,40 +2938,8 @@
             reader.onload = function(e) {
                 try {
                     const content = e.target.result;
-                    
-                    // Verificar se é CSV ou JSON
-                    if (file.name.endsWith('.csv')) {
-                        // Processar CSV
-                        const lines = content.split('\n');
-                        const headers = lines[0].split(',');
-                        
-                        planoContas = [];
-                        
-                        for (let i = 1; i < lines.length; i++) {
-                            const line = lines[i].trim();
-                            if (!line) continue;
-                            
-                            const values = line.split(',');
-                            const conta = {
-                                id: parseInt(values[0]) || Date.now() + i,
-                                codigo: values[1],
-                                nome: values[2],
-                                tipo: values[3],
-                                descricao: values[4],
-                                classe: parseInt(values[5]) || 1,
-                                nivel: 0,
-                                pai: null
-                            };
-                            
-                            planoContas.push(conta);
-                        }
-                    } else if (file.name.endsWith('.json')) {
-                        // Processar JSON
-                        const data = JSON.parse(content);
-                        planoContas = data.planoContas || data;
-                    } else {
-                        throw new Error('Formato de arquivo não suportado');
-                    }
+                    const data = JSON.parse(content);
+                    planoContas = data.planoContas || data;
                     
                     localStorage.setItem('planoContas', JSON.stringify(planoContas));
                     renderPlanoContas();
@@ -3146,9 +2947,6 @@
                     
                     alert('Plano de contas importado com sucesso!');
                     fileInput.value = '';
-                    
-                    // Registrar log de auditoria
-                    logAudit('IMPORT_PLANO_CONTAS', 'Importou plano de contas');
                     
                 } catch (error) {
                     alert('Erro ao importar plano de contas: ' + error.message);
@@ -3161,9 +2959,6 @@
             const dataStr = JSON.stringify(planoContas, null, 2);
             const dataBlob = new Blob([dataStr], { type: 'application/json' });
             downloadFile(dataBlob, `plano_contas_${Date.now()}.json`);
-            
-            // Registrar log de auditoria
-            logAudit('EXPORT_PLANO_CONTAS', 'Exportou plano de contas');
         }
 
         function loadPlanoContasForDropdown() {
@@ -3215,9 +3010,6 @@
                 localStorage.setItem('planoContas', JSON.stringify(planoContas));
                 renderPlanoContas();
                 loadPlanoContasForDropdown();
-                
-                // Registrar log de auditoria
-                logAudit('DELETE_CONTA', `Eliminou conta com ID: ${id}`);
             }
         }
 
@@ -3228,31 +3020,20 @@
             let mimeType = '';
             
             if (format === 'csv') {
-                // Gerar CSV para relatórios financeiros
                 content = 'Tipo,Descrição,Valor,Data,Status\n';
-                
-                // Adicionar dados de exemplo (substituir por dados reais)
                 content += 'Receita,Vendas do mês,15000.00,2024-01-15,Concluído\n';
                 content += 'Despesa,Salários,8000.00,2024-01-05,Pago\n';
-                content += 'Receita,Serviços prestados,12000.00,2024-01-20,Concluído\n';
-                content += 'Despesa,Aluguel,2000.00,2024-01-10,Pago\n';
                 
                 filename = `relatorios_financeiros_${Date.now()}.csv`;
                 mimeType = 'text/csv;charset=utf-8;';
             } else if (format === 'excel') {
-                // Para Excel, criar um CSV que pode ser aberto no Excel
                 content = 'Tipo\tDescrição\tValor\tData\tStatus\n';
-                
-                // Adicionar dados de exemplo
                 content += 'Receita\tVendas do mês\t15000.00\t2024-01-15\tConcluído\n';
                 content += 'Despesa\tSalários\t8000.00\t2024-01-05\tPago\n';
-                content += 'Receita\tServiços prestados\t12000.00\t2024-01-20\tConcluído\n';
-                content += 'Despesa\tAluguel\t2000.00\t2024-01-10\tPago\n';
                 
                 filename = `relatorios_financeiros_${Date.now()}.xls`;
                 mimeType = 'application/vnd.ms-excel;charset=utf-8;';
             } else if (format === 'pdf') {
-                // Para PDF, criar um HTML simples que pode ser impresso como PDF
                 content = `
                     <html>
                         <head>
@@ -3289,20 +3070,6 @@
                                     <td>2024-01-05</td>
                                     <td>Pago</td>
                                 </tr>
-                                <tr>
-                                    <td>Receita</td>
-                                    <td>Serviços prestados</td>
-                                    <td>12,000.00</td>
-                                    <td>2024-01-20</td>
-                                    <td>Concluído</td>
-                                </tr>
-                                <tr>
-                                    <td>Despesa</td>
-                                    <td>Aluguel</td>
-                                    <td>2,000.00</td>
-                                    <td>2024-01-10</td>
-                                    <td>Pago</td>
-                                </tr>
                             </table>
                         </body>
                     </html>
@@ -3313,9 +3080,6 @@
             
             const dataBlob = new Blob([content], { type: mimeType });
             downloadFile(dataBlob, filename);
-            
-            // Registrar log de auditoria
-            logAudit('EXPORT_FINANCIAL_REPORTS', `Exportou relatórios financeiros em formato ${format}`);
         }
 
         function exportTransactions(format) {
@@ -3325,8 +3089,6 @@
             
             if (format === 'csv') {
                 content = 'Data,Descrição,Conta Débito,Conta Crédito,Valor (MZN)\n';
-                
-                // Adicionar transações existentes
                 transactions.forEach(txn => {
                     content += `"${txn.date}","${txn.description}","${txn.debitAccount}","${txn.creditAccount}","${txn.amount}"\n`;
                 });
@@ -3335,7 +3097,6 @@
                 mimeType = 'text/csv;charset=utf-8;';
             } else if (format === 'excel') {
                 content = 'Data\tDescrição\tConta Débito\tConta Crédito\tValor (MZN)\n';
-                
                 transactions.forEach(txn => {
                     content += `${txn.date}\t${txn.description}\t${txn.debitAccount}\t${txn.creditAccount}\t${txn.amount}\n`;
                 });
@@ -3346,9 +3107,6 @@
             
             const dataBlob = new Blob([content], { type: mimeType });
             downloadFile(dataBlob, filename);
-            
-            // Registrar log de auditoria
-            logAudit('EXPORT_TRANSACTIONS', `Exportou transações em formato ${format}`);
         }
 
         function exportLancamentos(format) {
@@ -3358,7 +3116,6 @@
             
             if (format === 'csv') {
                 content = 'Data,Descrição,Conta Débito,Conta Crédito,Valor (MZN)\n';
-                
                 lancamentos.forEach(lancamento => {
                     const contaDebito = planoContas.find(c => c.id == lancamento.debito);
                     const contaCredito = planoContas.find(c => c.id == lancamento.credito);
@@ -3370,7 +3127,6 @@
                 mimeType = 'text/csv;charset=utf-8;';
             } else if (format === 'excel') {
                 content = 'Data\tDescrição\tConta Débito\tConta Crédito\tValor (MZN)\n';
-                
                 lancamentos.forEach(lancamento => {
                     const contaDebito = planoContas.find(c => c.id == lancamento.debito);
                     const contaCredito = planoContas.find(c => c.id == lancamento.credito);
@@ -3384,9 +3140,6 @@
             
             const dataBlob = new Blob([content], { type: mimeType });
             downloadFile(dataBlob, filename);
-            
-            // Registrar log de auditoria
-            logAudit('EXPORT_LANCAMENTOS', `Exportou lançamentos em formato ${format}`);
         }
 
         // ========== FUNÇÕES AUXILIARES ==========
@@ -3400,12 +3153,10 @@
             return roleObj ? roleObj.description : 'Sem descrição';
         }
 
-        // FUNÇÃO MELHORADA PARA CALCULAR DIAS ÚTEIS
         function calculateBusinessDays(startDate, endDate) {
             let count = 0;
             const curDate = new Date(startDate.getTime());
             
-            // Feriados nacionais de Moçambique (exemplo)
             const feriados = [
                 '2024-01-01', // Ano Novo
                 '2024-02-03', // Dia dos Heróis Moçambicanos
@@ -3421,12 +3172,11 @@
                 const dayOfWeek = curDate.getDay();
                 const dateString = curDate.toISOString().split('T')[0];
                 
-                // Verificar se não é domingo (0) nem feriado
                 if (dayOfWeek !== 0 && !feriados.includes(dateString)) {
-                    if (dayOfWeek === 6) { // Sábado
-                        count += 0.5; // Sábado conta como 1/2 dia
+                    if (dayOfWeek === 6) {
+                        count += 0.5;
                     } else {
-                        count += 1; // Dias de semana completos
+                        count += 1;
                     }
                 }
                 curDate.setDate(curDate.getDate() + 1);
@@ -3434,13 +3184,11 @@
             return count;
         }
 
-        // FUNÇÃO CORRIGIDA PARA CALCULAR RENDIMENTO LÍQUDO DO INVESTIDOR
         function calculateNetYield(investor) {
             const startDate = new Date(investor.startDate);
             const endDate = new Date(investor.endDate);
             const days = calculateBusinessDays(startDate, endDate);
             
-            // Fórmula corrigida: (Capital investido * dias úteis * 0.5%) - IRPS
             const grossYield = investor.amount * (0.5 / 100) * days;
             const irpsAmount = grossYield * (investor.irps / 100);
             const netYield = grossYield - irpsAmount;
@@ -3831,7 +3579,6 @@
             }
         }
 
-        // CORREÇÃO: FUNÇÃO MELHORADA PARA CARREGAR DROPDOWN DE FUNÇÕES
         function loadRolesForDropdown() {
             const select = document.getElementById('userRole');
             if (select) {
@@ -3903,7 +3650,7 @@
             initializeDefaultData();
             
             // Recarregar os usuários do localStorage
-            users = JSON.parse(localStorage.getItem('users') || '[]');
+            loadAllDataFromLocalStorage();
             
             const user = users.find(u => u.username === username && u.password === password && u.status === 'Ativo');
             
@@ -4368,7 +4115,7 @@
                 return;
             }
             
-            // CORREÇÃO: Verificar se username já existe (apenas para novos usuários)
+            // Verificar se username já existe (apenas para novos usuários)
             if (!id) {
                 const existingUser = users.find(u => u.username === username);
                 if (existingUser) {
