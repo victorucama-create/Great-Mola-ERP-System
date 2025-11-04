@@ -786,7 +786,7 @@
                     <div class="grid grid-3">
                         <div class="result-item">
                             <h3>Balanço</h3>
-                            <p>Relatório da posição financeira</p>
+                            <p>Relatório da posição financiera</p>
                             <button class="btn btn-primary" onclick="generateBalanceSheet()">Gerar</button>
                         </div>
                         <div class="result-item">
@@ -2927,6 +2927,25 @@
             return count;
         }
 
+        // FUNÇÃO CORRIGIDA PARA CALCULAR RENDIMENTO LÍQUDO DO INVESTIDOR
+        function calculateNetYield(investor) {
+            const startDate = new Date(investor.startDate);
+            const endDate = new Date(investor.endDate);
+            const days = calculateBusinessDays(startDate, endDate);
+            
+            // Fórmula corrigida: (Capital investido * dias úteis * 0.5%) - IRPS
+            const grossYield = investor.amount * (0.5 / 100) * days;
+            const irpsAmount = grossYield * (investor.irps / 100);
+            const netYield = grossYield - irpsAmount;
+            
+            return {
+                days: days,
+                grossYield: grossYield,
+                irpsAmount: irpsAmount,
+                netYield: netYield
+            };
+        }
+
         function downloadFile(blob, filename) {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -3140,17 +3159,14 @@
                 if (myInvestments.length > 0) {
                     let html = '';
                     myInvestments.forEach(inv => {
-                        const days = calculateBusinessDays(new Date(inv.startDate), new Date());
-                        const grossYield = inv.amount * (inv.rate / 100) * days;
-                        const irps = grossYield * (inv.irps / 100);
-                        const netYield = grossYield - irps;
+                        const yieldData = calculateNetYield(inv);
                         
                         html += `
                             <div style="padding: 10px; border-bottom: 1px solid #eee;">
                                 <div style="font-weight: bold;">${inv.name}</div>
                                 <div style="color: #28a745;">MT ${parseFloat(inv.amount).toFixed(2)}</div>
                                 <div style="font-size: 12px; color: #6c757d;">
-                                    Rendimento líquido: MT ${netYield.toFixed(2)} | ${inv.cycle}
+                                    Rendimento líquido: MT ${yieldData.netYield.toFixed(2)} | ${inv.cycle}
                                 </div>
                             </div>
                         `;
@@ -3451,15 +3467,8 @@
             }
             
             filteredInvestors.forEach(investor => {
-                // Calcular dias úteis entre data de início e fim
-                const startDate = new Date(investor.startDate);
-                const endDate = new Date(investor.endDate);
-                const days = calculateBusinessDays(startDate, endDate);
-                
-                // Calcular rendimentos
-                const grossYield = investor.amount * (investor.rate / 100) * days;
-                const irpsAmount = grossYield * (investor.irps / 100);
-                const netYield = grossYield - irpsAmount;
+                // Calcular rendimentos usando a função corrigida
+                const yieldData = calculateNetYield(investor);
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -3470,10 +3479,10 @@
                     <td>MT ${parseFloat(investor.amount).toFixed(2)}</td>
                     <td>${investor.startDate}</td>
                     <td>${investor.endDate}</td>
-                    <td>${days.toFixed(1)}</td>
-                    <td>MT ${grossYield.toFixed(2)}</td>
-                    <td>MT ${irpsAmount.toFixed(2)}</td>
-                    <td>MT ${netYield.toFixed(2)}</td>
+                    <td>${yieldData.days.toFixed(1)}</td>
+                    <td>MT ${yieldData.grossYield.toFixed(2)}</td>
+                    <td>MT ${yieldData.irpsAmount.toFixed(2)}</td>
+                    <td>MT ${yieldData.netYield.toFixed(2)}</td>
                     <td><span class="status status-active">${investor.status}</span></td>
                     <td>
                         <button class="btn btn-small btn-primary" onclick="editInvestor(${investor.id})">Editar</button>
@@ -3537,14 +3546,13 @@
         function calculateReturn() {
             const capital = parseFloat(document.getElementById('calcCapital').value);
             const days = parseInt(document.getElementById('calcDays').value);
-            const type = document.getElementById('calcType').value;
             
-            // Taxa diária baseada no tipo de capital
-            const dailyRate = type === 'proprio' ? 0.5 : 0.3;
+            // Aplicar a fórmula: (Capital * dias úteis * 0.5%) - IRPS
+            const grossYield = capital * (0.5 / 100) * days;
+            const irpsAmount = grossYield * (20.0 / 100); // IRPS fixo em 20%
+            const netYield = grossYield - irpsAmount;
             
-            const returnAmount = capital * (dailyRate / 100) * days;
-            
-            document.getElementById('calcAmount').textContent = `MT ${returnAmount.toFixed(2)}`;
+            document.getElementById('calcAmount').textContent = `MT ${netYield.toFixed(2)} (Bruto: MT ${grossYield.toFixed(2)}, IRPS: MT ${irpsAmount.toFixed(2)})`;
             document.getElementById('calcResult').style.display = 'block';
         }
 
@@ -3552,14 +3560,9 @@
             let content = 'Nome\tDocumento\tContacto\tCapital\tValor\tInício\tFim\tDias Úteis\tRendimento Bruto\tIRPS\tRendimento Líquido\tSituação\n';
             
             investors.forEach(investor => {
-                const startDate = new Date(investor.startDate);
-                const endDate = new Date(investor.endDate);
-                const days = calculateBusinessDays(startDate, endDate);
-                const grossYield = investor.amount * (investor.rate / 100) * days;
-                const irpsAmount = grossYield * (investor.irps / 100);
-                const netYield = grossYield - irpsAmount;
+                const yieldData = calculateNetYield(investor);
                 
-                content += `${investor.name}\t${investor.docType}: ${investor.docNumber}\t${investor.phone}\t${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}\t${investor.amount}\t${investor.startDate}\t${investor.endDate}\t${days.toFixed(1)}\t${grossYield.toFixed(2)}\t${irpsAmount.toFixed(2)}\t${netYield.toFixed(2)}\t${investor.status}\n`;
+                content += `${investor.name}\t${investor.docType}: ${investor.docNumber}\t${investor.phone}\t${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}\t${investor.amount}\t${investor.startDate}\t${investor.endDate}\t${yieldData.days.toFixed(1)}\t${yieldData.grossYield.toFixed(2)}\t${yieldData.irpsAmount.toFixed(2)}\t${yieldData.netYield.toFixed(2)}\t${investor.status}\n`;
             });
             
             const dataBlob = new Blob([content], { type: 'application/vnd.ms-excel;charset=utf-8;' });
@@ -3570,14 +3573,9 @@
             let csvContent = 'Nome,Documento,Contacto,Capital,Valor,Início,Fim,Dias Úteis,Rendimento Bruto,IRPS,Rendimento Líquido,Situação\n';
             
             investors.forEach(investor => {
-                const startDate = new Date(investor.startDate);
-                const endDate = new Date(investor.endDate);
-                const days = calculateBusinessDays(startDate, endDate);
-                const grossYield = investor.amount * (investor.rate / 100) * days;
-                const irpsAmount = grossYield * (investor.irps / 100);
-                const netYield = grossYield - irpsAmount;
+                const yieldData = calculateNetYield(investor);
                 
-                csvContent += `"${investor.name}","${investor.docType}: ${investor.docNumber}","${investor.phone}","${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}","${investor.amount}","${investor.startDate}","${investor.endDate}","${days.toFixed(1)}","${grossYield.toFixed(2)}","${irpsAmount.toFixed(2)}","${netYield.toFixed(2)}","${investor.status}"\n`;
+                csvContent += `"${investor.name}","${investor.docType}: ${investor.docNumber}","${investor.phone}","${investor.capitalType === 'proprio' ? 'Próprio' : 'Alheio'}","${investor.amount}","${investor.startDate}","${investor.endDate}","${yieldData.days.toFixed(1)}","${yieldData.grossYield.toFixed(2)}","${yieldData.irpsAmount.toFixed(2)}","${yieldData.netYield.toFixed(2)}","${investor.status}"\n`;
             });
             
             const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -3768,11 +3766,20 @@
                 return;
             }
             
-            // Verificar se username já existe
-            const existingUser = users.find(u => u.username === username && u.id != id);
-            if (existingUser) {
-                alert('Já existe um utilizador com este username!');
-                return;
+            // CORREÇÃO: Verificar se username já existe (apenas para novos usuários)
+            if (!id) {
+                const existingUser = users.find(u => u.username === username);
+                if (existingUser) {
+                    alert('Já existe um utilizador com este username!');
+                    return;
+                }
+            } else {
+                // Para edição, verificar se outro usuário já usa o username
+                const existingUser = users.find(u => u.username === username && u.id != id);
+                if (existingUser) {
+                    alert('Já existe um utilizador com este username!');
+                    return;
+                }
             }
             
             if (id) {
