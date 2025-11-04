@@ -555,6 +555,47 @@
             grid-column: 1 / -1;
         }
         
+        .file-upload {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--secondary);
+            background-color: #f8f9fa;
+        }
+        
+        .file-upload input {
+            display: none;
+        }
+        
+        .file-preview {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .file-preview-item {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        
+        .file-preview-item .remove-file {
+            color: var(--danger);
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
         @media (max-width: 768px) {
             .grid-2, .grid-3, .grid-4 {
                 grid-template-columns: 1fr;
@@ -926,6 +967,15 @@
                                 <label>Valor (MZN)</label>
                                 <input type="number" id="lancamentoValor" step="0.01" min="0.01" placeholder="0,00" required>
                             </div>
+                            <div class="form-group">
+                                <label>Anexar Comprovativo</label>
+                                <div class="file-upload" onclick="document.getElementById('lancamentoFile').click()">
+                                    <div>📎 Clique para adicionar arquivo</div>
+                                    <div class="small muted">PNG, PDF (máx. 5MB)</div>
+                                    <input type="file" id="lancamentoFile" accept=".pdf,.png,.jpg,.jpeg" onchange="previewFile('lancamentoFile', 'lancamentoFilePreview')" multiple>
+                                </div>
+                                <div id="lancamentoFilePreview" class="file-preview"></div>
+                            </div>
                             <button type="submit" class="btn btn-primary">Registar Lançamento</button>
                         </form>
                     </div>
@@ -964,6 +1014,7 @@
                                         <th>Débito</th>
                                         <th>Crédito</th>
                                         <th>Valor</th>
+                                        <th>Comprovativo</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -1547,6 +1598,7 @@
             <div class="sub-tabs">
                 <button class="sub-tab active" onclick="switchSSASubTab('accounts')">Contas SSA</button>
                 <button class="sub-tab" onclick="switchSSASubTab('st')">Colaboradores ST</button>
+                <button class="sub-tab" onclick="switchSSASubTab('af')">Colaboradores AF</button>
                 <button class="sub-tab" onclick="switchSSASubTab('transactions')">Transações</button>
                 <button class="sub-tab" onclick="switchSSASubTab('subchannels')">Subcanais</button>
                 <button class="sub-tab" onclick="switchSSASubTab('reports')">Relatórios</button>
@@ -1620,8 +1672,8 @@
                         <div style="margin-top: 20px;">
                             <h4>Exportar Dados</h4>
                             <div style="display: flex; gap: 10px;">
-                                <button class="btn btn-secondary" onclick="exportSSAExcel()">📊 Excel</button>
-                                <button class="btn btn-success" onclick="exportSSACSV()">📄 CSV</button>
+                                <button class="btn btn-secondary" onclick="exportSSAExcel()">📊 Exportar Excel</button>
+                                <button class="btn btn-success" onclick="exportSSACSV()">📄 Exportar CSV</button>
                             </div>
                         </div>
                     </div>
@@ -1718,8 +1770,8 @@
                         <div style="margin-top: 20px;">
                             <h4>Exportar Dados</h4>
                             <div style="display: flex; gap: 10px;">
-                                <button class="btn btn-secondary" onclick="exportSTExcel()">📊 Excel</button>
-                                <button class="btn btn-success" onclick="exportSTCSV()">📄 CSV</button>
+                                <button class="btn btn-secondary" onclick="exportSTExcel()">📊 Exportar Excel</button>
+                                <button class="btn btn-success" onclick="exportSTCSV()">📄 Exportar CSV</button>
                             </div>
                         </div>
                     </div>
@@ -1735,6 +1787,100 @@
                                 <th>SSA</th>
                                 <th>Contacto</th>
                                 <th>Limite Depósito</th>
+                                <th>Depósitos Hoje</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sub-tab Colaboradores AF -->
+            <div class="sub-content" id="ssaAf">
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3>➕ Novo Colaborador AF</h3>
+                        <form id="afForm">
+                            <input type="hidden" id="afId">
+                            <div class="form-group">
+                                <label>Código AF</label>
+                                <input type="text" id="afCode" placeholder="Ex: AF001" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nome do Colaborador</label>
+                                <input type="text" id="afName" placeholder="Nome completo" required>
+                            </div>
+                            <div class="form-group">
+                                <label>ST Principal</label>
+                                <select id="afST" required>
+                                    <option value="">Selecionar ST</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Contacto</label>
+                                <input type="tel" id="afPhone" placeholder="+258 ...">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="afEmail" placeholder="email@exemplo.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="afStatus">
+                                    <option value="Ativo">Ativo</option>
+                                    <option value="Inativo">Inativo</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registar AF</button>
+                            <button type="button" class="btn btn-ghost" onclick="clearAFForm()">Limpar</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📊 Resumo AF</h3>
+                        <div class="results-row">
+                            <div class="result-item">
+                                <h3>Total AF</h3>
+                                <div class="kpi" id="totalAF">0</div>
+                            </div>
+                            <div class="result-item">
+                                <h3>AF Ativos</h3>
+                                <div class="kpi" id="activeAF">0</div>
+                            </div>
+                            <div class="result-item">
+                                <h3>Depósitos Hoje</h3>
+                                <div class="kpi" id="todayAFDeposits">MT 0.00</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>Top AF por Depósitos</h4>
+                            <div id="topAF">
+                                <p class="small muted">Carregando dados...</p>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>Exportar Dados</h4>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-secondary" onclick="exportAFExcel()">📊 Exportar Excel</button>
+                                <button class="btn btn-success" onclick="exportAFCSV()">📄 Exportar CSV</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>📋 Lista de Colaboradores AF</h3>
+                    <table id="afTable">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>ST Principal</th>
+                                <th>Contacto</th>
                                 <th>Depósitos Hoje</th>
                                 <th>Status</th>
                                 <th>Ações</th>
@@ -1782,40 +1928,35 @@
                     </div>
                     
                     <div class="card">
-                        <h3>💸 Registar Recebimento</h3>
-                        <form id="ssaReceiveForm">
-                            <input type="hidden" id="ssaReceiveId">
+                        <h3>💸 Registar Depósito AF</h3>
+                        <form id="afDepositForm">
+                            <input type="hidden" id="afDepositId">
                             <div class="form-group">
-                                <label>Origem</label>
-                                <select id="ssaReceiveSource" required>
-                                    <option value="">Selecionar origem</option>
-                                    <option value="Banco">Banco</option>
-                                    <option value="SA">SA (Super Agente)</option>
-                                    <option value="SSA">SSA</option>
-                                    <option value="Cliente">Cliente</option>
-                                    <option value="Investidor">Investidor</option>
+                                <label>Colaborador AF</label>
+                                <select id="afDepositAF" required>
+                                    <option value="">Selecionar AF</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Conta de Destino</label>
-                                <select id="ssaReceiveTo" required>
-                                    <option value="">Selecionar conta</option>
+                                <label>Agente Destino</label>
+                                <select id="afDepositTo" required>
+                                    <option value="">Selecionar agente</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>Valor (MZN)</label>
-                                <input type="number" id="ssaReceiveAmount" placeholder="1,000" required step="0.01">
+                                <input type="number" id="afDepositAmount" placeholder="1,000" required step="0.01">
                             </div>
                             <div class="form-group">
                                 <label>Data</label>
-                                <input type="date" id="ssaReceiveDate" required>
+                                <input type="date" id="afDepositDate" required>
                             </div>
                             <div class="form-group">
-                                <label>Observações</label>
-                                <textarea id="ssaReceiveObservations" placeholder="Observações da transação" rows="3"></textarea>
+                                <label>Descrição</label>
+                                <textarea id="afDepositDescription" placeholder="Descrição da transação" rows="3"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-success">Registar Recebimento</button>
-                            <button type="button" class="btn btn-ghost" onclick="clearSSAReceiveForm()">Limpar</button>
+                            <button type="submit" class="btn btn-primary">Registar Depósito</button>
+                            <button type="button" class="btn btn-ghost" onclick="clearAFDepositForm()">Limpar</button>
                         </form>
                     </div>
                 </div>
@@ -2454,6 +2595,7 @@
         let agents = JSON.parse(localStorage.getItem('agents') || '[]');
         let ssaAccounts = JSON.parse(localStorage.getItem('ssaAccounts') || '[]');
         let stAccounts = JSON.parse(localStorage.getItem('stAccounts') || '[]');
+        let afAccounts = JSON.parse(localStorage.getItem('afAccounts') || '[]');
         let ssaTransactions = JSON.parse(localStorage.getItem('ssaTransactions') || '[]');
         let subchannels = JSON.parse(localStorage.getItem('subchannels') || '[]');
         let approvals = JSON.parse(localStorage.getItem('approvals') || '[]');
@@ -2491,6 +2633,7 @@
                 localStorage.setItem('agents', JSON.stringify([]));
                 localStorage.setItem('ssaAccounts', JSON.stringify([]));
                 localStorage.setItem('stAccounts', JSON.stringify([]));
+                localStorage.setItem('afAccounts', JSON.stringify([]));
                 localStorage.setItem('ssaTransactions', JSON.stringify([]));
                 localStorage.setItem('subchannels', JSON.stringify([]));
                 localStorage.setItem('approvals', JSON.stringify([]));
@@ -2517,6 +2660,7 @@
             agents = JSON.parse(localStorage.getItem('agents') || '[]');
             ssaAccounts = JSON.parse(localStorage.getItem('ssaAccounts') || '[]');
             stAccounts = JSON.parse(localStorage.getItem('stAccounts') || '[]');
+            afAccounts = JSON.parse(localStorage.getItem('afAccounts') || '[]');
             ssaTransactions = JSON.parse(localStorage.getItem('ssaTransactions') || '[]');
             subchannels = JSON.parse(localStorage.getItem('subchannels') || '[]');
             approvals = JSON.parse(localStorage.getItem('approvals') || '[]');
@@ -3364,6 +3508,7 @@
             } else if (tabName === 'ssa') {
                 updateSSAAccountsTable();
                 updateSTTable();
+                updateAFTable();
                 updateSubchannelsTable();
                 loadSSAForDropdowns();
             } else if (tabName === 'settings') {
@@ -3677,6 +3822,22 @@
                         const option = document.createElement('option');
                         option.value = st.id;
                         option.textContent = `${st.code} - ${st.name}`;
+                        select.appendChild(option);
+                });
+            }
+        }
+
+        function loadAFForDropdown() {
+            const select = document.getElementById('afDepositAF');
+            if (select) {
+                select.innerHTML = '<option value="">Selecionar AF</option>';
+                
+                afAccounts
+                    .filter(af => af.status === 'Ativo')
+                    .forEach(af => {
+                        const option = document.createElement('option');
+                        option.value = af.id;
+                        option.textContent = `${af.code} - ${af.name}`;
                         select.appendChild(option);
                 });
             }
@@ -4878,6 +5039,134 @@
             }
         }
 
+        // ========== FUNÇÕES DE AF (COLABORADORES ST) ==========
+        function saveAF(event) {
+            if (event) event.preventDefault();
+            
+            const id = document.getElementById('afId').value;
+            const code = document.getElementById('afCode').value;
+            const name = document.getElementById('afName').value;
+            const stId = document.getElementById('afST').value;
+            const phone = document.getElementById('afPhone').value;
+            const email = document.getElementById('afEmail').value;
+            const status = document.getElementById('afStatus').value;
+            
+            if (id) {
+                // Atualizar AF existente
+                const index = afAccounts.findIndex(af => af.id == id);
+                if (index !== -1) {
+                    afAccounts[index] = { 
+                        ...afAccounts[index], 
+                        code, name, stId, phone, email, status
+                    };
+                }
+            } else {
+                // Criar novo AF
+                const newAF = {
+                    id: Date.now(),
+                    code,
+                    name,
+                    stId,
+                    phone,
+                    email,
+                    todayDeposits: 0,
+                    status,
+                    createdAt: new Date().toISOString()
+                };
+                
+                afAccounts.push(newAF);
+                
+                // Registrar log de auditoria
+                logAudit('CREATE_AF', `Criou colaborador AF: ${name} (${code})`);
+            }
+            
+            localStorage.setItem('afAccounts', JSON.stringify(afAccounts));
+            updateAFTable();
+            clearAFForm();
+            
+            alert(id ? 'Colaborador AF atualizado com sucesso!' : 'Colaborador AF registado com sucesso!');
+        }
+
+        function clearAFForm() {
+            document.getElementById('afId').value = '';
+            document.getElementById('afForm').reset();
+        }
+
+        function updateAFTable() {
+            const tbody = document.getElementById('afTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            let totalAF = 0;
+            let activeAF = 0;
+            let todayDeposits = 0;
+            
+            afAccounts.forEach(af => {
+                if (af.status === 'Ativo') {
+                    activeAF++;
+                    todayDeposits += af.todayDeposits || 0;
+                }
+                totalAF++;
+                
+                const stAccount = stAccounts.find(st => st.id == af.stId);
+                const stName = stAccount ? stAccount.name : 'N/A';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${af.code}</td>
+                    <td>${af.name}</td>
+                    <td>${stName}</td>
+                    <td>${af.phone || 'N/A'}</td>
+                    <td>MT ${(af.todayDeposits || 0).toFixed(2)}</td>
+                    <td><span class="status ${af.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${af.status}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editAF(${af.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleAFStatus(${af.id})">
+                            ${af.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Atualizar resumo
+            document.getElementById('totalAF').textContent = totalAF;
+            document.getElementById('activeAF').textContent = activeAF;
+            document.getElementById('todayAFDeposits').textContent = `MT ${todayDeposits.toFixed(2)}`;
+            
+            // Atualizar dropdown de AF
+            loadAFForDropdown();
+        }
+
+        function editAF(id) {
+            const af = afAccounts.find(af => af.id === id);
+            if (af) {
+                document.getElementById('afId').value = af.id;
+                document.getElementById('afCode').value = af.code;
+                document.getElementById('afName').value = af.name;
+                document.getElementById('afST').value = af.stId;
+                document.getElementById('afPhone').value = af.phone || '';
+                document.getElementById('afEmail').value = af.email || '';
+                document.getElementById('afStatus').value = af.status;
+                
+                // Scroll para o formulário
+                document.getElementById('afForm').scrollIntoView();
+            }
+        }
+
+        function toggleAFStatus(id) {
+            const af = afAccounts.find(af => af.id === id);
+            if (af) {
+                af.status = af.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                localStorage.setItem('afAccounts', JSON.stringify(afAccounts));
+                updateAFTable();
+                
+                // Registrar log de auditoria
+                logAudit('TOGGLE_AF_STATUS', `${af.status === 'Ativo' ? 'Ativou' : 'Desativou'} colaborador AF: ${af.name} (${af.code})`);
+            }
+        }
+
         function saveSubchannel(event) {
             if (event) event.preventDefault();
             
@@ -5083,6 +5372,64 @@
             document.getElementById('ssaDepositDate').value = new Date().toISOString().split('T')[0];
         }
 
+        function saveAFDeposit(event) {
+            if (event) event.preventDefault();
+            
+            const afId = document.getElementById('afDepositAF').value;
+            const toAgent = document.getElementById('afDepositTo').value;
+            const amount = parseFloat(document.getElementById('afDepositAmount').value);
+            const date = document.getElementById('afDepositDate').value;
+            const description = document.getElementById('afDepositDescription').value;
+            
+            // Validar AF
+            const af = afAccounts.find(af => af.id == afId);
+            if (!af) {
+                alert('Colaborador AF não encontrado!');
+                return;
+            }
+            
+            // Atualizar saldos
+            af.todayDeposits = (af.todayDeposits || 0) + amount;
+            
+            const agent = subchannels.find(sc => sc.id == toAgent);
+            if (agent) {
+                agent.balance += amount;
+            }
+            
+            // Registrar transação
+            const transaction = {
+                id: Date.now(),
+                type: 'deposit',
+                fromAF: afId,
+                toAccount: toAgent,
+                amount,
+                date,
+                description,
+                createdAt: new Date().toISOString()
+            };
+            
+            ssaTransactions.push(transaction);
+            
+            // Salvar dados
+            localStorage.setItem('afAccounts', JSON.stringify(afAccounts));
+            localStorage.setItem('subchannels', JSON.stringify(subchannels));
+            localStorage.setItem('ssaTransactions', JSON.stringify(ssaTransactions));
+            
+            updateAFTable();
+            updateSubchannelsTable();
+            clearAFDepositForm();
+            
+            alert('Depósito AF registado com sucesso!');
+            
+            // Registrar log de auditoria
+            logAudit('AF_DEPOSIT', `Depósito de MT ${amount} para agente ${agent ? agent.name : 'N/A'} por AF ${af.name}`);
+        }
+
+        function clearAFDepositForm() {
+            document.getElementById('afDepositForm').reset();
+            document.getElementById('afDepositDate').value = new Date().toISOString().split('T')[0];
+        }
+
         function filterSSATransactions() {
             // Implementar filtragem de transações SSA
             alert('Funcionalidade de filtro em desenvolvimento');
@@ -5097,10 +5444,11 @@
             
             ssaTransactions.forEach(transaction => {
                 const fromST = stAccounts.find(st => st.id == transaction.fromST);
+                const fromAF = afAccounts.find(af => af.id == transaction.fromAF);
                 const toAccount = subchannels.find(sc => sc.id == transaction.toAccount) || 
                                  ssaAccounts.find(acc => acc.id == transaction.toAccount);
                 
-                const fromName = fromST ? fromST.name : 'N/A';
+                const fromName = fromST ? fromST.name : (fromAF ? fromAF.name : 'N/A');
                 const toName = toAccount ? toAccount.name : 'N/A';
                 
                 csvContent += `"${transaction.date}","${transaction.type}","${fromName}","${toName}","${transaction.amount}","${transaction.description}"\n`;
@@ -5128,25 +5476,44 @@
             downloadFile(dataBlob, `colaboradores_st_${Date.now()}.csv`);
         }
 
+        function exportAFExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+
+        function exportAFCSV() {
+            let csvContent = 'Código,Nome,ST,Contacto,Email,Depósitos Hoje,Status\n';
+            
+            afAccounts.forEach(af => {
+                const stAccount = stAccounts.find(st => st.id == af.stId);
+                const stName = stAccount ? stAccount.name : 'N/A';
+                
+                csvContent += `"${af.code}","${af.name}","${stName}","${af.phone || 'N/A'}","${af.email || 'N/A'}","${af.todayDeposits || 0}","${af.status}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `colaboradores_af_${Date.now()}.csv`);
+        }
+
         function exportSSATransactionsExcel() {
             alert('Exportação para Excel será implementada');
         }
 
         function exportSSATransactionsCSV() {
-            let csvContent = 'Data,Tipo,ST,Destino,Valor,Descrição\n';
+            let csvContent = 'Data,Tipo,ST/AF,Destino,Valor,Descrição\n';
             
             ssaTransactions.forEach(transaction => {
                 const fromST = stAccounts.find(st => st.id == transaction.fromST);
+                const fromAF = afAccounts.find(af => af.id == transaction.fromAF);
                 const toAccount = subchannels.find(sc => sc.id == transaction.toAccount);
                 
-                const fromName = fromST ? fromST.name : 'N/A';
+                const fromName = fromST ? fromST.name : (fromAF ? fromAF.name : 'N/A');
                 const toName = toAccount ? toAccount.name : 'N/A';
                 
                 csvContent += `"${transaction.date}","${transaction.type}","${fromName}","${toName}","${transaction.amount}","${transaction.description}"\n`;
             });
             
             const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            downloadFile(dataBlob, `transacoes_st_${Date.now()}.csv`);
+            downloadFile(dataBlob, `transacoes_st_af_${Date.now()}.csv`);
         }
 
         function exportSSAReportsExcel() {
@@ -5351,6 +5718,7 @@
                 agents,
                 ssaAccounts,
                 stAccounts,
+                afAccounts,
                 ssaTransactions,
                 subchannels,
                 approvals,
@@ -5411,6 +5779,7 @@
                     agents = backupData.agents || [];
                     ssaAccounts = backupData.ssaAccounts || [];
                     stAccounts = backupData.stAccounts || [];
+                    afAccounts = backupData.afAccounts || [];
                     ssaTransactions = backupData.ssaTransactions || [];
                     subchannels = backupData.subchannels || [];
                     approvals = backupData.approvals || [];
@@ -5427,6 +5796,7 @@
                     localStorage.setItem('agents', JSON.stringify(agents));
                     localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
                     localStorage.setItem('stAccounts', JSON.stringify(stAccounts));
+                    localStorage.setItem('afAccounts', JSON.stringify(afAccounts));
                     localStorage.setItem('ssaTransactions', JSON.stringify(ssaTransactions));
                     localStorage.setItem('subchannels', JSON.stringify(subchannels));
                     localStorage.setItem('approvals', JSON.stringify(approvals));
@@ -5453,6 +5823,7 @@
                         loadPlanoContasForDropdown();
                         updateSSAAccountsTable();
                         updateSTTable();
+                        updateAFTable();
                         updateSubchannelsTable();
                         loadSettings();
                     }
@@ -5488,6 +5859,7 @@
                     <td>${contaDebito ? contaDebito.codigo + ' - ' + contaDebito.nome : 'N/A'}</td>
                     <td>${contaCredito ? contaCredito.codigo + ' - ' + contaCredito.nome : 'N/A'}</td>
                     <td>MT ${lancamento.valor.toFixed(2)}</td>
+                    <td>${lancamento.anexos && lancamento.anexos.length > 0 ? '📎 ' + lancamento.anexos.length + ' arquivo(s)' : 'Nenhum'}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -5495,6 +5867,40 @@
 
         function filtrarLancamentos() {
             updateLancamentosTable();
+        }
+
+        function previewFile(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            
+            preview.innerHTML = '';
+            
+            if (input.files && input.files.length > 0) {
+                for (let i = 0; i < input.files.length; i++) {
+                    const file = input.files[i];
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-preview-item';
+                    fileItem.innerHTML = `
+                        <span>📎 ${file.name}</span>
+                        <span class="remove-file" onclick="removeFile('${inputId}', ${i})">×</span>
+                    `;
+                    preview.appendChild(fileItem);
+                }
+            }
+        }
+
+        function removeFile(inputId, index) {
+            const input = document.getElementById(inputId);
+            const files = Array.from(input.files);
+            files.splice(index, 1);
+            
+            // Criar nova FileList
+            const dt = new DataTransfer();
+            files.forEach(file => dt.items.add(file));
+            input.files = dt.files;
+            
+            // Atualizar preview
+            previewFile(inputId, inputId + 'Preview');
         }
 
         // ========== INICIALIZAÇÃO DO SISTEMA ==========
@@ -5510,8 +5916,10 @@
             document.getElementById('roleForm').addEventListener('submit', saveRole);
             document.getElementById('ssaAccountForm').addEventListener('submit', saveSSAAccount);
             document.getElementById('stForm').addEventListener('submit', saveST);
+            document.getElementById('afForm').addEventListener('submit', saveAF);
             document.getElementById('subchannelForm').addEventListener('submit', saveSubchannel);
             document.getElementById('ssaDepositForm').addEventListener('submit', saveSSADeposit);
+            document.getElementById('afDepositForm').addEventListener('submit', saveAFDeposit);
             document.getElementById('contaForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 alert('Funcionalidade de criação de contas em desenvolvimento');
@@ -5539,7 +5947,7 @@
             document.getElementById('txnDate').value = today;
             document.getElementById('lancamentoData').value = today;
             document.getElementById('ssaDepositDate').value = today;
-            document.getElementById('ssaReceiveDate').value = today;
+            document.getElementById('afDepositDate').value = today;
             
             console.log('Sistema Great Mola inicializado com sucesso!');
         });
