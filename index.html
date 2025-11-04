@@ -1073,7 +1073,7 @@
                         
                         <div class="form-group">
                             <label>Tipo de Capital</label>
-                            <select id="investorCapitalType" required>
+                                <select id="investorCapitalType" required>
                                 <option value="proprio">Capital Próprio</option>
                                 <option value="alheio">Capital Alheio</option>
                             </select>
@@ -1104,14 +1104,14 @@
                         <div class="form-group">
                             <label>Ciclo de Investimento</label>
                                 <select id="investorCycle" required>
-                                    <option value="Jan 2025">Jan 2025</option>
-                                    <option value="Fev 2025">Fev 2025</option>
-                                    <option value="Mar 2025">Mar 2025</option>
-                                    <option value="Abr 2025">Abr 2025</option>
-                                    <option value="Mai 2025">Mai 2025</option>
-                                    <option value="Jun 2025">Jun 2025</option>
-                                </select>
-                            </div>
+                                <option value="Jan 2025">Jan 2025</option>
+                                <option value="Fev 2025">Fev 2025</option>
+                                <option value="Mar 2025">Mar 2025</option>
+                                <option value="Abr 2025">Abr 2025</option>
+                                <option value="Mai 2025">Mai 2025</option>
+                                <option value="Jun 2025">Jun 2025</option>
+                            </select>
+                        </div>
                         
                         <div class="form-group">
                             <label>IRPS (%)</label>
@@ -2235,7 +2235,7 @@
                         
                         <div class="form-group">
                             <label>Tema Visual</label>
-                            <select id="theme">
+                                <select id="theme">
                                 <option value="light">Claro</option>
                                 <option value="dark">Escuro</option>
                                 <option value="auto">Automático</option>
@@ -2698,6 +2698,9 @@
             if (planoContas.length === 0) {
                 loadDefaultPlanoContas();
             }
+            
+            // CORREÇÃO: Carregar dropdown de funções na inicialização
+            loadRolesForDropdown();
         }
 
         function initializeDefaultRoles() {
@@ -2916,7 +2919,7 @@
 44,4.4.2,Investidores Ativos,Passivo,4
 45,4.4.2,Investidores a Liquidar,Passivo,4
 46,4.4.2,Investidores Suspensos,Passivo,4
-47,4.4.2,Juros a Pagar,Passivo,4
+47,4.4.3,Juros a Pagar,Passivo,4
 48,4.4.3,Agentes Autorizados,Passivo,4
 49,4.4.3,Sub-Agentes,Passivo,4
 50,4.4.3,Comisscoes a Liquidar,Passivo,4
