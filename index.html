@@ -5971,6 +5971,82 @@
             previewFile(inputId, inputId + 'Preview');
         }
 
+        // ========== FUNÇÕES DE LANÇAMENTOS CONTÁBEIS ==========
+        function saveLancamento(event) {
+            if (event) event.preventDefault();
+            
+            const data = document.getElementById('lancamentoData').value;
+            const descricao = document.getElementById('lancamentoDescricao').value;
+            const debito = document.getElementById('lancamentoDebito').value;
+            const credito = document.getElementById('lancamentoCredito').value;
+            const valor = parseFloat(document.getElementById('lancamentoValor').value);
+            
+            // Validações
+            if (!data || !descricao || !debito || !credito || !valor) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+            
+            if (debito === credito) {
+                alert('As contas de débito e crédito não podem ser iguais!');
+                return;
+            }
+            
+            if (valor <= 0) {
+                alert('O valor deve ser maior que zero!');
+                return;
+            }
+            
+            // Processar arquivos anexos
+            const fileInput = document.getElementById('lancamentoFile');
+            const anexos = [];
+            
+            if (fileInput.files && fileInput.files.length > 0) {
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const file = fileInput.files[i];
+                    anexos.push({
+                        nome: file.name,
+                        tipo: file.type,
+                        tamanho: file.size,
+                        dataUpload: new Date().toISOString()
+                    });
+                }
+            }
+            
+            // Criar novo lançamento
+            const novoLancamento = {
+                id: Date.now(),
+                data,
+                descricao,
+                debito: parseInt(debito),
+                credito: parseInt(credito),
+                valor,
+                anexos,
+                status: 'Registado',
+                userId: currentUser.id,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Adicionar ao array de lançamentos
+            lancamentos.push(novoLancamento);
+            
+            // Salvar no localStorage
+            localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+            
+            // Atualizar a tabela
+            updateLancamentosTable();
+            
+            // Limpar formulário
+            document.getElementById('lancamentoForm').reset();
+            document.getElementById('lancamentoFilePreview').innerHTML = '';
+            document.getElementById('lancamentoData').value = new Date().toISOString().split('T')[0];
+            
+            // Registrar log de auditoria
+            logAudit('CREATE_LANCAMENTO', `Criou lançamento: ${descricao} - MT ${valor.toFixed(2)}`);
+            
+            alert('Lançamento registado com sucesso!');
+        }
+
         // ========== INICIALIZAÇÃO DO SISTEMA ==========
         document.addEventListener('DOMContentLoaded', function() {
             // Inicializar dados padrão
@@ -5993,10 +6069,7 @@
                 alert('Funcionalidade de criação de contas em desenvolvimento');
                 closeModal('novaConta');
             });
-            document.getElementById('lancamentoForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('Funcionalidade de lançamentos em desenvolvimento');
-            });
+            document.getElementById('lancamentoForm').addEventListener('submit', saveLancamento);
             
             // Configurar event listeners para configurações
             document.getElementById('generalSettingsForm').addEventListener('submit', saveGeneralSettings);
