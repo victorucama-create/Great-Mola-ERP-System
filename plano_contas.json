@@ -1,0 +1,856 @@
+[
+  {
+    "id": "1",
+    "code": "111",
+    "name": "Caixa Sede",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "2",
+    "code": "112",
+    "name": "Caixa Agentes",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "3",
+    "code": "113",
+    "name": "Conta Bancária Principal",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "4",
+    "code": "114",
+    "name": "Conta Bancária Secundária",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "5",
+    "code": "115",
+    "name": "Conta eMola (Float Geral)",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "6",
+    "code": "116",
+    "name": "Conta eMola Agente Principal",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "7",
+    "code": "117",
+    "name": "Conta Paytek / Parceiro Digital",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "8",
+    "code": "118",
+    "name": "Depósitos em trânsito",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "9",
+    "code": "121",
+    "name": "Transferências a Confirmar",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "10",
+    "code": "122",
+    "name": "Saques Pendurados",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "11",
+    "code": "123",
+    "name": "Depósitos em Processamento",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "12",
+    "code": "124",
+    "name": "Fundos para Reconciliação",
+    "type": "asset",
+    "class": "1"
+  },
+  {
+    "id": "13",
+    "code": "211",
+    "name": "Float em Circulação",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "14",
+    "code": "212",
+    "name": "Float por Agente",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "15",
+    "code": "213",
+    "name": "Float em Reposição",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "16",
+    "code": "214",
+    "name": "Fundos Retidos Temporariamente",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "17",
+    "code": "221",
+    "name": "Fundos em Recolha (cash-out)",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "18",
+    "code": "222",
+    "name": "Fundos em Caixa Móvel",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "19",
+    "code": "223",
+    "name": "Fundos em Rota de Transporte",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "20",
+    "code": "225",
+    "name": "Fundos Delivery em Trânsito",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "21",
+    "code": "226",
+    "name": "Fundos Retidos – Seguros",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "22",
+    "code": "231",
+    "name": "Saldo em Carteiras Digitais (Clientes)",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "23",
+    "code": "232",
+    "name": "Saldo em Contas de Investidores",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "24",
+    "code": "233",
+    "name": "Créditos Promocionais / Bónus",
+    "type": "asset",
+    "class": "2"
+  },
+  {
+    "id": "25",
+    "code": "311",
+    "name": "Capital Aplicado Internamente",
+    "type": "asset",
+    "class": "3"
+  },
+  {
+    "id": "26",
+    "code": "312",
+    "name": "Aplicações de Curto Prazo",
+    "type": "asset",
+    "class": "3"
+  },
+  {
+    "id": "27",
+    "code": "313",
+    "name": "Aplicações de Longo Prazo",
+    "type": "asset",
+    "class": "3"
+  },
+  {
+    "id": "28",
+    "code": "314",
+    "name": "Investimentos em Startups / Parcerias",
+    "type": "asset",
+    "class": "3"
+  },
+  {
+    "id": "29",
+    "code": "315",
+    "name": "Investimento em Frota (Motociclos)",
+    "type": "asset",
+    "class": "3"
+  },
+  {
+    "id": "30",
+    "code": "316",
+    "name": "Investimento em Expansão Digital (App/ERP)",
+    "type": "asset",
+    "class": "3"
+  },
+  {
+    "id": "31",
+    "code": "321",
+    "name": "Capital de Investidores Ativos",
+    "type": "liability",
+    "class": "3"
+  },
+  {
+    "id": "32",
+    "code": "322",
+    "name": "Rendimentos a Pagar (Investidores)",
+    "type": "liability",
+    "class": "3"
+  },
+  {
+    "id": "33",
+    "code": "323",
+    "name": "Fundos Captados em Operações Especiais",
+    "type": "liability",
+    "class": "3"
+  },
+  {
+    "id": "34",
+    "code": "331",
+    "name": "Juros de Aplicações Próprias",
+    "type": "income",
+    "class": "3"
+  },
+  {
+    "id": "35",
+    "code": "332",
+    "name": "Juros de Capital Alheio",
+    "type": "income",
+    "class": "3"
+  },
+  {
+    "id": "36",
+    "code": "333",
+    "name": "Rendimento em Processamento",
+    "type": "income",
+    "class": "3"
+  },
+  {
+    "id": "37",
+    "code": "341",
+    "name": "Depósitos a Prazo",
+    "type": "asset",
+    "class": "3"
+  },
+  {
+    "id": "38",
+    "code": "342",
+    "name": "Títulos e Obrigações",
+    "type": "asset",
+    "class": "3"
+  },
+  {
+    "id": "39",
+    "code": "343",
+    "name": "Garantias de Contrato",
+    "type": "asset",
+    "class": "3"
+  },
+  {
+    "id": "40",
+    "code": "411",
+    "name": "Clientes eMola (Carteiras Ativas)",
+    "type": "asset",
+    "class": "4"
+  },
+  {
+    "id": "41",
+    "code": "412",
+    "name": "Clientes a Receber (Serviços)",
+    "type": "asset",
+    "class": "4"
+  },
+  {
+    "id": "42",
+    "code": "413",
+    "name": "Clientes em Atraso",
+    "type": "asset",
+    "class": "4"
+  },
+  {
+    "id": "43",
+    "code": "414",
+    "name": "Clientes Corporativos",
+    "type": "asset",
+    "class": "4"
+  },
+  {
+    "id": "44",
+    "code": "421",
+    "name": "Investidores Ativos",
+    "type": "liability",
+    "class": "4"
+  },
+  {
+    "id": "45",
+    "code": "422",
+    "name": "Investidores a Liquidar",
+    "type": "liability",
+    "class": "4"
+  },
+  {
+    "id": "46",
+    "code": "423",
+    "name": "Investidores Suspensos",
+    "type": "liability",
+    "class": "4"
+  },
+  {
+    "id": "47",
+    "code": "424",
+    "name": "Juros a Pagar",
+    "type": "liability",
+    "class": "4"
+  },
+  {
+    "id": "48",
+    "code": "431",
+    "name": "Agentes Autorizados",
+    "type": "liability",
+    "class": "4"
+  },
+  {
+    "id": "49",
+    "code": "432",
+    "name": "Sub-Agentes",
+    "type": "liability",
+    "class": "4"
+  },
+  {
+    "id": "50",
+    "code": "433",
+    "name": "Comissões a Liquidar",
+    "type": "liability",
+    "class": "4"
+  },
+  {
+    "id": "51",
+    "code": "434",
+    "name": "Incentivos Pendentes",
+    "type": "liability",
+    "class": "4"
+  },
+  {
+    "id": "52",
+    "code": "441",
+    "name": "Adiantamentos a Fornecedores",
+    "type": "asset",
+    "class": "4"
+  },
+  {
+    "id": "53",
+    "code": "442",
+    "name": "Funcionários (Adiantamentos)",
+    "type": "asset",
+    "class": "4"
+  },
+  {
+    "id": "54",
+    "code": "443",
+    "name": "Contas de Reconciliação",
+    "type": "asset",
+    "class": "4"
+  },
+  {
+    "id": "55",
+    "code": "444",
+    "name": "Fornecedores de Delivery",
+    "type": "liability",
+    "class": "4"
+  },
+  {
+    "id": "56",
+    "code": "445",
+    "name": "Colaboradores de Campo",
+    "type": "liability",
+    "class": "4"
+  },
+  {
+    "id": "57",
+    "code": "446",
+    "name": "Clientes Delivery a Receber",
+    "type": "asset",
+    "class": "4"
+  },
+  {
+    "id": "58",
+    "code": "511",
+    "name": "Capital Subscrito",
+    "type": "equity",
+    "class": "5"
+  },
+  {
+    "id": "59",
+    "code": "512",
+    "name": "Capital Realizado",
+    "type": "equity",
+    "class": "5"
+  },
+  {
+    "id": "60",
+    "code": "521",
+    "name": "Reserva Legal",
+    "type": "equity",
+    "class": "5"
+  },
+  {
+    "id": "61",
+    "code": "522",
+    "name": "Reserva de Expansão",
+    "type": "equity",
+    "class": "5"
+  },
+  {
+    "id": "62",
+    "code": "523",
+    "name": "Reserva de Contingência",
+    "type": "equity",
+    "class": "5"
+  },
+  {
+    "id": "63",
+    "code": "531",
+    "name": "Resultados Anteriores",
+    "type": "equity",
+    "class": "5"
+  },
+  {
+    "id": "64",
+    "code": "532",
+    "name": "Lucros / Prejuízos Acumulados",
+    "type": "equity",
+    "class": "5"
+  },
+  {
+    "id": "65",
+    "code": "541",
+    "name": "Resultado Líquido Atual",
+    "type": "equity",
+    "class": "5"
+  },
+  {
+    "id": "66",
+    "code": "542",
+    "name": "Resultado Provisório",
+    "type": "equity",
+    "class": "5"
+  },
+  {
+    "id": "67",
+    "code": "611",
+    "name": "Despesas de Operação eMola",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "68",
+    "code": "612",
+    "name": "Taxas de Transação",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "69",
+    "code": "613",
+    "name": "Comissões de Parceiros",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "70",
+    "code": "614",
+    "name": "Despesas de Plataforma",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "71",
+    "code": "621",
+    "name": "Salários e Vencimentos",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "72",
+    "code": "622",
+    "name": "Benefícios e Subsídios",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "73",
+    "code": "623",
+    "name": "Contribuições INSS",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "74",
+    "code": "624",
+    "name": "Formação e Capacitação",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "75",
+    "code": "631",
+    "name": "Juros Pagos a Investidores",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "76",
+    "code": "632",
+    "name": "Descontos Financeiros",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "77",
+    "code": "633",
+    "name": "Custos Bancários",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "78",
+    "code": "641",
+    "name": "Material de Escritório",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "79",
+    "code": "642",
+    "name": "Serviços de Limpeza e Manutenção",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "80",
+    "code": "643",
+    "name": "Telecomunicações",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "81",
+    "code": "644",
+    "name": "Transporte e Logística",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "82",
+    "code": "645",
+    "name": "Combustível e Lubrificantes",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "83",
+    "code": "646",
+    "name": "Peças e Reparações de Motas",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "84",
+    "code": "647",
+    "name": "Uniformes e Equipamento de Entrega",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "85",
+    "code": "648",
+    "name": "Despesas de Seguro (motorizadas e colaboradores)",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "86",
+    "code": "649",
+    "name": "Taxas e Licenças de Circulação",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "87",
+    "code": "651",
+    "name": "IRPS Retido",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "88",
+    "code": "652",
+    "name": "IVA",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "89",
+    "code": "653",
+    "name": "Outras Taxas Fiscais",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "90",
+    "code": "654",
+    "name": "Despesas de Segurança e Vigilância",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "91",
+    "code": "655",
+    "name": "Comissões Pagas a Sub-Agentes",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "92",
+    "code": "656",
+    "name": "Despesas de Marketing – Delivery & Digital",
+    "type": "expense",
+    "class": "6"
+  },
+  {
+    "id": "93",
+    "code": "711",
+    "name": "Comissões Recebidas (Transações)",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "94",
+    "code": "712",
+    "name": "Taxas de Serviço",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "95",
+    "code": "713",
+    "name": "Receitas de Sub-Agentes",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "96",
+    "code": "721",
+    "name": "Juros de Aplicações",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "97",
+    "code": "722",
+    "name": "Rendimentos sobre Capital",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "98",
+    "code": "723",
+    "name": "Descontos Obtidos",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "99",
+    "code": "731",
+    "name": "Receitas de Parcerias",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "100",
+    "code": "732",
+    "name": "Receitas de Consultoria Financeira",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "101",
+    "code": "733",
+    "name": "Ganhos Extraordinários",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "102",
+    "code": "734",
+    "name": "Receitas de Delivery (Entregas)",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "103",
+    "code": "735",
+    "name": "Serviços Expresso / Entrega Rápida",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "104",
+    "code": "736",
+    "name": "Receitas de Recolha de Valores (Cash-in/Cash-out)",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "105",
+    "code": "737",
+    "name": "Parcerias de Logística e Transporte",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "106",
+    "code": "738",
+    "name": "Receitas de Plataforma Digital (app, API, ERP)",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "107",
+    "code": "739",
+    "name": "Receitas de Formação / Consultoria Delivery",
+    "type": "income",
+    "class": "7"
+  },
+  {
+    "id": "108",
+    "code": "811",
+    "name": "Resultado Bruto",
+    "type": "equity",
+    "class": "8"
+  },
+  {
+    "id": "109",
+    "code": "812",
+    "name": "Resultado Operacional Líquido",
+    "type": "equity",
+    "class": "8"
+  },
+  {
+    "id": "110",
+    "code": "821",
+    "name": "Ganhos Financeiros",
+    "type": "income",
+    "class": "8"
+  },
+  {
+    "id": "111",
+    "code": "822",
+    "name": "Custos Financeiros",
+    "type": "expense",
+    "class": "8"
+  },
+  {
+    "id": "112",
+    "code": "831",
+    "name": "Resultado Antes de Impostos",
+    "type": "equity",
+    "class": "8"
+  },
+  {
+    "id": "113",
+    "code": "841",
+    "name": "Resultado Líquido do Exercício",
+    "type": "equity",
+    "class": "8"
+  },
+  {
+    "id": "114",
+    "code": "911",
+    "name": "Cauções Depositadas",
+    "type": "order",
+    "class": "9"
+  },
+  {
+    "id": "115",
+    "code": "912",
+    "name": "Cauções Recebidas",
+    "type": "order",
+    "class": "9"
+  },
+  {
+    "id": "116",
+    "code": "921",
+    "name": "Contratos de Agentes",
+    "type": "order",
+    "class": "9"
+  },
+  {
+    "id": "117",
+    "code": "922",
+    "name": "Contratos de Investidores",
+    "type": "order",
+    "class": "9"
+  },
+  {
+    "id": "118",
+    "code": "923",
+    "name": "Acordos Comerciais",
+    "type": "order",
+    "class": "9"
+  },
+  {
+    "id": "119",
+    "code": "931",
+    "name": "Fundos de Terceiros em Gestão",
+    "type": "order",
+    "class": "9"
+  },
+  {
+    "id": "120",
+    "code": "932",
+    "name": "Operações Conjuntas",
+    "type": "order",
+    "class": "9"
+  },
+  {
+    "id": "121",
+    "code": "941",
+    "name": "Notas de Auditoria",
+    "type": "order",
+    "class": "9"
+  },
+  {
+    "id": "122",
+    "code": "942",
+    "name": "Notas de Ajuste",
+    "type": "order",
+    "class": "9"
+  }
+]
