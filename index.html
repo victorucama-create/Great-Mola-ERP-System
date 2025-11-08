@@ -1403,6 +1403,12 @@
                                 <label>Função / Nível de Acesso</label>
                                 <select id="userRole" required>
                                     <option value="">Selecionar função</option>
+                                    <option value="admin">Administrador</option>
+                                    <option value="manager">Gestor</option>
+                                    <option value="accountant">Contabilista</option>
+                                    <option value="operator">Operador</option>
+                                    <option value="viewer">Visualizador</option>
+                                    <option value="ssa">Sub Super Agente (SSA)</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -2655,6 +2661,9 @@
 
                 localStorage.setItem('users', JSON.stringify(users));
                 
+                // Inicializar funções padrão
+                initializeDefaultRoles();
+                
                 // Inicializar outras estruturas de dados vazias
                 localStorage.setItem('investors', JSON.stringify([]));
                 localStorage.setItem('agents', JSON.stringify([]));
@@ -2672,9 +2681,6 @@
                 // Inicializar configurações padrão
                 initializeDefaultSettings();
                 
-                // Inicializar funções padrão
-                initializeDefaultRoles();
-                
                 console.log('Dados padrão inicializados com sucesso!');
             } else {
                 console.log('Dados já existentes, carregando do localStorage...');
@@ -2687,6 +2693,11 @@
             // Verificar se o plano de contas está vazio e carregar o padrão
             if (planoContas.length === 0) {
                 loadDefaultPlanoContas();
+            }
+            
+            // Garantir que as funções estão inicializadas
+            if (roles.length === 0) {
+                initializeDefaultRoles();
             }
         }
 
@@ -3153,29 +3164,43 @@
             return roleObj ? roleObj.description : 'Sem descrição';
         }
 
+        // FUNÇÃO CORRIGIDA: Cálculo de Dias Úteis
         function calculateBusinessDays(startDate, endDate) {
+            if (!startDate || !endDate) return 0;
+            
             let count = 0;
             const curDate = new Date(startDate.getTime());
+            endDate = new Date(endDate.getTime());
             
-            const feriados = [
-                '2024-01-01', // Ano Novo
-                '2024-02-03', // Dia dos Heróis Moçambicanos
-                '2024-04-07', // Dia da Mulher Moçambicana
-                '2024-05-01', // Dia do Trabalhador
-                '2024-06-25', // Dia da Independência
-                '2024-09-07', // Dia da Vitória
-                '2024-09-25', // Dia das Forças Armadas
-                '2024-12-25'  // Natal
-            ];
+            // Obter feriados das configurações
+            const holidaysText = settings.financial?.nationalHolidays || '';
+            const feriados = holidaysText.split('\n').filter(date => date.trim() !== '');
+            
+            // Adicionar feriados padrão se não houver configurações
+            if (feriados.length === 0) {
+                feriados.push(
+                    '2024-01-01', '2024-02-03', '2024-04-07', 
+                    '2024-05-01', '2024-06-25', '2024-09-07', 
+                    '2024-09-25', '2024-12-25'
+                );
+            }
             
             while (curDate <= endDate) {
                 const dayOfWeek = curDate.getDay();
                 const dateString = curDate.toISOString().split('T')[0];
                 
-                if (dayOfWeek !== 0 && !feriados.includes(dateString)) {
-                    if (dayOfWeek === 6) {
-                        count += 0.5;
+                // Verificar se não é feriado
+                if (!feriados.includes(dateString)) {
+                    if (dayOfWeek === 0 || dayOfWeek === 6) {
+                        // Sábado (6) ou Domingo (0) - contar como 0.5 dia se configurado
+                        const countSaturday = settings.financial?.countSaturday !== false;
+                        const countSunday = settings.financial?.countSunday !== false;
+                        
+                        if ((dayOfWeek === 6 && countSaturday) || (dayOfWeek === 0 && countSunday)) {
+                            count += 0.5;
+                        }
                     } else {
+                        // Dia de semana normal
                         count += 1;
                     }
                 }
@@ -3184,12 +3209,15 @@
             return count;
         }
 
+        // FUNÇÃO CORRIGIDA: Cálculo de Rendimento Líquido
         function calculateNetYield(investor) {
             const startDate = new Date(investor.startDate);
             const endDate = new Date(investor.endDate);
             const days = calculateBusinessDays(startDate, endDate);
             
-            const grossYield = investor.amount * (0.5 / 100) * days;
+            // Fórmula corrigida: Valor do Investimento * Dias Úteis * Taxa de Rendimento (%) * (1 - IRPS/100)
+            const dailyRate = investor.rate / 100; // Converter percentagem para decimal
+            const grossYield = investor.amount * days * dailyRate;
             const irpsAmount = grossYield * (investor.irps / 100);
             const netYield = grossYield - irpsAmount;
             
@@ -3280,7 +3308,7 @@
                 updateUsersTable();
                 updateRolesTable();
                 updateAuditLogs();
-                loadRolesForDropdown();
+                loadUserRolesDropdown(); // ← FUNÇÃO CORRIGIDA ADICIONADA
                 loadPermissionRoleDropdown();
             } else if (tabName === 'ssa') {
                 updateSSAAccountsTable();
@@ -3290,6 +3318,34 @@
                 loadSSAForDropdowns();
             } else if (tabName === 'settings') {
                 loadSettings();
+            }
+        }
+
+        // FUNÇÃO CORRIGIDA: Carregar dropdown de funções
+        function loadUserRolesDropdown() {
+            const roleSelect = document.getElementById('userRole');
+            if (roleSelect) {
+                // Limpar opções existentes exceto a primeira
+                while (roleSelect.options.length > 1) {
+                    roleSelect.remove(1);
+                }
+                
+                // Adicionar funções disponíveis
+                const availableRoles = [
+                    { value: 'admin', label: 'Administrador' },
+                    { value: 'manager', label: 'Gestor' },
+                    { value: 'accountant', label: 'Contabilista' },
+                    { value: 'operator', label: 'Operador' },
+                    { value: 'viewer', label: 'Visualizador' },
+                    { value: 'ssa', label: 'Sub Super Agente (SSA)' }
+                ];
+                
+                availableRoles.forEach(role => {
+                    const option = document.createElement('option');
+                    option.value = role.value;
+                    option.textContent = role.label;
+                    roleSelect.appendChild(option);
+                });
             }
         }
 
@@ -4231,7 +4287,7 @@
             updateAuditUserDropdown();
             
             // Atualizar dropdown de funções
-            loadRolesForDropdown();
+            loadUserRolesDropdown();
         }
 
         function editUser(id) {
@@ -4473,7 +4529,7 @@
             });
             
             // Atualizar dropdown de funções
-            loadRolesForDropdown();
+            loadUserRolesDropdown();
             loadPermissionRoleDropdown();
         }
 
