@@ -6,6 +6,7 @@
     <title>Great Mola - Sistema Completo</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>" type="image/svg+xml">
     <style>
+        /* SEU CSS ORIGINAL AQUI - MANTIDO IGUAL */
         :root {
             --primary: #c81f1f;
             --secondary: #007bff;
@@ -1222,7 +1223,7 @@
                         </tr>
                     </thead>
                     <tbody></tbody>
-                </table>
+                    </table>
             </div>
         </div>
 
@@ -2936,6 +2937,7 @@
             }
         }
 
+        // FUNÇÃO CORRIGIDA: Importação do Plano de Contas
         function importPlanoContas() {
             const fileInput = document.getElementById('importPlanoFile');
             const file = fileInput.files[0];
@@ -2950,16 +2952,41 @@
                 try {
                     const content = e.target.result;
                     const data = JSON.parse(content);
-                    planoContas = data.planoContas || data;
+                    
+                    // CORREÇÃO: Verificar se é um array direto ou tem a propriedade planoContas
+                    if (Array.isArray(data)) {
+                        // É um array direto de contas
+                        planoContas = data;
+                    } else if (data.planoContas && Array.isArray(data.planoContas)) {
+                        // Tem a propriedade planoContas
+                        planoContas = data.planoContas;
+                    } else {
+                        // Tentar usar o objeto como array se possível
+                        planoContas = Object.values(data);
+                    }
+                    
+                    // Validar se temos dados válidos
+                    if (!Array.isArray(planoContas) || planoContas.length === 0) {
+                        throw new Error('Formato de arquivo inválido. O arquivo deve conter um array de contas.');
+                    }
+                    
+                    // Garantir que cada conta tem um ID único
+                    planoContas = planoContas.map((conta, index) => {
+                        return {
+                            ...conta,
+                            id: conta.id || Date.now() + index
+                        };
+                    });
                     
                     localStorage.setItem('planoContas', JSON.stringify(planoContas));
                     renderPlanoContas();
                     loadPlanoContasForDropdown();
                     
-                    alert('Plano de contas importado com sucesso!');
+                    alert(`Plano de contas importado com sucesso! ${planoContas.length} contas carregadas.`);
                     fileInput.value = '';
                     
                 } catch (error) {
+                    console.error('Erro ao importar plano de contas:', error);
                     alert('Erro ao importar plano de contas: ' + error.message);
                 }
             };
