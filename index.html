@@ -4238,65 +4238,104 @@ function getLastDayOfMonth() {
         }
 
         // ========== FUNÇÕES DE AUTENTICAÇÃO ==========
-        function login(event) {
-            if (event) event.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            // Garantir que os dados padrão estão inicializados
-            initializeDefaultData();
-            
-            // Recarregar os usuários do localStorage
-            loadAllDataFromLocalStorage();
-            
-            const user = users.find(u => u.username === username && u.password === password && u.status === 'Ativo');
-            
-            if (user) {
-                currentUser = user;
-                
-                // Atualizar último acesso
-                user.lastAccess = new Date().toISOString();
-                localStorage.setItem('users', JSON.stringify(users));
-                
-                // Registrar log de auditoria
-                logAudit('LOGIN', `Utilizador ${user.username} fez login`);
-                
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-                
-                // Atualizar informações do utilizador
-                document.getElementById('userName').textContent = user.fullName;
-                document.getElementById('userRole').textContent = getRoleName(user.role);
-                document.getElementById('userAvatar').textContent = user.fullName.charAt(0).toUpperCase();
-                
-                // Mostrar/ocultar tabs baseado no tipo de utilizador
-                if (user.role === 'admin' || user.role === 'manager') {
-                    document.getElementById('usersTab').style.display = 'block';
-                    document.getElementById('approvalsTab').style.display = 'block';
-                    document.getElementById('settingsTab').style.display = 'block';
-                    document.getElementById('ssaTab').style.display = 'block';
-                } else if (user.role === 'ssa') {
-                    document.getElementById('ssaTab').style.display = 'block';
-                    document.getElementById('usersTab').style.display = 'none';
-                    document.getElementById('approvalsTab').style.display = 'none';
-                    document.getElementById('settingsTab').style.display = 'none';
-                } else {
-                    document.getElementById('usersTab').style.display = 'none';
-                    document.getElementById('approvalsTab').style.display = 'none';
-                    document.getElementById('settingsTab').style.display = 'none';
-                    document.getElementById('ssaTab').style.display = 'none';
-                }
-                
-                // Carregar dados específicos do utilizador
-                loadUserSpecificData();
-                
-                // Mostrar mensagem de boas-vindas
-                alert(`Bem-vindo, ${user.fullName}!`);
-            } else {
-                alert('Credenciais inválidas ou utilizador inativo!');
-            }
+        // ========== FUNÇÕES DE AUTENTICAÇÃO ==========
+function login(event) {
+    if (event) event.preventDefault();
+    console.log('Tentativa de login detectada...');
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    console.log('Credenciais inseridas:', { username, password });
+    
+    // Garantir que os dados padrão estão inicializados
+    initializeDefaultData();
+    
+    // Recarregar os usuários do localStorage
+    loadAllDataFromLocalStorage();
+    
+    console.log('Total de usuários carregados:', users.length);
+    console.log('Usuários disponíveis:', users);
+    
+    const user = users.find(u => u.username === username && u.password === password && u.status === 'Ativo');
+    
+    if (user) {
+        console.log('Login bem-sucedido para:', user.username);
+        currentUser = user;
+        
+        // Atualizar último acesso
+        user.lastAccess = new Date().toISOString();
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        // Registrar log de auditoria
+        logAudit('LOGIN', `Utilizador ${user.username} fez login`);
+        
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        
+        // Atualizar informações do utilizador
+        document.getElementById('userName').textContent = user.fullName;
+        document.getElementById('userRole').textContent = getRoleName(user.role);
+        document.getElementById('userAvatar').textContent = user.fullName.charAt(0).toUpperCase();
+        
+        // Mostrar/ocultar tabs baseado no tipo de utilizador
+        if (user.role === 'admin' || user.role === 'manager') {
+            document.getElementById('usersTab').style.display = 'block';
+            document.getElementById('approvalsTab').style.display = 'block';
+            document.getElementById('settingsTab').style.display = 'block';
+            document.getElementById('ssaTab').style.display = 'block';
+        } else if (user.role === 'ssa') {
+            document.getElementById('ssaTab').style.display = 'block';
+            document.getElementById('usersTab').style.display = 'none';
+            document.getElementById('approvalsTab').style.display = 'none';
+            document.getElementById('settingsTab').style.display = 'none';
+        } else {
+            document.getElementById('usersTab').style.display = 'none';
+            document.getElementById('approvalsTab').style.display = 'none';
+            document.getElementById('settingsTab').style.display = 'none';
+            document.getElementById('ssaTab').style.display = 'none';
         }
+        
+        // Carregar dados específicos do utilizador
+        loadUserSpecificData();
+        
+        // Mostrar mensagem de boas-vindas
+        alert(`Bem-vindo, ${user.fullName}!`);
+        
+        return true;
+    } else {
+        console.log('Falha no login - credenciais inválidas');
+        alert('Credenciais inválidas ou utilizador inativo!');
+        return false;
+    }
+}
+
+// Função de debug para verificar o sistema de login
+function debugLoginSystem() {
+    console.log('=== SISTEMA DE LOGIN - DEBUG ===');
+    
+    // Verificar dados no localStorage
+    const storedUsers = localStorage.getItem('users');
+    console.log('Users no localStorage:', storedUsers);
+    
+    // Verificar se há usuários
+    if (storedUsers) {
+        const usersArray = JSON.parse(storedUsers);
+        console.log('Número de usuários:', usersArray.length);
+        console.log('Usuários:', usersArray);
+        
+        // Verificar usuário admin
+        const adminUser = usersArray.find(u => u.username === 'admin');
+        console.log('Usuário admin encontrado:', adminUser);
+        
+        if (adminUser) {
+            console.log('Senha do admin:', adminUser.password);
+            console.log('Status do admin:', adminUser.status);
+        }
+    } else {
+        console.log('❌ NENHUM USUÁRIO NO LOCALSTORAGE');
+    }
+}
 
         function logout() {
             if (currentUser) {
