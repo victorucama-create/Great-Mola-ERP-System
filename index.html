@@ -858,23 +858,28 @@
             <div class="sub-content" id="reports">
                 <div class="card">
                     <h3>Relatórios Financeiros</h3>
-                    <div class="grid grid-3">
-                        <div class="result-item">
-                            <h3>Balanço</h3>
-                            <p>Relatório da posição financiera</p>
-                            <button class="btn btn-primary" onclick="generateBalanceSheet()">Gerar</button>
-                        </div>
-                        <div class="result-item">
-                            <h3>Demonstração de Resultados</h3>
-                            <p>Relatório de receitas e despesas</p>
-                            <button class="btn btn-primary" onclick="generateIncomeStatement()">Gerar</button>
-                        </div>
-                        <div class="result-item">
-                            <h3>Fluxo de Caixa</h3>
-                            <p>Relatório de entradas e saídas</p>
-                            <button class="btn btn-primary" onclick="generateCashFlow()">Gerar</button>
-                        </div>
-                    </div>
+                   <div class="grid grid-4">
+    <div class="result-item">
+        <h3>Balancete</h3>
+        <p>Lista de contas com saldos</p>
+        <button class="btn btn-primary" onclick="generateTrialBalance()">Gerar</button>
+    </div>
+    <div class="result-item">
+        <h3>Balanço Patrimonial</h3>
+        <p>Posição financeira atual</p>
+        <button class="btn btn-primary" onclick="generateBalanceSheet()">Gerar</button>
+    </div>
+    <div class="result-item">
+        <h3>Demonstração de Resultados</h3>
+        <p>Lucro ou prejuízo do período</p>
+        <button class="btn btn-primary" onclick="generateIncomeStatement()">Gerar</button>
+    </div>
+    <div class="result-item">
+        <h3>Fluxo de Caixa</h3>
+        <p>Entradas e saídas de dinheiro</p>
+        <button class="btn btn-primary" onclick="generateCashFlow()">Gerar</button>
+    </div>
+</div>
                     
                     <div class="export-buttons">
                         <button class="btn btn-secondary" onclick="exportFinancialReports('excel')">📊 Exportar Excel</button>
