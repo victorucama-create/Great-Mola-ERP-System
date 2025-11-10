@@ -4239,6 +4239,7 @@ function getLastDayOfMonth() {
 
         // ========== FUNÇÕES DE AUTENTICAÇÃO ==========
         // ========== FUNÇÕES DE AUTENTICAÇÃO ==========
+// ========== FUNÇÕES DE AUTENTICAÇÃO ==========
 function login(event) {
     if (event) event.preventDefault();
     console.log('Tentativa de login detectada...');
@@ -4307,6 +4308,33 @@ function login(event) {
         console.log('Falha no login - credenciais inválidas');
         alert('Credenciais inválidas ou utilizador inativo!');
         return false;
+    }
+}
+
+// Função de debug para verificar o sistema de login
+function debugLoginSystem() {
+    console.log('=== SISTEMA DE LOGIN - DEBUG ===');
+    
+    // Verificar dados no localStorage
+    const storedUsers = localStorage.getItem('users');
+    console.log('Users no localStorage:', storedUsers);
+    
+    // Verificar se há usuários
+    if (storedUsers) {
+        const usersArray = JSON.parse(storedUsers);
+        console.log('Número de usuários:', usersArray.length);
+        console.log('Usuários:', usersArray);
+        
+        // Verificar usuário admin
+        const adminUser = usersArray.find(u => u.username === 'admin');
+        console.log('Usuário admin encontrado:', adminUser);
+        
+        if (adminUser) {
+            console.log('Senha do admin:', adminUser.password);
+            console.log('Status do admin:', adminUser.status);
+        }
+    } else {
+        console.log('❌ NENHUM USUÁRIO NO LOCALSTORAGE');
     }
 }
 
