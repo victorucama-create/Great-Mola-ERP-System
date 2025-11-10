@@ -196,7 +196,71 @@
             color: white;
             border-radius: 10px;
         }
-        
+        /* Estilos para Relatórios Financeiros */
+.report-summary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.report-comparison {
+    background: #f8f9fa;
+    border-left: 4px solid #007bff;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+.drill-down {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.drill-down:hover {
+    background-color: #f8f9fa;
+}
+
+.account-class {
+    font-weight: bold;
+    color: var(--primary);
+    margin-top: 15px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--primary);
+}
+
+.positive-value {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.negative-value {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Melhorias para tabelas de relatórios */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+.report-table th {
+    background: var(--light);
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.report-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.report-table tr:hover {
+    background-color: #f8f9fa;
+}
         .kpi-value {
             font-size: 32px;
             font-weight: bold;
