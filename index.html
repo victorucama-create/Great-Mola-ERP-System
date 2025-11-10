@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Great Mola - Sistema Integrado de Gestão</title>
+    <title>Great Mola - Sistema Completo</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>" type="image/svg+xml">
     <style>
         :root {
-            --primary: #c41e3a;
-            --secondary: #2c3e50;
+            --primary: #c81f1f;
+            --secondary: #007bff;
             --success: #28a745;
             --warning: #ffc107;
             --danger: #dc3545;
             --light: #f8f9fa;
             --dark: #343a40;
-            --muted: #6c757d;
+            --muted: #666;
+            --bg: #f5f7fb;
+            --card: #fff;
+            --accent: #ffbe21;
+            --blue: #007bff;
             --orange: #fd7e14;
         }
         
@@ -21,27 +26,31 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: #f5f7fb;
-            color: var(--dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 20px;
         }
         
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
         
         .header {
             background: var(--primary);
             color: white;
-            padding: 15px 30px;
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         .logo {
@@ -587,163 +596,6 @@
             font-weight: bold;
         }
         
-        .report-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .report-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .report-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        
-        .report-period {
-            font-size: 16px;
-            color: var(--muted);
-        }
-        
-        .report-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        
-        .report-table th {
-            background: var(--light);
-            font-weight: 600;
-            padding: 12px 15px;
-            text-align: left;
-            border: 1px solid #dee2e6;
-        }
-        
-        .report-table td {
-            padding: 10px 15px;
-            border: 1px solid #dee2e6;
-        }
-        
-        .report-table .total-row {
-            font-weight: bold;
-            background-color: #f8f9fa;
-        }
-        
-        .report-table .subtotal-row {
-            font-weight: 600;
-            background-color: #f1f3f4;
-        }
-        
-        .report-table .account-row:hover {
-            background-color: #f8f9fa;
-            cursor: pointer;
-        }
-        
-        .positive {
-            color: var(--success);
-        }
-        
-        .negative {
-            color: var(--danger);
-        }
-        
-        .financial-statement {
-            margin-bottom: 30px;
-        }
-        
-        .financial-section {
-            margin-bottom: 20px;
-        }
-        
-        .financial-section-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .financial-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #f5f5f5;
-        }
-        
-        .financial-item.total {
-            font-weight: bold;
-            border-top: 2px solid #e9ecef;
-            margin-top: 10px;
-            padding-top: 15px;
-        }
-        
-        .financial-item.subtotal {
-            font-weight: 600;
-            padding-left: 20px;
-        }
-        
-        .financial-item.drillable {
-            cursor: pointer;
-        }
-        
-        .financial-item.drillable:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .cash-flow-section {
-            margin-bottom: 25px;
-        }
-        
-        .cash-flow-category {
-            margin-bottom: 15px;
-        }
-        
-        .cash-flow-category-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--secondary);
-        }
-        
-        .comparison-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-        
-        .comparison-positive {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .comparison-negative {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .drilldown-modal {
-            max-width: 90%;
-            width: 1200px;
-        }
-        
-        .drilldown-table {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        
         @media (max-width: 768px) {
             .grid-2, .grid-3, .grid-4 {
                 grid-template-columns: 1fr;
@@ -769,17 +621,6 @@
             
             .permissions-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .report-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .financial-item {
-                flex-direction: column;
-                gap: 5px;
             }
         }
     </style>
@@ -1017,54 +858,31 @@
             <div class="sub-content" id="reports">
                 <div class="card">
                     <h3>Relatórios Financeiros</h3>
-                    
-                    <!-- Filtros de Período -->
-                    <div class="filters">
-                        <div class="filter-group">
-                            <label>Data Início</label>
-                            <input type="date" id="reportStartDate">
+                    <div class="grid grid-3">
+                        <div class="result-item">
+                            <h3>Balanço</h3>
+                            <p>Relatório da posição financiera</p>
+                            <button class="btn btn-primary" onclick="generateBalanceSheet()">Gerar</button>
                         </div>
-                        <div class="filter-group">
-                            <label>Data Fim</label>
-                            <input type="date" id="reportEndDate">
+                        <div class="result-item">
+                            <h3>Demonstração de Resultados</h3>
+                            <p>Relatório de receitas e despesas</p>
+                            <button class="btn btn-primary" onclick="generateIncomeStatement()">Gerar</button>
                         </div>
-                        <div class="filter-group">
-                            <label>Tipo de Relatório</label>
-                            <select id="reportType" onchange="switchReportType()">
-                                <option value="trialBalance">Balancete</option>
-                                <option value="balanceSheet">Balanço Patrimonial</option>
-                                <option value="incomeStatement">Demonstração de Resultados</option>
-                                <option value="cashFlow">Fluxo de Caixa</option>
-                            </select>
-                        </div>
-                        <div class="filter-group" style="align-self: flex-end;">
-                            <button class="btn btn-primary" onclick="generateReport()">Gerar Relatório</button>
+                        <div class="result-item">
+                            <h3>Fluxo de Caixa</h3>
+                            <p>Relatório de entradas e saídas</p>
+                            <button class="btn btn-primary" onclick="generateCashFlow()">Gerar</button>
                         </div>
                     </div>
                     
-                    <!-- Comparação de Períodos -->
-                    <div class="form-group" style="margin-top: 15px;">
-                        <input type="checkbox" id="comparePeriods">
-                        <label for="comparePeriods">Comparar com período anterior</label>
-                    </div>
-                    
-                    <!-- Conteúdo dos Relatórios -->
-                    <div id="reportContent">
-                        <div class="report-section">
-                            <div class="report-header">
-                                <div class="report-title">Relatórios Financeiros</div>
-                                <div class="report-period" id="reportPeriodText">Selecione um período e clique em "Gerar Relatório"</div>
-                            </div>
-                            <p>Utilize os filtros acima para gerar os relatórios financeiros desejados.</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Botões de Exportação -->
                     <div class="export-buttons">
-                        <button class="btn btn-secondary" onclick="exportReport('excel')">📊 Exportar Excel</button>
-                        <button class="btn btn-success" onclick="exportReport('csv')">📄 Exportar CSV</button>
-                        <button class="btn btn-primary" onclick="exportReport('pdf')">📑 Exportar PDF</button>
+                        <button class="btn btn-secondary" onclick="exportFinancialReports('excel')">📊 Exportar Excel</button>
+                        <button class="btn btn-success" onclick="exportFinancialReports('csv')">📄 Exportar CSV</button>
+                        <button class="btn btn-primary" onclick="exportFinancialReports('pdf')">📑 Exportar PDF</button>
                     </div>
+                    
+                    <div id="reportResult" style="margin-top: 20px;"></div>
                 </div>
             </div>
             
@@ -2816,18 +2634,6 @@
         </div>
     </div>
 
-    <div id="drilldownModal" class="modal">
-        <div class="modal-content drilldown-modal">
-            <div class="modal-header">
-                <h3>Detalhes do Lançamento</h3>
-                <span class="close" onclick="closeModal('drilldownModal')">&times;</span>
-            </div>
-            <div id="drilldownContent">
-                <!-- Conteúdo do drilldown será carregado aqui -->
-            </div>
-        </div>
-    </div>
-
     <script>
         // ========== VARIÁVEIS GLOBAIS ==========
         let currentUser = null;
@@ -2846,8 +2652,6 @@
         let lancamentos = [];
         let auditLogs = [];
         let settings = {};
-        let currentReportData = null;
-        let currentReportType = null;
         
         // ========== INICIALIZAÇÃO DE DADOS PADRÃO ==========
         function initializeDefaultData() {
@@ -3239,1155 +3043,7 @@
             }
         }
 
-        // ========== FUNÇÕES DE RELATÓRIOS FINANCEIROS ==========
-        function switchReportType() {
-            const reportType = document.getElementById('reportType').value;
-            currentReportType = reportType;
-            
-            // Limpar conteúdo do relatório
-            document.getElementById('reportContent').innerHTML = `
-                <div class="report-section">
-                    <div class="report-header">
-                        <div class="report-title">${getReportTitle(reportType)}</div>
-                        <div class="report-period" id="reportPeriodText">Selecione um período e clique em "Gerar Relatório"</div>
-                    </div>
-                    <p>Utilize os filtros acima para gerar o relatório selecionado.</p>
-                </div>
-            `;
-        }
-
-        function getReportTitle(reportType) {
-            const titles = {
-                'trialBalance': 'Balancete',
-                'balanceSheet': 'Balanço Patrimonial',
-                'incomeStatement': 'Demonstração de Resultados',
-                'cashFlow': 'Fluxo de Caixa'
-            };
-            return titles[reportType] || 'Relatório Financeiro';
-        }
-
-        function generateReport() {
-            const startDate = document.getElementById('reportStartDate').value;
-            const endDate = document.getElementById('reportEndDate').value;
-            const reportType = document.getElementById('reportType').value;
-            const comparePeriods = document.getElementById('comparePeriods').checked;
-            
-            if (!startDate || !endDate) {
-                alert('Por favor, selecione as datas de início e fim do período!');
-                return;
-            }
-            
-            // Validar que a data de início é anterior à data de fim
-            if (new Date(startDate) > new Date(endDate)) {
-                alert('A data de início deve ser anterior à data de fim!');
-                return;
-            }
-            
-            currentReportType = reportType;
-            
-            // Gerar dados do relatório
-            let reportData;
-            let previousPeriodData = null;
-            
-            switch(reportType) {
-                case 'trialBalance':
-                    reportData = generateTrialBalance(startDate, endDate);
-                    if (comparePeriods) {
-                        const previousPeriod = getPreviousPeriod(startDate, endDate);
-                        previousPeriodData = generateTrialBalance(previousPeriod.start, previousPeriod.end);
-                    }
-                    break;
-                case 'balanceSheet':
-                    reportData = generateBalanceSheet(endDate);
-                    if (comparePeriods) {
-                        const previousPeriod = getPreviousPeriod(startDate, endDate);
-                        previousPeriodData = generateBalanceSheet(previousPeriod.end);
-                    }
-                    break;
-                case 'incomeStatement':
-                    reportData = generateIncomeStatement(startDate, endDate);
-                    if (comparePeriods) {
-                        const previousPeriod = getPreviousPeriod(startDate, endDate);
-                        previousPeriodData = generateIncomeStatement(previousPeriod.start, previousPeriod.end);
-                    }
-                    break;
-                case 'cashFlow':
-                    reportData = generateCashFlow(startDate, endDate);
-                    if (comparePeriods) {
-                        const previousPeriod = getPreviousPeriod(startDate, endDate);
-                        previousPeriodData = generateCashFlow(previousPeriod.start, previousPeriod.end);
-                    }
-                    break;
-            }
-            
-            currentReportData = {
-                reportType: reportType,
-                data: reportData,
-                previousData: previousPeriodData,
-                startDate: startDate,
-                endDate: endDate
-            };
-            
-            // Renderizar o relatório
-            renderReport(reportData, previousPeriodData, startDate, endDate, reportType);
-            
-            // Registrar log de auditoria
-            logAudit('GENERATE_REPORT', `Gerou relatório: ${getReportTitle(reportType)} (${startDate} a ${endDate})`);
-        }
-
-        function getPreviousPeriod(startDate, endDate) {
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            const diffTime = Math.abs(end - start);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            const prevStart = new Date(start);
-            prevStart.setDate(prevStart.getDate() - diffDays);
-            
-            const prevEnd = new Date(start);
-            prevEnd.setDate(prevEnd.getDate() - 1);
-            
-            return {
-                start: prevStart.toISOString().split('T')[0],
-                end: prevEnd.toISOString().split('T')[0]
-            };
-        }
-
-        function renderReport(data, previousData, startDate, endDate, reportType) {
-            const reportContent = document.getElementById('reportContent');
-            const periodText = `${formatDate(startDate)} a ${formatDate(endDate)}`;
-            
-            let html = `
-                <div class="report-section">
-                    <div class="report-header">
-                        <div class="report-title">${getReportTitle(reportType)}</div>
-                        <div class="report-period">Período: ${periodText}</div>
-                    </div>
-            `;
-            
-            switch(reportType) {
-                case 'trialBalance':
-                    html += renderTrialBalance(data, previousData);
-                    break;
-                case 'balanceSheet':
-                    html += renderBalanceSheet(data, previousData);
-                    break;
-                case 'incomeStatement':
-                    html += renderIncomeStatement(data, previousData);
-                    break;
-                case 'cashFlow':
-                    html += renderCashFlow(data, previousData);
-                    break;
-            }
-            
-            html += '</div>';
-            reportContent.innerHTML = html;
-        }
-
-        // ========== FUNÇÕES DE BALANCETE ==========
-        function generateTrialBalance(startDate, endDate) {
-            // Calcular saldos das contas
-            const accountBalances = {};
-            
-            // Inicializar todas as contas com saldo zero
-            planoContas.forEach(conta => {
-                accountBalances[conta.id] = {
-                    conta: conta,
-                    saldoInicial: 0,
-                    debitos: 0,
-                    creditos: 0,
-                    saldoFinal: 0
-                };
-            });
-            
-            // Processar lançamentos para calcular saldos
-            lancamentos.forEach(lancamento => {
-                if (lancamento.data >= startDate && lancamento.data <= endDate) {
-                    const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-                    const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-                    
-                    if (contaDebito) {
-                        if (!accountBalances[contaDebito.id]) {
-                            accountBalances[contaDebito.id] = {
-                                conta: contaDebito,
-                                saldoInicial: 0,
-                                debitos: 0,
-                                creditos: 0,
-                                saldoFinal: 0
-                            };
-                        }
-                        accountBalances[contaDebito.id].debitos += lancamento.valor;
-                    }
-                    
-                    if (contaCredito) {
-                        if (!accountBalances[contaCredito.id]) {
-                            accountBalances[contaCredito.id] = {
-                                conta: contaCredito,
-                                saldoInicial: 0,
-                                debitos: 0,
-                                creditos: 0,
-                                saldoFinal: 0
-                            };
-                        }
-                        accountBalances[contaCredito.id].creditos += lancamento.valor;
-                    }
-                }
-            });
-            
-            // Calcular saldos finais
-            Object.keys(accountBalances).forEach(accountId => {
-                const account = accountBalances[accountId];
-                // Para ativos e despesas: saldo = débitos - créditos
-                // Para passivos, patrimônio e receitas: saldo = créditos - débitos
-                if (account.conta.tipo === 'Ativo' || account.conta.tipo === 'Despesa') {
-                    account.saldoFinal = account.debitos - account.creditos;
-                } else {
-                    account.saldoFinal = account.creditos - account.debitos;
-                }
-            });
-            
-            // Calcular totais
-            const totalDebitos = Object.values(accountBalances).reduce((sum, account) => sum + account.debitos, 0);
-            const totalCreditos = Object.values(accountBalances).reduce((sum, account) => sum + account.creditos, 0);
-            
-            return {
-                accounts: accountBalances,
-                totalDebitos: totalDebitos,
-                totalCreditos: totalCreditos,
-                isBalanced: Math.abs(totalDebitos - totalCreditos) < 0.01
-            };
-        }
-
-        function renderTrialBalance(data, previousData) {
-            let html = `
-                <div class="financial-statement">
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Conta</th>
-                                <th>Débitos (MZN)</th>
-                                <th>Créditos (MZN)</th>
-                                <th>Saldo (MZN)</th>
-                                ${previousData ? '<th>Variação</th>' : ''}
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            
-            // Agrupar contas por tipo
-            const accountTypes = {
-                'Ativo': [],
-                'Passivo': [],
-                'Patrimonio': [],
-                'Receita': [],
-                'Despesa': []
-            };
-            
-            Object.values(data.accounts).forEach(account => {
-                if (accountTypes[account.conta.tipo]) {
-                    accountTypes[account.conta.tipo].push(account);
-                }
-            });
-            
-            // Renderizar contas por tipo
-            Object.keys(accountTypes).forEach(tipo => {
-                if (accountTypes[tipo].length > 0) {
-                    html += `<tr class="subtotal-row"><td colspan="2"><strong>${tipo}</strong></td><td></td><td></td><td></td>${previousData ? '<td></td>' : ''}</tr>`;
-                    
-                    accountTypes[tipo].forEach(account => {
-                        const variation = previousData ? calculateVariation(account.saldoFinal, previousData.accounts[account.conta.id]?.saldoFinal || 0) : null;
-                        
-                        html += `
-                            <tr class="account-row" onclick="showAccountDrilldown(${account.conta.id}, '${data.startDate}', '${data.endDate}')">
-                                <td>${account.conta.codigo}</td>
-                                <td>${account.conta.nome}</td>
-                                <td>${formatCurrency(account.debitos)}</td>
-                                <td>${formatCurrency(account.creditos)}</td>
-                                <td class="${account.saldoFinal >= 0 ? 'positive' : 'negative'}">${formatCurrency(account.saldoFinal)}</td>
-                                ${previousData ? `<td>${renderVariation(variation)}</td>` : ''}
-                            </tr>
-                        `;
-                    });
-                }
-            });
-            
-            // Totais
-            html += `
-                <tr class="total-row">
-                    <td colspan="2"><strong>TOTAIS</strong></td>
-                    <td><strong>${formatCurrency(data.totalDebitos)}</strong></td>
-                    <td><strong>${formatCurrency(data.totalCreditos)}</strong></td>
-                    <td></td>
-                    ${previousData ? '<td></td>' : ''}
-                </tr>
-            `;
-            
-            html += `
-                        </tbody>
-                    </table>
-                    
-                    <div style="margin-top: 20px;">
-                        <div class="${data.isBalanced ? 'success' : 'alert'}">
-                            ${data.isBalanced ? 
-                                '✅ Balancete equilibrado: Total de Débitos = Total de Créditos' : 
-                                '⚠️ Balancete desequilibrado: Total de Débitos ≠ Total de Créditos'}
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            return html;
-        }
-
-        // ========== FUNÇÕES DE BALANÇO PATRIMONIAL ==========
-        function generateBalanceSheet(asOfDate) {
-            // Calcular saldos das contas até a data especificada
-            const accountBalances = {};
-            
-            // Inicializar todas as contas com saldo zero
-            planoContas.forEach(conta => {
-                accountBalances[conta.id] = {
-                    conta: conta,
-                    saldo: 0
-                };
-            });
-            
-            // Processar lançamentos para calcular saldos
-            lancamentos.forEach(lancamento => {
-                if (lancamento.data <= asOfDate) {
-                    const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-                    const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-                    
-                    if (contaDebito) {
-                        // Para débito: aumenta ativos/despesas, diminui passivos/receitas
-                        if (contaDebito.tipo === 'Ativo' || contaDebito.tipo === 'Despesa') {
-                            accountBalances[contaDebito.id].saldo += lancamento.valor;
-                        } else {
-                            accountBalances[contaDebito.id].saldo -= lancamento.valor;
-                        }
-                    }
-                    
-                    if (contaCredito) {
-                        // Para crédito: aumenta passivos/receitas, diminui ativos/despesas
-                        if (contaCredito.tipo === 'Passivo' || contaCredito.tipo === 'Receita' || contaCredito.tipo === 'Patrimonio') {
-                            accountBalances[contaCredito.id].saldo += lancamento.valor;
-                        } else {
-                            accountBalances[contaCredito.id].saldo -= lancamento.valor;
-                        }
-                    }
-                }
-            });
-            
-            // Agrupar por tipo de conta para o balanço
-            const ativos = Object.values(accountBalances).filter(account => 
-                account.conta.tipo === 'Ativo' && Math.abs(account.saldo) > 0.01
-            );
-            
-            const passivos = Object.values(accountBalances).filter(account => 
-                account.conta.tipo === 'Passivo' && Math.abs(account.saldo) > 0.01
-            );
-            
-            const patrimonio = Object.values(accountBalances).filter(account => 
-                account.conta.tipo === 'Patrimonio' && Math.abs(account.saldo) > 0.01
-            );
-            
-            // Calcular totais
-            const totalAtivos = ativos.reduce((sum, account) => sum + account.saldo, 0);
-            const totalPassivos = passivos.reduce((sum, account) => sum + account.saldo, 0);
-            const totalPatrimonio = patrimonio.reduce((sum, account) => sum + account.saldo, 0);
-            
-            const isBalanced = Math.abs(totalAtivos - (totalPassivos + totalPatrimonio)) < 0.01;
-            
-            return {
-                ativos: ativos,
-                passivos: passivos,
-                patrimonio: patrimonio,
-                totalAtivos: totalAtivos,
-                totalPassivos: totalPassivos,
-                totalPatrimonio: totalPatrimonio,
-                isBalanced: isBalanced,
-                asOfDate: asOfDate
-            };
-        }
-
-        function renderBalanceSheet(data, previousData) {
-            let html = `
-                <div class="financial-statement">
-                    <div class="financial-section">
-                        <div class="financial-section-title">ATIVO</div>
-            `;
-            
-            // Ativos
-            data.ativos.forEach(account => {
-                const variation = previousData ? calculateVariation(account.saldo, previousData.ativos.find(a => a.conta.id === account.conta.id)?.saldo || 0) : null;
-                
-                html += `
-                    <div class="financial-item drillable" onclick="showAccountDrilldown(${account.conta.id}, '${data.startDate}', '${data.asOfDate}')">
-                        <span>${account.conta.nome}</span>
-                        <span>
-                            ${formatCurrency(account.saldo)}
-                            ${previousData ? renderVariationBadge(variation) : ''}
-                        </span>
-                    </div>
-                `;
-            });
-            
-            html += `
-                        <div class="financial-item total">
-                            <span><strong>TOTAL DO ATIVO</strong></span>
-                            <span><strong>${formatCurrency(data.totalAtivos)}</strong></span>
-                        </div>
-                    </div>
-                    
-                    <div class="financial-section">
-                        <div class="financial-section-title">PASSIVO</div>
-            `;
-            
-            // Passivos
-            data.passivos.forEach(account => {
-                const variation = previousData ? calculateVariation(account.saldo, previousData.passivos.find(p => p.conta.id === account.conta.id)?.saldo || 0) : null;
-                
-                html += `
-                    <div class="financial-item drillable" onclick="showAccountDrilldown(${account.conta.id}, '${data.startDate}', '${data.asOfDate}')">
-                        <span>${account.conta.nome}</span>
-                        <span>
-                            ${formatCurrency(account.saldo)}
-                            ${previousData ? renderVariationBadge(variation) : ''}
-                        </span>
-                    </div>
-                `;
-            });
-            
-            html += `
-                        <div class="financial-item subtotal">
-                            <span><strong>TOTAL DO PASSIVO</strong></span>
-                            <span><strong>${formatCurrency(data.totalPassivos)}</strong></span>
-                        </div>
-                    </div>
-                    
-                    <div class="financial-section">
-                        <div class="financial-section-title">PATRIMÔNIO LÍQUIDO</div>
-            `;
-            
-            // Patrimônio
-            data.patrimonio.forEach(account => {
-                const variation = previousData ? calculateVariation(account.saldo, previousData.patrimonio.find(pl => pl.conta.id === account.conta.id)?.saldo || 0) : null;
-                
-                html += `
-                    <div class="financial-item drillable" onclick="showAccountDrilldown(${account.conta.id}, '${data.startDate}', '${data.asOfDate}')">
-                        <span>${account.conta.nome}</span>
-                        <span>
-                            ${formatCurrency(account.saldo)}
-                            ${previousData ? renderVariationBadge(variation) : ''}
-                        </span>
-                    </div>
-                `;
-            });
-            
-            html += `
-                        <div class="financial-item subtotal">
-                            <span><strong>TOTAL DO PATRIMÔNIO LÍQUIDO</strong></span>
-                            <span><strong>${formatCurrency(data.totalPatrimonio)}</strong></span>
-                        </div>
-                    </div>
-                    
-                    <div class="financial-section">
-                        <div class="financial-item total">
-                            <span><strong>TOTAL DO PASSIVO + PATRIMÔNIO LÍQUIDO</strong></span>
-                            <span><strong>${formatCurrency(data.totalPassivos + data.totalPatrimonio)}</strong></span>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 20px;">
-                        <div class="${data.isBalanced ? 'success' : 'alert'}">
-                            ${data.isBalanced ? 
-                                '✅ Balanço equilibrado: Ativo = Passivo + Patrimônio Líquido' : 
-                                '⚠️ Balanço desequilibrado: Ativo ≠ Passivo + Patrimônio Líquido'}
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            return html;
-        }
-
-        // ========== FUNÇÕES DE DEMONSTRAÇÃO DE RESULTADOS ==========
-        function generateIncomeStatement(startDate, endDate) {
-            // Calcular receitas e despesas do período
-            const receitas = [];
-            const despesas = [];
-            let totalReceitas = 0;
-            let totalDespesas = 0;
-            
-            // Processar lançamentos para calcular receitas e despesas
-            lancamentos.forEach(lancamento => {
-                if (lancamento.data >= startDate && lancamento.data <= endDate) {
-                    const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-                    const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-                    
-                    // Verificar se é uma receita (crédito em conta de receita)
-                    if (contaCredito && contaCredito.tipo === 'Receita') {
-                        const existingAccount = receitas.find(r => r.conta.id === contaCredito.id);
-                        if (existingAccount) {
-                            existingAccount.valor += lancamento.valor;
-                        } else {
-                            receitas.push({
-                                conta: contaCredito,
-                                valor: lancamento.valor
-                            });
-                        }
-                        totalReceitas += lancamento.valor;
-                    }
-                    
-                    // Verificar se é uma despesa (débito em conta de despesa)
-                    if (contaDebito && contaDebito.tipo === 'Despesa') {
-                        const existingAccount = despesas.find(d => d.conta.id === contaDebito.id);
-                        if (existingAccount) {
-                            existingAccount.valor += lancamento.valor;
-                        } else {
-                            despesas.push({
-                                conta: contaDebito,
-                                valor: lancamento.valor
-                            });
-                        }
-                        totalDespesas += lancamento.valor;
-                    }
-                }
-            });
-            
-            const resultado = totalReceitas - totalDespesas;
-            
-            return {
-                receitas: receitas,
-                despesas: despesas,
-                totalReceitas: totalReceitas,
-                totalDespesas: totalDespesas,
-                resultado: resultado,
-                startDate: startDate,
-                endDate: endDate
-            };
-        }
-
-        function renderIncomeStatement(data, previousData) {
-            let html = `
-                <div class="financial-statement">
-                    <div class="financial-section">
-                        <div class="financial-section-title">RECEITAS</div>
-            `;
-            
-            // Receitas
-            data.receitas.forEach(item => {
-                const variation = previousData ? calculateVariation(item.valor, previousData.receitas.find(r => r.conta.id === item.conta.id)?.valor || 0) : null;
-                
-                html += `
-                    <div class="financial-item drillable" onclick="showAccountDrilldown(${item.conta.id}, '${data.startDate}', '${data.endDate}')">
-                        <span>${item.conta.nome}</span>
-                        <span>
-                            ${formatCurrency(item.valor)}
-                            ${previousData ? renderVariationBadge(variation) : ''}
-                        </span>
-                    </div>
-                `;
-            });
-            
-            html += `
-                        <div class="financial-item total">
-                            <span><strong>TOTAL DAS RECEITAS</strong></span>
-                            <span><strong>${formatCurrency(data.totalReceitas)}</strong></span>
-                        </div>
-                    </div>
-                    
-                    <div class="financial-section">
-                        <div class="financial-section-title">DESPESAS</div>
-            `;
-            
-            // Despesas
-            data.despesas.forEach(item => {
-                const variation = previousData ? calculateVariation(item.valor, previousData.despesas.find(d => d.conta.id === item.conta.id)?.valor || 0) : null;
-                
-                html += `
-                    <div class="financial-item drillable" onclick="showAccountDrilldown(${item.conta.id}, '${data.startDate}', '${data.endDate}')">
-                        <span>${item.conta.nome}</span>
-                        <span>
-                            ${formatCurrency(item.valor)}
-                            ${previousData ? renderVariationBadge(variation) : ''}
-                        </span>
-                    </div>
-                `;
-            });
-            
-            html += `
-                        <div class="financial-item total">
-                            <span><strong>TOTAL DAS DESPESAS</strong></span>
-                            <span><strong>${formatCurrency(data.totalDespesas)}</strong></span>
-                        </div>
-                    </div>
-                    
-                    <div class="financial-section">
-                        <div class="financial-item total ${data.resultado >= 0 ? 'positive' : 'negative'}">
-                            <span><strong>RESULTADO LÍQUIDO DO PERÍODO</strong></span>
-                            <span><strong>${formatCurrency(data.resultado)}</strong></span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            return html;
-        }
-
-        // ========== FUNÇÕES DE FLUXO DE CAIXA ==========
-        function generateCashFlow(startDate, endDate) {
-            // Identificar contas de caixa e equivalentes
-            const cashAccounts = planoContas.filter(conta => 
-                conta.nome.toLowerCase().includes('caixa') || 
-                conta.nome.toLowerCase().includes('banco') ||
-                conta.codigo.startsWith('1.1') // Contas da classe 1.1 (Disponibilidades)
-            );
-            
-            // Calcular fluxos
-            const fluxoOperacional = { entradas: 0, saidas: 0, lancamentos: [] };
-            const fluxoInvestimento = { entradas: 0, saidas: 0, lancamentos: [] };
-            const fluxoFinanciamento = { entradas: 0, saidas: 0, lancamentos: [] };
-            
-            // Processar lançamentos que envolvem contas de caixa
-            lancamentos.forEach(lancamento => {
-                if (lancamento.data >= startDate && lancamento.data <= endDate) {
-                    const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-                    const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-                    
-                    // Verificar se envolve conta de caixa
-                    const isDebitoCash = cashAccounts.some(ca => ca.id === contaDebito?.id);
-                    const isCreditoCash = cashAccounts.some(ca => ca.id === contaCredito?.id);
-                    
-                    if (isDebitoCash || isCreditoCash) {
-                        let fluxo;
-                        let isEntrada = false;
-                        
-                        // Classificar o fluxo
-                        if (isCreditoCash) {
-                            // Entrada de caixa (crédito em conta de caixa)
-                            isEntrada = true;
-                            fluxo = classifyCashFlow(contaDebito, lancamento.descricao);
-                        } else {
-                            // Saída de caixa (débito em conta de caixa)
-                            isEntrada = false;
-                            fluxo = classifyCashFlow(contaCredito, lancamento.descricao);
-                        }
-                        
-                        // Adicionar ao fluxo correspondente
-                        if (fluxo === 'operacional') {
-                            if (isEntrada) {
-                                fluxoOperacional.entradas += lancamento.valor;
-                            } else {
-                                fluxoOperacional.saidas += lancamento.valor;
-                            }
-                            fluxoOperacional.lancamentos.push({
-                                ...lancamento,
-                                tipo: isEntrada ? 'entrada' : 'saida',
-                                fluxo: 'operacional'
-                            });
-                        } else if (fluxo === 'investimento') {
-                            if (isEntrada) {
-                                fluxoInvestimento.entradas += lancamento.valor;
-                            } else {
-                                fluxoInvestimento.saidas += lancamento.valor;
-                            }
-                            fluxoInvestimento.lancamentos.push({
-                                ...lancamento,
-                                tipo: isEntrada ? 'entrada' : 'saida',
-                                fluxo: 'investimento'
-                            });
-                        } else if (fluxo === 'financiamento') {
-                            if (isEntrada) {
-                                fluxoFinanciamento.entradas += lancamento.valor;
-                            } else {
-                                fluxoFinanciamento.saidas += lancamento.valor;
-                            }
-                            fluxoFinanciamento.lancamentos.push({
-                                ...lancamento,
-                                tipo: isEntrada ? 'entrada' : 'saida',
-                                fluxo: 'financiamento'
-                            });
-                        }
-                    }
-                }
-            });
-            
-            // Calcular saldo inicial (antes da data de início)
-            let saldoInicial = 0;
-            lancamentos.forEach(lancamento => {
-                if (lancamento.data < startDate) {
-                    const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-                    const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-                    
-                    const isDebitoCash = cashAccounts.some(ca => ca.id === contaDebito?.id);
-                    const isCreditoCash = cashAccounts.some(ca => ca.id === contaCredito?.id);
-                    
-                    if (isCreditoCash) {
-                        saldoInicial += lancamento.valor;
-                    } else if (isDebitoCash) {
-                        saldoInicial -= lancamento.valor;
-                    }
-                }
-            });
-            
-            // Calcular fluxos líquidos
-            const fluxoLiquidoOperacional = fluxoOperacional.entradas - fluxoOperacional.saidas;
-            const fluxoLiquidoInvestimento = fluxoInvestimento.entradas - fluxoInvestimento.saidas;
-            const fluxoLiquidoFinanciamento = fluxoFinanciamento.entradas - fluxoFinanciamento.saidas;
-            const fluxoLiquidoTotal = fluxoLiquidoOperacional + fluxoLiquidoInvestimento + fluxoLiquidoFinanciamento;
-            
-            // Calcular saldo final
-            const saldoFinal = saldoInicial + fluxoLiquidoTotal;
-            
-            return {
-                saldoInicial: saldoInicial,
-                fluxoOperacional: fluxoOperacional,
-                fluxoInvestimento: fluxoInvestimento,
-                fluxoFinanciamento: fluxoFinanciamento,
-                fluxoLiquidoOperacional: fluxoLiquidoOperacional,
-                fluxoLiquidoInvestimento: fluxoLiquidoInvestimento,
-                fluxoLiquidoFinanciamento: fluxoLiquidoFinanciamento,
-                fluxoLiquidoTotal: fluxoLiquidoTotal,
-                saldoFinal: saldoFinal,
-                startDate: startDate,
-                endDate: endDate
-            };
-        }
-
-        function classifyCashFlow(conta, descricao) {
-            if (!conta) return 'operacional';
-            
-            const descLower = descricao.toLowerCase();
-            const contaNomeLower = conta.nome.toLowerCase();
-            
-            // Investimento: compra/venda de ativos fixos, investimentos
-            if (descLower.includes('investimento') || descLower.includes('equipamento') || 
-                descLower.includes('imobilizado') || descLower.includes('ativo fixo') ||
-                contaNomeLower.includes('investimento') || contaNomeLower.includes('imobilizado')) {
-                return 'investimento';
-            }
-            
-            // Financiamento: empréstimos, capital, dividendos
-            if (descLower.includes('empréstimo') || descLower.includes('financiamento') || 
-                descLower.includes('capital') || descLower.includes('dividendo') ||
-                descLower.includes('juros') || contaNomeLower.includes('empréstimo') ||
-                contaNomeLower.includes('financiamento')) {
-                return 'financiamento';
-            }
-            
-            // Operacional: tudo o resto (vendas, compras, despesas operacionais)
-            return 'operacional';
-        }
-
-        function renderCashFlow(data, previousData) {
-            let html = `
-                <div class="financial-statement">
-                    <div class="cash-flow-section">
-                        <div class="financial-item">
-                            <span>Saldo Inicial de Caixa</span>
-                            <span>${formatCurrency(data.saldoInicial)}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="cash-flow-section">
-                        <div class="cash-flow-category">
-                            <div class="cash-flow-category-title">FLUXO DAS OPERAÇÕES</div>
-            `;
-            
-            // Fluxo Operacional
-            html += `
-                <div class="financial-item">
-                    <span>Entradas Operacionais</span>
-                    <span class="positive">${formatCurrency(data.fluxoOperacional.entradas)}</span>
-                </div>
-                <div class="financial-item">
-                    <span>Saídas Operacionais</span>
-                    <span class="negative">${formatCurrency(data.fluxoOperacional.saidas)}</span>
-                </div>
-                <div class="financial-item total">
-                    <span><strong>Fluxo Líquido das Operações</strong></span>
-                    <span class="${data.fluxoLiquidoOperacional >= 0 ? 'positive' : 'negative'}">
-                        <strong>${formatCurrency(data.fluxoLiquidoOperacional)}</strong>
-                    </span>
-                </div>
-            `;
-            
-            html += `
-                        </div>
-                        
-                        <div class="cash-flow-category">
-                            <div class="cash-flow-category-title">FLUXO DE INVESTIMENTO</div>
-            `;
-            
-            // Fluxo de Investimento
-            html += `
-                <div class="financial-item">
-                    <span>Entradas de Investimento</span>
-                    <span class="positive">${formatCurrency(data.fluxoInvestimento.entradas)}</span>
-                </div>
-                <div class="financial-item">
-                    <span>Saídas de Investimento</span>
-                    <span class="negative">${formatCurrency(data.fluxoInvestimento.saidas)}</span>
-                </div>
-                <div class="financial-item total">
-                    <span><strong>Fluxo Líquido de Investimento</strong></span>
-                    <span class="${data.fluxoLiquidoInvestimento >= 0 ? 'positive' : 'negative'}">
-                        <strong>${formatCurrency(data.fluxoLiquidoInvestimento)}</strong>
-                    </span>
-                </div>
-            `;
-            
-            html += `
-                        </div>
-                        
-                        <div class="cash-flow-category">
-                            <div class="cash-flow-category-title">FLUXO DE FINANCIAMENTO</div>
-            `;
-            
-            // Fluxo de Financiamento
-            html += `
-                <div class="financial-item">
-                    <span>Entradas de Financiamento</span>
-                    <span class="positive">${formatCurrency(data.fluxoFinanciamento.entradas)}</span>
-                </div>
-                <div class="financial-item">
-                    <span>Saídas de Financiamento</span>
-                    <span class="negative">${formatCurrency(data.fluxoFinanciamento.saidas)}</span>
-                </div>
-                <div class="financial-item total">
-                    <span><strong>Fluxo Líquido de Financiamento</strong></span>
-                    <span class="${data.fluxoLiquidoFinanciamento >= 0 ? 'positive' : 'negative'}">
-                        <strong>${formatCurrency(data.fluxoLiquidoFinanciamento)}</strong>
-                    </span>
-                </div>
-            `;
-            
-            html += `
-                        </div>
-                    </div>
-                    
-                    <div class="cash-flow-section">
-                        <div class="financial-item total">
-                            <span><strong>Variação Líquida de Caixa</strong></span>
-                            <span class="${data.fluxoLiquidoTotal >= 0 ? 'positive' : 'negative'}">
-                                <strong>${formatCurrency(data.fluxoLiquidoTotal)}</strong>
-                            </span>
-                        </div>
-                        <div class="financial-item total">
-                            <span><strong>Saldo Final de Caixa</strong></span>
-                            <span><strong>${formatCurrency(data.saldoFinal)}</strong></span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            return html;
-        }
-
-        // ========== FUNÇÕES AUXILIARES DE RELATÓRIOS ==========
-        function showAccountDrilldown(accountId, startDate, endDate) {
-            const account = planoContas.find(c => c.id === accountId);
-            if (!account) return;
-            
-            // Filtrar lançamentos para esta conta no período
-            const lancamentosConta = lancamentos.filter(l => 
-                (l.data >= startDate && l.data <= endDate) &&
-                (l.debito === accountId || l.credito === accountId)
-            );
-            
-            let html = `
-                <h3>Detalhes da Conta: ${account.codigo} - ${account.nome}</h3>
-                <p>Período: ${formatDate(startDate)} a ${formatDate(endDate)}</p>
-                
-                <div class="drilldown-table">
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Descrição</th>
-                                <th>Débito</th>
-                                <th>Crédito</th>
-                                <th>Valor (MZN)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            
-            let totalDebitos = 0;
-            let totalCreditos = 0;
-            
-            lancamentosConta.forEach(lancamento => {
-                const isDebito = lancamento.debito === accountId;
-                const contraPartida = planoContas.find(c => c.id === (isDebito ? lancamento.credito : lancamento.debito));
-                const contraPartidaNome = contraPartida ? `${contraPartida.codigo} - ${contraPartida.nome}` : 'N/A';
-                
-                if (isDebito) {
-                    totalDebitos += lancamento.valor;
-                } else {
-                    totalCreditos += lancamento.valor;
-                }
-                
-                html += `
-                    <tr>
-                        <td>${lancamento.data}</td>
-                        <td>${lancamento.descricao} (${contraPartidaNome})</td>
-                        <td>${isDebito ? formatCurrency(lancamento.valor) : ''}</td>
-                        <td>${!isDebito ? formatCurrency(lancamento.valor) : ''}</td>
-                        <td>${formatCurrency(lancamento.valor)}</td>
-                    </tr>
-                `;
-            });
-            
-            html += `
-                        </tbody>
-                        <tfoot>
-                            <tr class="total-row">
-                                <td colspan="2"><strong>TOTAIS</strong></td>
-                                <td><strong>${formatCurrency(totalDebitos)}</strong></td>
-                                <td><strong>${formatCurrency(totalCreditos)}</strong></td>
-                                <td><strong>${formatCurrency(totalDebitos + totalCreditos)}</strong></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            `;
-            
-            document.getElementById('drilldownContent').innerHTML = html;
-            showModal('drilldownModal');
-        }
-
-        function calculateVariation(current, previous) {
-            if (previous === 0) return current !== 0 ? 100 : 0;
-            return ((current - previous) / Math.abs(previous)) * 100;
-        }
-
-        function renderVariation(variation) {
-            if (variation === null || variation === undefined) return '';
-            const symbol = variation >= 0 ? '+' : '';
-            const className = variation >= 0 ? 'positive' : 'negative';
-            return `<span class="${className}">${symbol}${variation.toFixed(1)}%</span>`;
-        }
-
-        function renderVariationBadge(variation) {
-            if (variation === null || variation === undefined) return '';
-            const symbol = variation >= 0 ? '↗' : '↘';
-            const className = variation >= 0 ? 'comparison-positive' : 'comparison-negative';
-            return `<span class="comparison-badge ${className}">${symbol} ${Math.abs(variation).toFixed(1)}%</span>`;
-        }
-
-        function formatCurrency(value) {
-            return `MT ${parseFloat(value).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('pt-PT');
-        }
-
         // ========== FUNÇÕES DE EXPORTAÇÃO DE RELATÓRIOS ==========
-        function exportReport(format) {
-            if (!currentReportData) {
-                alert('Por favor, gere um relatório primeiro!');
-                return;
-            }
-            
-            let content = '';
-            let filename = '';
-            let mimeType = '';
-            
-            switch(format) {
-                case 'csv':
-                    content = exportReportToCSV(currentReportData);
-                    filename = `relatorio_${currentReportType}_${Date.now()}.csv`;
-                    mimeType = 'text/csv;charset=utf-8;';
-                    break;
-                case 'excel':
-                    content = exportReportToExcel(currentReportData);
-                    filename = `relatorio_${currentReportType}_${Date.now()}.xls`;
-                    mimeType = 'application/vnd.ms-excel;charset=utf-8;';
-                    break;
-                case 'pdf':
-                    exportReportToPDF(currentReportData);
-                    return; // PDF gera download automaticamente
-            }
-            
-            const dataBlob = new Blob([content], { type: mimeType });
-            downloadFile(dataBlob, filename);
-            
-            // Registrar log de auditoria
-            logAudit('EXPORT_REPORT', `Exportou relatório ${getReportTitle(currentReportType)} em formato ${format}`);
-        }
-
-        function exportReportToCSV(reportData) {
-            let csvContent = '';
-            
-            switch(reportData.reportType) {
-                case 'trialBalance':
-                    csvContent = 'Código,Conta,Débitos (MZN),Créditos (MZN),Saldo (MZN)\n';
-                    Object.values(reportData.data.accounts).forEach(account => {
-                        csvContent += `"${account.conta.codigo}","${account.conta.nome}","${account.debitos}","${account.creditos}","${account.saldoFinal}"\n`;
-                    });
-                    csvContent += `"","TOTAIS","${reportData.data.totalDebitos}","${reportData.data.totalCreditos}",""\n`;
-                    break;
-                    
-                case 'balanceSheet':
-                    csvContent = 'Categoria,Conta,Valor (MZN)\n';
-                    
-                    // Ativos
-                    csvContent += '"ATIVO","",""\n';
-                    reportData.data.ativos.forEach(account => {
-                        csvContent += `"","${account.conta.nome}","${account.saldo}"\n`;
-                    });
-                    csvContent += `"","TOTAL DO ATIVO","${reportData.data.totalAtivos}"\n\n`;
-                    
-                    // Passivos
-                    csvContent += '"PASSIVO","",""\n';
-                    reportData.data.passivos.forEach(account => {
-                        csvContent += `"","${account.conta.nome}","${account.saldo}"\n`;
-                    });
-                    csvContent += `"","TOTAL DO PASSIVO","${reportData.data.totalPassivos}"\n\n`;
-                    
-                    // Patrimônio
-                    csvContent += '"PATRIMÔNIO LÍQUIDO","",""\n';
-                    reportData.data.patrimonio.forEach(account => {
-                        csvContent += `"","${account.conta.nome}","${account.saldo}"\n`;
-                    });
-                    csvContent += `"","TOTAL DO PATRIMÔNIO LÍQUIDO","${reportData.data.totalPatrimonio}"\n\n`;
-                    
-                    csvContent += `"","TOTAL DO PASSIVO + PATRIMÔNIO","${reportData.data.totalPassivos + reportData.data.totalPatrimonio}"\n`;
-                    break;
-                    
-                case 'incomeStatement':
-                    csvContent = 'Categoria,Conta,Valor (MZN)\n';
-                    
-                    // Receitas
-                    csvContent += '"RECEITAS","",""\n';
-                    reportData.data.receitas.forEach(item => {
-                        csvContent += `"","${item.conta.nome}","${item.valor}"\n`;
-                    });
-                    csvContent += `"","TOTAL DAS RECEITAS","${reportData.data.totalReceitas}"\n\n`;
-                    
-                    // Despesas
-                    csvContent += '"DESPESAS","",""\n';
-                    reportData.data.despesas.forEach(item => {
-                        csvContent += `"","${item.conta.nome}","${item.valor}"\n`;
-                    });
-                    csvContent += `"","TOTAL DAS DESPESAS","${reportData.data.totalDespesas}"\n\n`;
-                    
-                    csvContent += `"","RESULTADO LÍQUIDO","${reportData.data.resultado}"\n`;
-                    break;
-                    
-                case 'cashFlow':
-                    csvContent = 'Categoria,Item,Valor (MZN)\n';
-                    csvContent += `"","Saldo Inicial","${reportData.data.saldoInicial}"\n\n`;
-                    
-                    csvContent += '"FLUXO OPERACIONAL","",""\n';
-                    csvContent += `"","Entradas Operacionais","${reportData.data.fluxoOperacional.entradas}"\n`;
-                    csvContent += `"","Saídas Operacionais","${reportData.data.fluxoOperacional.saidas}"\n`;
-                    csvContent += `"","Fluxo Líquido Operacional","${reportData.data.fluxoLiquidoOperacional}"\n\n`;
-                    
-                    csvContent += '"FLUXO DE INVESTIMENTO","",""\n';
-                    csvContent += `"","Entradas de Investimento","${reportData.data.fluxoInvestimento.entradas}"\n`;
-                    csvContent += `"","Saídas de Investimento","${reportData.data.fluxoInvestimento.saidas}"\n`;
-                    csvContent += `"","Fluxo Líquido de Investimento","${reportData.data.fluxoLiquidoInvestimento}"\n\n`;
-                    
-                    csvContent += '"FLUXO DE FINANCIAMENTO","",""\n';
-                    csvContent += `"","Entradas de Financiamento","${reportData.data.fluxoFinanciamento.entradas}"\n`;
-                    csvContent += `"","Saídas de Financiamento","${reportData.data.fluxoFinanciamento.saidas}"\n`;
-                    csvContent += `"","Fluxo Líquido de Financiamento","${reportData.data.fluxoLiquidoFinanciamento}"\n\n`;
-                    
-                    csvContent += `"","Variação Líquida de Caixa","${reportData.data.fluxoLiquidoTotal}"\n`;
-                    csvContent += `"","Saldo Final","${reportData.data.saldoFinal}"\n`;
-                    break;
-            }
-            
-            return csvContent;
-        }
-
-        function exportReportToExcel(reportData) {
-            // Para Excel, usamos formato tabular similar ao CSV
-            return exportReportToCSV(reportData).replace(/,/g, '\t');
-        }
-
-        function exportReportToPDF(reportData) {
-            // Implementação simplificada de PDF - na prática, usaria uma biblioteca como jsPDF
-            const printWindow = window.open('', '_blank');
-            const reportTitle = getReportTitle(reportData.reportType);
-            const periodText = `${formatDate(reportData.startDate)} a ${formatDate(reportData.endDate)}`;
-            
-            printWindow.document.write(`
-                <html>
-                    <head>
-                        <title>${reportTitle} - Great Mola</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; margin: 20px; }
-                            h1 { color: #c41e3a; }
-                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                            th { background-color: #f2f2f2; }
-                            .total { font-weight: bold; }
-                            .positive { color: green; }
-                            .negative { color: red; }
-                        </style>
-                    </head>
-                    <body>
-                        <h1>${reportTitle}</h1>
-                        <p><strong>Período:</strong> ${periodText}</p>
-                        <p><strong>Empresa:</strong> ${settings.general?.companyName || 'Great Mola Lda'}</p>
-                        <p><strong>Data de emissão:</strong> ${new Date().toLocaleDateString('pt-PT')}</p>
-                        <hr>
-            `);
-            
-            // Adicionar conteúdo específico do relatório
-            switch(reportData.reportType) {
-                case 'trialBalance':
-                    printWindow.document.write(`
-                        <table>
-                            <tr>
-                                <th>Código</th>
-                                <th>Conta</th>
-                                <th>Débitos (MZN)</th>
-                                <th>Créditos (MZN)</th>
-                                <th>Saldo (MZN)</th>
-                            </tr>
-                    `);
-                    
-                    Object.values(reportData.data.accounts).forEach(account => {
-                        printWindow.document.write(`
-                            <tr>
-                                <td>${account.conta.codigo}</td>
-                                <td>${account.conta.nome}</td>
-                                <td>${formatCurrency(account.debitos)}</td>
-                                <td>${formatCurrency(account.creditos)}</td>
-                                <td class="${account.saldoFinal >= 0 ? 'positive' : 'negative'}">${formatCurrency(account.saldoFinal)}</td>
-                            </tr>
-                        `);
-                    });
-                    
-                    printWindow.document.write(`
-                            <tr class="total">
-                                <td colspan="2">TOTAIS</td>
-                                <td>${formatCurrency(reportData.data.totalDebitos)}</td>
-                                <td>${formatCurrency(reportData.data.totalCreditos)}</td>
-                                <td></td>
-                            </tr>
-                        </table>
-                    `);
-                    break;
-                    
-                // Outros tipos de relatório seguiriam padrão similar
-                default:
-                    printWindow.document.write('<p>Conteúdo do relatório</p>');
-            }
-            
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-            printWindow.print();
-        }
-
-        // ========== FUNÇÕES DE EXPORTAÇÃO DE RELATÓRIOS ANTIGOS (MANTIDAS PARA COMPATIBILIDADE) ==========
         function exportFinancialReports(format) {
             let content = '';
             let filename = '';
@@ -4774,11 +3430,7 @@
             } else if (subTabName === 'transactions') {
                 updateJournalTable();
             } else if (subTabName === 'reports') {
-                // Inicializar datas padrão para relatórios
-                const today = new Date();
-                const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-                document.getElementById('reportStartDate').value = firstDay.toISOString().split('T')[0];
-                document.getElementById('reportEndDate').value = today.toISOString().split('T')[0];
+                updateFinancialReports();
             }
         }
 
@@ -4988,6 +3640,7 @@
             renderPlanoContas();
             loadPlanoContasForDropdown();
             updateJournalTable();
+            updateFinancialReports();
         }
 
         function updateJournalTable() {
@@ -5033,6 +3686,161 @@
                 `;
                 tbody.appendChild(row);
             });
+        }
+
+        function updateFinancialReports() {
+            const reportResult = document.getElementById('reportResult');
+            if (!reportResult) return;
+            
+            // Calcular totais por tipo de conta
+            const totals = {
+                Ativo: 0,
+                Passivo: 0,
+                Patrimonio: 0,
+                Receita: 0,
+                Despesa: 0
+            };
+            
+            // Calcular saldos das contas com base nos lançamentos
+            const accountBalances = {};
+            
+            planoContas.forEach(conta => {
+                accountBalances[conta.id] = 0;
+            });
+            
+            lancamentos.forEach(lancamento => {
+                // Para débito: aumenta Ativo/Despesa, diminui Passivo/Receita
+                // Para crédito: aumenta Passivo/Receita, diminui Ativo/Despesa
+                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                
+                if (contaDebito) {
+                    if (contaDebito.tipo === 'Ativo' || contaDebito.tipo === 'Despesa') {
+                        accountBalances[contaDebito.id] += lancamento.valor;
+                    } else {
+                        accountBalances[contaDebito.id] -= lancamento.valor;
+                    }
+                }
+                
+                if (contaCredito) {
+                    if (contaCredito.tipo === 'Passivo' || contaCredito.tipo === 'Receita' || contaCredito.tipo === 'Patrimonio') {
+                        accountBalances[contaCredito.id] += lancamento.valor;
+                    } else {
+                        accountBalances[contaCredito.id] -= lancamento.valor;
+                    }
+                }
+            });
+            
+            // Agregar totais por tipo
+            planoContas.forEach(conta => {
+                if (totals[conta.tipo] !== undefined) {
+                    totals[conta.tipo] += accountBalances[conta.id] || 0;
+                }
+            });
+            
+            // Calcular resultado
+            const resultado = totals.Receita - totals.Despesa;
+            
+            // Exibir relatório
+            reportResult.innerHTML = `
+                <h4>Balanço Patrimonial</h4>
+                <div class="grid grid-2">
+                    <div class="result-item">
+                        <h3>Ativo Total</h3>
+                        <div class="kpi">MT ${totals.Ativo.toFixed(2)}</div>
+                    </div>
+                    <div class="result-item">
+                        <h3>Passivo Total</h3>
+                        <div class="kpi">MT ${totals.Passivo.toFixed(2)}</div>
+                    </div>
+                </div>
+                
+                <h4 style="margin-top: 20px;">Demonstração de Resultados</h4>
+                <div class="grid grid-2">
+                    <div class="result-item">
+                        <h3>Receitas</h3>
+                        <div class="kpi">MT ${totals.Receita.toFixed(2)}</div>
+                    </div>
+                    <div class="result-item">
+                        <h3>Despesas</h3>
+                        <div class="kpi">MT ${totals.Despesa.toFixed(2)}</div>
+                    </div>
+                </div>
+                <div class="result-item" style="margin-top: 10px;">
+                    <h3>Resultado Líquido</h3>
+                    <div class="kpi" style="color: ${resultado >= 0 ? '#28a745' : '#dc3545'}">MT ${resultado.toFixed(2)}</div>
+                </div>
+            `;
+        }
+
+        function generateBalanceSheet() {
+            updateFinancialReports();
+            alert('Balanço gerado com sucesso!');
+        }
+
+        function generateIncomeStatement() {
+            updateFinancialReports();
+            alert('Demonstração de Resultados gerada com sucesso!');
+        }
+
+        function generateCashFlow() {
+            // Implementação simplificada do fluxo de caixa
+            const reportResult = document.getElementById('reportResult');
+            
+            // Calcular fluxo de caixa com base nos lançamentos
+            let fluxoOperacional = 0;
+            let fluxoInvestimento = 0;
+            let fluxoFinanciamento = 0;
+            
+            lancamentos.forEach(lancamento => {
+                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                
+                // Lógica simplificada para classificar fluxos
+                if (contaDebito && contaDebito.nome.includes('Caixa')) {
+                    if (contaCredito && (contaCredito.tipo === 'Receita' || contaCredito.nome.includes('Venda'))) {
+                        fluxoOperacional += lancamento.valor;
+                    } else if (contaCredito && contaCredito.nome.includes('Investimento')) {
+                        fluxoInvestimento += lancamento.valor;
+                    } else {
+                        fluxoFinanciamento += lancamento.valor;
+                    }
+                }
+                
+                if (contaCredito && contaCredito.nome.includes('Caixa')) {
+                    if (contaDebito && (contaDebito.tipo === 'Despesa' || contaDebito.nome.includes('Compra'))) {
+                        fluxoOperacional -= lancamento.valor;
+                    } else if (contaDebito && contaDebito.nome.includes('Investimento')) {
+                        fluxoInvestimento -= lancamento.valor;
+                    } else {
+                        fluxoFinanciamento -= lancamento.valor;
+                    }
+                }
+            });
+            
+            const fluxoLiquido = fluxoOperacional + fluxoInvestimento + fluxoFinanciamento;
+            
+            reportResult.innerHTML = `
+                <h4>Fluxo de Caixa</h4>
+                <div class="result-item">
+                    <h3>Fluxo Operacional</h3>
+                    <div class="kpi" style="color: ${fluxoOperacional >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoOperacional.toFixed(2)}</div>
+                </div>
+                <div class="result-item">
+                    <h3>Fluxo de Investimento</h3>
+                    <div class="kpi" style="color: ${fluxoInvestimento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoInvestimento.toFixed(2)}</div>
+                </div>
+                <div class="result-item">
+                    <h3>Fluxo de Financiamento</h3>
+                    <div class="kpi" style="color: ${fluxoFinanciamento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoFinanciamento.toFixed(2)}</div>
+                </div>
+                <div class="result-item" style="margin-top: 10px;">
+                    <h3>Fluxo Líquido</h3>
+                    <div class="kpi" style="color: ${fluxoLiquido >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoLiquido.toFixed(2)}</div>
+                </div>
+            `;
+            
+            alert('Fluxo de Caixa gerado com sucesso!');
         }
 
         // ========== FUNÇÕES DE LANÇAMENTOS CONTÁBEIS ==========
@@ -5100,6 +3908,7 @@
             // Atualizar as tabelas
             updateLancamentosTable();
             updateJournalTable();
+            updateFinancialReports();
             
             // Limpar formulário
             document.getElementById('lancamentoForm').reset();
@@ -7156,4 +5965,414 @@
                 csvContent += `"${st.code}","${st.name}","${ssaName}","${st.phone || 'N/A'}","${st.email || 'N/A'}","${st.depositLimit}","${st.todayDeposits || 0}","${st.status}"\n`;
             });
             
-            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `colaboradores_st_${Date.now()}.csv`);
+        }
+
+        function exportAFExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+
+        function exportAFCSV() {
+            let csvContent = 'Código,Nome,ST,Contacto,Email,Depósitos Hoje,Status\n';
+            
+            afAccounts.forEach(af => {
+                const stAccount = stAccounts.find(st => st.id == af.stId);
+                const stName = stAccount ? stAccount.name : 'N/A';
+                
+                csvContent += `"${af.code}","${af.name}","${stName}","${af.phone || 'N/A'}","${af.email || 'N/A'}","${af.todayDeposits || 0}","${af.status}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `colaboradores_af_${Date.now()}.csv`);
+        }
+
+        function exportSSATransactionsExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+
+        function exportSSATransactionsCSV() {
+            let csvContent = 'Data,Tipo,ST/AF,Destino,Valor,Descrição\n';
+            
+            ssaTransactions.forEach(transaction => {
+                const fromST = stAccounts.find(st => st.id == transaction.fromST);
+                const fromAF = afAccounts.find(af => af.id == transaction.fromAF);
+                const toAccount = subchannels.find(sc => sc.id == transaction.toAccount);
+                
+                const fromName = fromST ? fromST.name : (fromAF ? fromAF.name : 'N/A');
+                const toName = toAccount ? toAccount.name : 'N/A';
+                
+                csvContent += `"${transaction.date}","${transaction.type}","${fromName}","${toName}","${transaction.amount}","${transaction.description}"\n`;
+            });
+            
+            const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `transacoes_st_af_${Date.now()}.csv`);
+        }
+
+        function exportSSAReportsExcel() {
+            alert('Exportação para Excel será implementada');
+        }
+
+        function exportSSAReportsCSV() {
+            alert('Exportação para CSV será implementada');
+        }
+
+        // ========== FUNÇÕES DE CONFIGURAÇÕES ==========
+        function loadSettings() {
+            // Carregar configurações gerais
+            if (settings.general) {
+                document.getElementById('companyName').value = settings.general.companyName || '';
+                document.getElementById('companyNIF').value = settings.general.companyNIF || '';
+                document.getElementById('companyAddress').value = settings.general.companyAddress || '';
+                document.getElementById('companyPhone').value = settings.general.companyPhone || '';
+                document.getElementById('companyEmail').value = settings.general.companyEmail || '';
+                document.getElementById('defaultCurrency').value = settings.general.defaultCurrency || 'MZN';
+                document.getElementById('dateFormat').value = settings.general.dateFormat || 'dd/mm/yyyy';
+                document.getElementById('language').value = settings.general.language || 'pt';
+                document.getElementById('theme').value = settings.general.theme || 'light';
+            }
+            
+            // Carregar configurações financeiras
+            if (settings.financial) {
+                document.getElementById('defaultRate').value = settings.financial.defaultRate || 0.5;
+                document.getElementById('defaultIRPS').value = settings.financial.defaultIRPS || 20.0;
+                document.getElementById('countSaturday').checked = settings.financial.countSaturday !== false;
+                document.getElementById('countSunday').checked = settings.financial.countSunday !== false;
+                document.getElementById('nationalHolidays').value = settings.financial.nationalHolidays || '';
+                document.getElementById('mainSSAAccount').value = settings.financial.mainSSAAccount || '';
+                document.getElementById('autoCloseMonth').checked = settings.financial.autoCloseMonth || false;
+            }
+            
+            // Carregar configurações de utilizadores
+            if (settings.users) {
+                document.getElementById('requireLogin').checked = settings.users.requireLogin !== false;
+                document.getElementById('rememberSession').checked = settings.users.rememberSession !== false;
+                document.getElementById('allowPasswordReset').checked = settings.users.allowPasswordReset !== false;
+                document.getElementById('sessionTimeout').value = settings.users.sessionTimeout || 60;
+                document.getElementById('keepAccessLogs').checked = settings.users.keepAccessLogs !== false;
+                document.getElementById('logRetentionDays').value = settings.users.logRetentionDays || 90;
+            }
+            
+            // Carregar configurações de segurança
+            if (settings.security) {
+                // Não carregar PIN por segurança
+                document.getElementById('pinTimeout').value = settings.security.pinTimeout || 30;
+                document.getElementById('requirePIN').checked = settings.security.requirePIN !== false;
+                document.getElementById('logPINAttempts').checked = settings.security.logPINAttempts !== false;
+            }
+            
+            // Carregar configurações de backup
+            if (settings.backup) {
+                document.getElementById('autoBackup').checked = settings.backup.autoBackup || false;
+                document.getElementById('backupFrequency').value = settings.backup.backupFrequency || 'daily';
+                document.getElementById('backupTime').value = settings.backup.backupTime || '02:00';
+            }
+            
+            // Carregar configurações de integrações
+            if (settings.integrations) {
+                document.getElementById('apiEndpoint').value = settings.integrations.apiEndpoint || '';
+                // Não carregar API key por segurança
+                document.getElementById('autoSync').checked = settings.integrations.autoSync || false;
+                document.getElementById('syncFrequency').value = settings.integrations.syncFrequency || '60';
+                document.getElementById('autoExport').checked = settings.integrations.autoExport || false;
+                document.getElementById('exportFormat').value = settings.integrations.exportFormat || 'csv';
+                document.getElementById('exportFrequency').value = settings.integrations.exportFrequency || 'daily';
+            }
+        }
+
+        function saveGeneralSettings(event) {
+            if (event) event.preventDefault();
+            
+            settings.general = {
+                companyName: document.getElementById('companyName').value,
+                companyNIF: document.getElementById('companyNIF').value,
+                companyAddress: document.getElementById('companyAddress').value,
+                companyPhone: document.getElementById('companyPhone').value,
+                companyEmail: document.getElementById('companyEmail').value,
+                defaultCurrency: document.getElementById('defaultCurrency').value,
+                dateFormat: document.getElementById('dateFormat').value,
+                language: document.getElementById('language').value,
+                theme: document.getElementById('theme').value
+            };
+            
+            localStorage.setItem('settings', JSON.stringify(settings));
+            alert('Configurações gerais salvas com sucesso!');
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_GENERAL_SETTINGS', 'Atualizou configurações gerais');
+        }
+
+        function saveFinancialSettings(event) {
+            if (event) event.preventDefault();
+            
+            settings.financial = {
+                defaultRate: parseFloat(document.getElementById('defaultRate').value),
+                defaultIRPS: parseFloat(document.getElementById('defaultIRPS').value),
+                countSaturday: document.getElementById('countSaturday').checked,
+                countSunday: document.getElementById('countSunday').checked,
+                nationalHolidays: document.getElementById('nationalHolidays').value,
+                mainSSAAccount: document.getElementById('mainSSAAccount').value,
+                autoCloseMonth: document.getElementById('autoCloseMonth').checked
+            };
+            
+            localStorage.setItem('settings', JSON.stringify(settings));
+            alert('Configurações financeiras salvas com sucesso!');
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_FINANCIAL_SETTINGS', 'Atualizou configurações financeiras');
+        }
+
+        function saveUsersSettings(event) {
+            if (event) event.preventDefault();
+            
+            settings.users = {
+                requireLogin: document.getElementById('requireLogin').checked,
+                rememberSession: document.getElementById('rememberSession').checked,
+                allowPasswordReset: document.getElementById('allowPasswordReset').checked,
+                sessionTimeout: parseInt(document.getElementById('sessionTimeout').value),
+                keepAccessLogs: document.getElementById('keepAccessLogs').checked,
+                logRetentionDays: parseInt(document.getElementById('logRetentionDays').value)
+            };
+            
+            localStorage.setItem('settings', JSON.stringify(settings));
+            alert('Configurações de utilizadores salvas com sucesso!');
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_USERS_SETTINGS', 'Atualizou configurações de utilizadores');
+        }
+
+        function saveSecuritySettings(event) {
+            if (event) event.preventDefault();
+            
+            const adminPIN = document.getElementById('adminPIN').value;
+            const confirmAdminPIN = document.getElementById('confirmAdminPIN').value;
+            
+            if (adminPIN && adminPIN !== confirmAdminPIN) {
+                alert('Os PINs não coincidem!');
+                return;
+            }
+            
+            settings.security = {
+                adminPIN: adminPIN ? btoa(adminPIN) : settings.security.adminPIN, // Encriptação básica
+                pinTimeout: parseInt(document.getElementById('pinTimeout').value),
+                requirePIN: document.getElementById('requirePIN').checked,
+                logPINAttempts: document.getElementById('logPINAttempts').checked
+            };
+            
+            localStorage.setItem('settings', JSON.stringify(settings));
+            alert('Configurações de segurança salvas com sucesso!');
+            
+            // Limpar campos de PIN
+            document.getElementById('adminPIN').value = '';
+            document.getElementById('confirmAdminPIN').value = '';
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_SECURITY_SETTINGS', 'Atualizou configurações de segurança');
+        }
+
+        function saveIntegrationsSettings(event) {
+            if (event) event.preventDefault();
+            
+            settings.integrations = {
+                apiEndpoint: document.getElementById('apiEndpoint').value,
+                apiKey: document.getElementById('apiKey').value ? btoa(document.getElementById('apiKey').value) : settings.integrations.apiKey,
+                autoSync: document.getElementById('autoSync').checked,
+                syncFrequency: document.getElementById('syncFrequency').value,
+                autoExport: document.getElementById('autoExport').checked,
+                exportFormat: document.getElementById('exportFormat').value,
+                exportFrequency: document.getElementById('exportFrequency').value
+            };
+            
+            localStorage.setItem('settings', JSON.stringify(settings));
+            alert('Configurações de integrações salvas com sucesso!');
+            
+            // Limpar campo de API key
+            document.getElementById('apiKey').value = '';
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_INTEGRATIONS_SETTINGS', 'Atualizou configurações de integrações');
+        }
+
+        // ========== FUNÇÕES DE MODAIS ==========
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // ========== FUNÇÕES DE BACKUP ==========
+        function exportBackup() {
+            const backupData = {
+                users,
+                roles,
+                investors,
+                agents,
+                ssaAccounts,
+                stAccounts,
+                afAccounts,
+                ssaTransactions,
+                subchannels,
+                approvals,
+                transactions,
+                planoContas,
+                lancamentos,
+                auditLogs,
+                settings: {
+                    ...settings,
+                    security: {
+                        ...settings.security,
+                        adminPIN: undefined // Não exportar PIN por segurança
+                    },
+                    integrations: {
+                        ...settings.integrations,
+                        apiKey: undefined // Não exportar API key por segurança
+                    }
+                },
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(backupData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            downloadFile(dataBlob, `great_mola_backup_${Date.now()}.json`);
+            
+            // Registrar log de auditoria
+            logAudit('EXPORT_BACKUP', 'Exportou backup do sistema');
+        }
+
+        function exportBackupCSV() {
+            alert('Exportação para CSV será implementada');
+        }
+
+        function importBackup() {
+            const fileInput = document.getElementById('backupFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Por favor, selecione um arquivo de backup');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    
+                    // Validar estrutura do backup
+                    if (!backupData.users || !backupData.investors) {
+                        throw new Error('Arquivo de backup inválido');
+                    }
+                    
+                    // Restaurar dados
+                    users = backupData.users;
+                    roles = backupData.roles || [];
+                    investors = backupData.investors || [];
+                    agents = backupData.agents || [];
+                    ssaAccounts = backupData.ssaAccounts || [];
+                    stAccounts = backupData.stAccounts || [];
+                    afAccounts = backupData.afAccounts || [];
+                    ssaTransactions = backupData.ssaTransactions || [];
+                    subchannels = backupData.subchannels || [];
+                    approvals = backupData.approvals || [];
+                    transactions = backupData.transactions || [];
+                    planoContas = backupData.planoContas || [];
+                    lancamentos = backupData.lancamentos || [];
+                    auditLogs = backupData.auditLogs || [];
+                    settings = backupData.settings || {};
+                    
+                    // Salvar no localStorage
+                    localStorage.setItem('users', JSON.stringify(users));
+                    localStorage.setItem('roles', JSON.stringify(roles));
+                    localStorage.setItem('investors', JSON.stringify(investors));
+                    localStorage.setItem('agents', JSON.stringify(agents));
+                    localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+                    localStorage.setItem('stAccounts', JSON.stringify(stAccounts));
+                    localStorage.setItem('afAccounts', JSON.stringify(afAccounts));
+                    localStorage.setItem('ssaTransactions', JSON.stringify(ssaTransactions));
+                    localStorage.setItem('subchannels', JSON.stringify(subchannels));
+                    localStorage.setItem('approvals', JSON.stringify(approvals));
+                    localStorage.setItem('transactions', JSON.stringify(transactions));
+                    localStorage.setItem('planoContas', JSON.stringify(planoContas));
+                    localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+                    localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
+                    localStorage.setItem('settings', JSON.stringify(settings));
+                    
+                    // Registrar log de auditoria
+                    logAudit('IMPORT_BACKUP', 'Importou backup do sistema');
+                    
+                    alert('Backup restaurado com sucesso!');
+                    fileInput.value = '';
+                    
+                    // Recarregar dados na interface
+                    if (currentUser) {
+                        updateDashboard();
+                        updateInvestorsTable();
+                        updateAgentsTable();
+                        updateUsersTable();
+                        updateRolesTable();
+                        renderPlanoContas();
+                        loadPlanoContasForDropdown();
+                        updateSSAAccountsTable();
+                        updateSTTable();
+                        updateAFTable();
+                        updateSubchannelsTable();
+                        loadSettings();
+                    }
+                    
+                } catch (error) {
+                    alert('Erro ao restaurar backup: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ========== INICIALIZAÇÃO DO SISTEMA ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar dados padrão
+            initializeDefaultData();
+            
+            // Configurar event listeners
+            document.getElementById('loginForm').addEventListener('submit', login);
+            document.getElementById('investorForm').addEventListener('submit', saveInvestor);
+            document.getElementById('agentForm').addEventListener('submit', saveAgent);
+            document.getElementById('userForm').addEventListener('submit', saveUser);
+            document.getElementById('roleForm').addEventListener('submit', saveRole);
+            document.getElementById('ssaAccountForm').addEventListener('submit', saveSSAAccount);
+            document.getElementById('stForm').addEventListener('submit', saveST);
+            document.getElementById('afForm').addEventListener('submit', saveAF);
+            document.getElementById('subchannelForm').addEventListener('submit', saveSubchannel);
+            document.getElementById('ssaDepositForm').addEventListener('submit', saveSSADeposit);
+            document.getElementById('afDepositForm').addEventListener('submit', saveAFDeposit);
+            document.getElementById('contaForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Funcionalidade de criação de contas em desenvolvimento');
+                closeModal('novaConta');
+            });
+            document.getElementById('lancamentoForm').addEventListener('submit', saveLancamento);
+            
+            // Configurar event listeners para configurações
+            document.getElementById('generalSettingsForm').addEventListener('submit', saveGeneralSettings);
+            document.getElementById('financialSettingsForm').addEventListener('submit', saveFinancialSettings);
+            document.getElementById('usersSettingsForm').addEventListener('submit', saveUsersSettings);
+            document.getElementById('securitySettingsForm').addEventListener('submit', saveSecuritySettings);
+            document.getElementById('integrationsSettingsForm').addEventListener('submit', saveIntegrationsSettings);
+            
+            // Configurar data atual nos formulários
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('investorStartDate').value = today;
+            // Definir data de fim padrão para 30 dias após a data de início
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 30);
+            document.getElementById('investorEndDate').value = endDate.toISOString().split('T')[0];
+            document.getElementById('txnDate').value = today;
+            document.getElementById('lancamentoData').value = today;
+            document.getElementById('ssaDepositDate').value = today;
+            document.getElementById('afDepositDate').value = today;
+            
+            console.log('Sistema Great Mola inicializado com sucesso!');
+        });
+    </script>
+</body>
+</html>
