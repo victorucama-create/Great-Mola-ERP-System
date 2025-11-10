@@ -6520,50 +6520,71 @@ function debugLoginSystem() {
     }
 }
         // ========== INICIALIZAÇÃO DO SISTEMA ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar dados padrão
-            initializeDefaultData();
-            
-            // Configurar event listeners
-            document.getElementById('loginForm').addEventListener('submit', login);
-            document.getElementById('investorForm').addEventListener('submit', saveInvestor);
-            document.getElementById('agentForm').addEventListener('submit', saveAgent);
-            document.getElementById('userForm').addEventListener('submit', saveUser);
-            document.getElementById('roleForm').addEventListener('submit', saveRole);
-            document.getElementById('ssaAccountForm').addEventListener('submit', saveSSAAccount);
-            document.getElementById('stForm').addEventListener('submit', saveST);
-            document.getElementById('afForm').addEventListener('submit', saveAF);
-            document.getElementById('subchannelForm').addEventListener('submit', saveSubchannel);
-            document.getElementById('ssaDepositForm').addEventListener('submit', saveSSADeposit);
-            document.getElementById('afDepositForm').addEventListener('submit', saveAFDeposit);
-            document.getElementById('contaForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('Funcionalidade de criação de contas em desenvolvimento');
-                closeModal('novaConta');
-            });
-            document.getElementById('lancamentoForm').addEventListener('submit', saveLancamento);
-            
-            // Configurar event listeners para configurações
-            document.getElementById('generalSettingsForm').addEventListener('submit', saveGeneralSettings);
-            document.getElementById('financialSettingsForm').addEventListener('submit', saveFinancialSettings);
-            document.getElementById('usersSettingsForm').addEventListener('submit', saveUsersSettings);
-            document.getElementById('securitySettingsForm').addEventListener('submit', saveSecuritySettings);
-            document.getElementById('integrationsSettingsForm').addEventListener('submit', saveIntegrationsSettings);
-            
-            // Configurar data atual nos formulários
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('investorStartDate').value = today;
-            // Definir data de fim padrão para 30 dias após a data de início
-            const endDate = new Date();
-            endDate.setDate(endDate.getDate() + 30);
-            document.getElementById('investorEndDate').value = endDate.toISOString().split('T')[0];
-            document.getElementById('txnDate').value = today;
-            document.getElementById('lancamentoData').value = today;
-            document.getElementById('ssaDepositDate').value = today;
-            document.getElementById('afDepositDate').value = today;
-            
-            console.log('Sistema Great Mola inicializado com sucesso!');
-        });
+        // ========== INICIALIZAÇÃO DO SISTEMA ==========
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Carregado - Inicializando sistema...');
+    
+    // Inicializar dados padrão PRIMEIRO
+    initializeDefaultData();
+    
+    // Configurar event listener CORRETO para o formulário de login
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        console.log('Formulário de login encontrado, configurando event listener...');
+        loginForm.addEventListener('submit', login);
+    } else {
+        console.error('Formulário de login NÃO encontrado!');
+    }
+    
+    // Configurar outros event listeners...
+    document.getElementById('investorForm').addEventListener('submit', saveInvestor);
+    document.getElementById('agentForm').addEventListener('submit', saveAgent);
+    document.getElementById('userForm').addEventListener('submit', saveUser);
+    document.getElementById('roleForm').addEventListener('submit', saveRole);
+    document.getElementById('ssaAccountForm').addEventListener('submit', saveSSAAccount);
+    document.getElementById('stForm').addEventListener('submit', saveST);
+    document.getElementById('afForm').addEventListener('submit', saveAF);
+    document.getElementById('subchannelForm').addEventListener('submit', saveSubchannel);
+    document.getElementById('ssaDepositForm').addEventListener('submit', saveSSADeposit);
+    document.getElementById('afDepositForm').addEventListener('submit', saveAFDeposit);
+    document.getElementById('contaForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Funcionalidade de criação de contas em desenvolvimento');
+        closeModal('novaConta');
+    });
+    document.getElementById('lancamentoForm').addEventListener('submit', saveLancamento);
+    
+    // Configurar event listeners para configurações
+    document.getElementById('generalSettingsForm').addEventListener('submit', saveGeneralSettings);
+    document.getElementById('financialSettingsForm').addEventListener('submit', saveFinancialSettings);
+    document.getElementById('usersSettingsForm').addEventListener('submit', saveUsersSettings);
+    document.getElementById('securitySettingsForm').addEventListener('submit', saveSecuritySettings);
+    document.getElementById('integrationsSettingsForm').addEventListener('submit', saveIntegrationsSettings);
+    
+    // Configurar data atual nos formulários
+    const today = new Date().toISOString().split('T')[0];
+    const startDateInput = document.getElementById('investorStartDate');
+    if (startDateInput) startDateInput.value = today;
+    
+    const endDateInput = document.getElementById('investorEndDate');
+    if (endDateInput) {
+        const endDate = new Date();
+        endDate.setDate(endDate.getDate() + 30);
+        endDateInput.value = endDate.toISOString().split('T')[0];
+    }
+    
+    // Configurar outras datas...
+    const dateInputs = ['txnDate', 'lancamentoData', 'ssaDepositDate', 'afDepositDate'];
+    dateInputs.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = today;
+    });
+    
+    console.log('Sistema Great Mola inicializado com sucesso!');
+    
+    // Para debug - executar no console: debugLoginSystem()
+    window.debugLoginSystem = debugLoginSystem;
+});
     </script>
 </body>
 </html>
