@@ -856,28 +856,47 @@
             
             <!-- Sub-tab Relatórios Financeiros -->
             <div class="sub-content" id="reports">
-                <div class="card">
-                    <h3>Relatórios Financeiros</h3>
-                   <div class="grid grid-4">
-    <div class="result-item">
-        <h3>Balancete</h3>
-        <p>Lista de contas com saldos</p>
-        <button class="btn btn-primary" onclick="generateTrialBalance()">Gerar</button>
-    </div>
-    <div class="result-item">
-        <h3>Balanço Patrimonial</h3>
-        <p>Posição financeira atual</p>
-        <button class="btn btn-primary" onclick="generateBalanceSheet()">Gerar</button>
-    </div>
-    <div class="result-item">
-        <h3>Demonstração de Resultados</h3>
-        <p>Lucro ou prejuízo do período</p>
-        <button class="btn btn-primary" onclick="generateIncomeStatement()">Gerar</button>
-    </div>
-    <div class="result-item">
-        <h3>Fluxo de Caixa</h3>
-        <p>Entradas e saídas de dinheiro</p>
-        <button class="btn btn-primary" onclick="generateCashFlow()">Gerar</button>
+    <div class="card">
+        <h3>📊 Relatórios Financeiros</h3>
+        
+        <!-- Filtros Rápidos -->
+        <div class="grid grid-4">
+            <div class="result-item">
+                <h3>Balancete</h3>
+                <p>Verificação débitos = créditos</p>
+                <button class="btn btn-primary" onclick="showTrialBalanceFilters()">Configurar</button>
+            </div>
+            <div class="result-item">
+                <h3>Balanço Patrimonial</h3>
+                <p>Posição financeira em data</p>
+                <button class="btn btn-primary" onclick="showBalanceSheetFilters()">Configurar</button>
+            </div>
+            <div class="result-item">
+                <h3>Demonstração de Resultados</h3>
+                <p>Receitas - Despesas = Resultado</p>
+                <button class="btn btn-primary" onclick="showIncomeStatementFilters()">Configurar</button>
+            </div>
+            <div class="result-item">
+                <h3>Fluxo de Caixa</h3>
+                <p>Entradas e saídas de dinheiro</p>
+                <button class="btn btn-primary" onclick="showCashFlowFilters()">Configurar</button>
+            </div>
+        </div>
+        
+        <div class="export-buttons" style="margin-top: 20px;">
+            <button class="btn btn-secondary" onclick="initializeFinancialReports()">🔄 Inicializar Sistema</button>
+        </div>
+        
+        <div id="reportResult" style="margin-top: 20px;">
+            <div class="card">
+                <h4>💡 Como usar os relatórios</h4>
+                <p>1. Clique em "Configurar" para escolher período e opções</p>
+                <p>2. Use os filtros para selecionar datas e comparativos</p>
+                <p>3. Clique em "Gerar Relatório" para visualizar</p>
+                <p>4. Use os botões de exportação para baixar os dados</p>
+                <p>5. Clique em qualquer valor para ver detalhes (drill-down)</p>
+            </div>
+        </div>
     </div>
 </div>
                     
