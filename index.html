@@ -6444,7 +6444,42 @@ function getLastDayOfMonth() {
             };
             reader.readAsText(file);
         }
-
+function debugLoginSystem() {
+    console.log('=== SISTEMA DE LOGIN - DEBUG ===');
+    
+    // Verificar dados no localStorage
+    const storedUsers = localStorage.getItem('users');
+    console.log('Users no localStorage:', storedUsers);
+    
+    // Verificar se há usuários
+    if (storedUsers) {
+        const usersArray = JSON.parse(storedUsers);
+        console.log('Número de usuários:', usersArray.length);
+        console.log('Usuários:', usersArray);
+        
+        // Verificar usuário admin
+        const adminUser = usersArray.find(u => u.username === 'admin');
+        console.log('Usuário admin encontrado:', adminUser);
+        
+        if (adminUser) {
+            console.log('Senha do admin:', adminUser.password);
+            console.log('Status do admin:', adminUser.status);
+        }
+    } else {
+        console.log('❌ NENHUM USUÁRIO NO LOCALSTORAGE');
+    }
+    
+    // Verificar função login
+    console.log('Função login existe:', typeof login);
+    
+    // Verificar evento do formulário
+    const loginForm = document.getElementById('loginForm');
+    console.log('Formulário encontrado:', loginForm);
+    
+    if (loginForm) {
+        console.log('Event listener no formulário:', loginForm.onsubmit);
+    }
+}
         // ========== INICIALIZAÇÃO DO SISTEMA ==========
         document.addEventListener('DOMContentLoaded', function() {
             // Inicializar dados padrão
