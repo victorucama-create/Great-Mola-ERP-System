@@ -6549,6 +6549,7 @@ function debugLoginSystem() {
 }
         // ========== INICIALIZAÇÃO DO SISTEMA ==========
         // ========== INICIALIZAÇÃO DO SISTEMA ==========
+// ========== INICIALIZAÇÃO DO SISTEMA ==========
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM Carregado - Inicializando sistema...');
     
@@ -6609,6 +6610,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     console.log('Sistema Great Mola inicializado com sucesso!');
+    
+    // Para debug - executar no console: debugLoginSystem()
+    window.debugLoginSystem = debugLoginSystem;
+});
     
     // Para debug - executar no console: debugLoginSystem()
     window.debugLoginSystem = debugLoginSystem;
