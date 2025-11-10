@@ -3961,20 +3961,85 @@ function getFirstDayOfMonth() {
 function getLastDayOfMonth() {
     const date = new Date();
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().split('T')[0];
-} 
-                
-                if (contaCredito && contaCredito.nome.includes('Caixa')) {
-                    if (contaDebito && (contaDebito.tipo === 'Despesa' || contaDebito.nome.includes('Compra'))) {
-                        fluxoOperacional -= lancamento.valor;
-                    } else if (contaDebito && contaDebito.nome.includes('Investimento')) {
-                        fluxoInvestimento -= lancamento.valor;
-                    } else {
-                        fluxoFinanciamento -= lancamento.valor;
-                    }
-                }
+}
+
+// ========== FUNÇÕES DE LANÇAMENTOS CONTÁBEIS ==========
+function saveLancamento(event) {
+    if (event) event.preventDefault();
+    
+    const data = document.getElementById('lancamentoData').value;
+    const descricao = document.getElementById('lancamentoDescricao').value;
+    const debito = document.getElementById('lancamentoDebito').value;
+    const credito = document.getElementById('lancamentoCredito').value;
+    const valor = parseFloat(document.getElementById('lancamentoValor').value);
+    
+    // Validações
+    if (!data || !descricao || !debito || !credito || !valor) {
+        alert('Por favor, preencha todos os campos obrigatórios!');
+        return;
+    }
+    
+    if (debito === credito) {
+        alert('As contas de débito e crédito não podem ser iguais!');
+        return;
+    }
+    
+    if (valor <= 0) {
+        alert('O valor deve ser maior que zero!');
+        return;
+    }
+    
+    // Processar arquivos anexos
+    const fileInput = document.getElementById('lancamentoFile');
+    const anexos = [];
+    
+    if (fileInput.files && fileInput.files.length > 0) {
+        for (let i = 0; i < fileInput.files.length; i++) {
+            const file = fileInput.files[i];
+            anexos.push({
+                nome: file.name,
+                tipo: file.type,
+                tamanho: file.size,
+                dataUpload: new Date().toISOString()
             });
-            
-            const fluxoLiquido = fluxoOperacional + fluxoInvestimento + fluxoFinanciamento;
+        }
+    }
+    
+    // Criar novo lançamento
+    const novoLancamento = {
+        id: Date.now(),
+        data,
+        descricao,
+        debito: parseInt(debito),
+        credito: parseInt(credito),
+        valor,
+        anexos,
+        status: 'Registado',
+        userId: currentUser.id,
+        createdAt: new Date().toISOString()
+    };
+    
+    // Adicionar ao array de lançamentos
+    lancamentos.push(novoLancamento);
+    
+    // Salvar no localStorage
+    localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+    
+    // Atualizar as tabelas
+    updateLancamentosTable();
+    updateJournalTable();
+    updateFinancialReports();
+    
+    // Limpar formulário
+    document.getElementById('lancamentoForm').reset();
+    document.getElementById('lancamentoFilePreview').innerHTML = '';
+    document.getElementById('lancamentoData').value = new Date().toISOString().split('T')[0];
+    
+    // Registrar log de auditoria
+    logAudit('CREATE_LANCAMENTO', `Criou lançamento: ${descricao} - MT ${valor.toFixed(2)}`);
+    
+    alert('Lançamento registado com sucesso!');
+}
             
             reportResult.innerHTML = `
                 <h4>Fluxo de Caixa</h4>
