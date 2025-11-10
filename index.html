@@ -196,71 +196,7 @@
             color: white;
             border-radius: 10px;
         }
-        /* Estilos para Relatórios Financeiros */
-.report-summary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-.report-comparison {
-    background: #f8f9fa;
-    border-left: 4px solid #007bff;
-    padding: 15px;
-    margin: 10px 0;
-}
-
-.drill-down {
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.drill-down:hover {
-    background-color: #f8f9fa;
-}
-
-.account-class {
-    font-weight: bold;
-    color: var(--primary);
-    margin-top: 15px;
-    padding-bottom: 5px;
-    border-bottom: 2px solid var(--primary);
-}
-
-.positive-value {
-    color: #28a745;
-    font-weight: bold;
-}
-
-.negative-value {
-    color: #dc3545;
-    font-weight: bold;
-}
-
-/* Melhorias para tabelas de relatórios */
-.report-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 10px 0;
-}
-
-.report-table th {
-    background: var(--light);
-    padding: 10px;
-    text-align: left;
-    border-bottom: 2px solid #dee2e6;
-}
-
-.report-table td {
-    padding: 8px 10px;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.report-table tr:hover {
-    background-color: #f8f9fa;
-}
+        
         .kpi-value {
             font-size: 32px;
             font-weight: bold;
@@ -920,57 +856,47 @@
             
             <!-- Sub-tab Relatórios Financeiros -->
             <div class="sub-content" id="reports">
-    <div class="card">
-        <h3>📊 Relatórios Financeiros</h3>
-        
-        <!-- Filtros Rápidos -->
-        <div class="grid grid-4">
-            <div class="result-item">
-                <h3>Balancete</h3>
-                <p>Verificação débitos = créditos</p>
-                <button class="btn btn-primary" onclick="showTrialBalanceFilters()">Configurar</button>
-            </div>
-            <div class="result-item">
-                <h3>Balanço Patrimonial</h3>
-                <p>Posição financeira em data</p>
-                <button class="btn btn-primary" onclick="showBalanceSheetFilters()">Configurar</button>
-            </div>
-            <div class="result-item">
-                <h3>Demonstração de Resultados</h3>
-                <p>Receitas - Despesas = Resultado</p>
-                <button class="btn btn-primary" onclick="showIncomeStatementFilters()">Configurar</button>
-            </div>
-            <div class="result-item">
-                <h3>Fluxo de Caixa</h3>
-                <p>Entradas e saídas de dinheiro</p>
-                <button class="btn btn-primary" onclick="showCashFlowFilters()">Configurar</button>
-            </div>
-        </div>
-        
-        <div class="export-buttons" style="margin-top: 20px;">
-            <button class="btn btn-secondary" onclick="initializeFinancialReports()">🔄 Inicializar Sistema</button>
-        </div>
-        
-        <div id="reportResult" style="margin-top: 20px;">
-            <div class="card">
-                <h4>💡 Como usar os relatórios</h4>
-                <p>1. Clique em "Configurar" para escolher período e opções</p>
-                <p>2. Use os filtros para selecionar datas e comparativos</p>
-                <p>3. Clique em "Gerar Relatório" para visualizar</p>
-                <p>4. Use os botões de exportação para baixar os dados</p>
-                <p>5. Clique em qualquer valor para ver detalhes (drill-down)</p>
-            </div>
-        </div>
-    </div>
-</div>
+                <div class="card">
+                    <h3>📊 Relatórios Financeiros</h3>
                     
-                    <div class="export-buttons">
-                        <button class="btn btn-secondary" onclick="exportFinancialReports('excel')">📊 Exportar Excel</button>
-                        <button class="btn btn-success" onclick="exportFinancialReports('csv')">📄 Exportar CSV</button>
-                        <button class="btn btn-primary" onclick="exportFinancialReports('pdf')">📑 Exportar PDF</button>
+                    <!-- Filtros Rápidos -->
+                    <div class="grid grid-4">
+                        <div class="result-item">
+                            <h3>Balancete</h3>
+                            <p>Verificação débitos = créditos</p>
+                            <button class="btn btn-primary" onclick="generateTrialBalance()">Configurar</button>
+                        </div>
+                        <div class="result-item">
+                            <h3>Balanço Patrimonial</h3>
+                            <p>Posição financeira em data</p>
+                            <button class="btn btn-primary" onclick="generateBalanceSheet()">Configurar</button>
+                        </div>
+                        <div class="result-item">
+                            <h3>Demonstração de Resultados</h3>
+                            <p>Receitas - Despesas = Resultado</p>
+                            <button class="btn btn-primary" onclick="generateIncomeStatement()">Configurar</button>
+                        </div>
+                        <div class="result-item">
+                            <h3>Fluxo de Caixa</h3>
+                            <p>Entradas e saídas de dinheiro</p>
+                            <button class="btn btn-primary" onclick="generateCashFlow()">Configurar</button>
+                        </div>
                     </div>
                     
-                    <div id="reportResult" style="margin-top: 20px;"></div>
+                    <div class="export-buttons" style="margin-top: 20px;">
+                        <button class="btn btn-secondary" onclick="initializeFinancialReports()">🔄 Inicializar Sistema</button>
+                    </div>
+                    
+                    <div id="reportResult" style="margin-top: 20px;">
+                        <div class="card">
+                            <h4>💡 Como usar os relatórios</h4>
+                            <p>1. Clique em "Configurar" para escolher período e opções</p>
+                            <p>2. Use os filtros para selecionar datas e comparativos</p>
+                            <p>3. Clique em "Gerar Relatório" para visualizar</p>
+                            <p>4. Use os botões de exportação para baixar os dados</p>
+                            <p>5. Clique em qualquer valor para ver detalhes (drill-down)</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -3872,64 +3798,64 @@
         }
 
         function generateCashFlow() {
-    // Implementação simplificada do fluxo de caixa
-    const reportResult = document.getElementById('reportResult');
-    
-    // Calcular fluxo de caixa com base nos lançamentos
-    let fluxoOperacional = 0;
-    let fluxoInvestimento = 0;
-    let fluxoFinanciamento = 0;
-    
-    lancamentos.forEach(lancamento => {
-        const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-        const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-        
-        // Lógica simplificada para classificar fluxos
-        if (contaDebito && contaDebito.nome.includes('Caixa')) {
-            if (contaCredito && (contaCredito.tipo === 'Receita' || contaCredito.nome.includes('Venda'))) {
-                fluxoOperacional += lancamento.valor;
-            } else if (contaCredito && contaCredito.nome.includes('Investimento')) {
-                fluxoInvestimento += lancamento.valor;
-            } else {
-                fluxoFinanciamento += lancamento.valor;
-            }
+            // Implementação simplificada do fluxo de caixa
+            const reportResult = document.getElementById('reportResult');
+            
+            // Calcular fluxo de caixa com base nos lançamentos
+            let fluxoOperacional = 0;
+            let fluxoInvestimento = 0;
+            let fluxoFinanciamento = 0;
+            
+            lancamentos.forEach(lancamento => {
+                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                
+                // Lógica simplificada para classificar fluxos
+                if (contaDebito && contaDebito.nome.includes('Caixa')) {
+                    if (contaCredito && (contaCredito.tipo === 'Receita' || contaCredito.nome.includes('Venda'))) {
+                        fluxoOperacional += lancamento.valor;
+                    } else if (contaCredito && contaCredito.nome.includes('Investimento')) {
+                        fluxoInvestimento += lancamento.valor;
+                    } else {
+                        fluxoFinanciamento += lancamento.valor;
+                    }
+                }
+                
+                if (contaCredito && contaCredito.nome.includes('Caixa')) {
+                    if (contaDebito && (contaDebito.tipo === 'Despesa' || contaDebito.nome.includes('Compra'))) {
+                        fluxoOperacional -= lancamento.valor;
+                    } else if (contaDebito && contaDebito.nome.includes('Investimento')) {
+                        fluxoInvestimento -= lancamento.valor;
+                    } else {
+                        fluxoFinanciamento -= lancamento.valor;
+                    }
+                }
+            });
+            
+            const fluxoLiquido = fluxoOperacional + fluxoInvestimento + fluxoFinanciamento;
+            
+            reportResult.innerHTML = `
+                <h4>Fluxo de Caixa</h4>
+                <div class="result-item">
+                    <h3>Fluxo Operacional</h3>
+                    <div class="kpi" style="color: ${fluxoOperacional >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoOperacional.toFixed(2)}</div>
+                </div>
+                <div class="result-item">
+                    <h3>Fluxo de Investimento</h3>
+                    <div class="kpi" style="color: ${fluxoInvestimento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoInvestimento.toFixed(2)}</div>
+                </div>
+                <div class="result-item">
+                    <h3>Fluxo de Financiamento</h3>
+                    <div class="kpi" style="color: ${fluxoFinanciamento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoFinanciamento.toFixed(2)}</div>
+                </div>
+                <div class="result-item" style="margin-top: 10px;">
+                    <h3>Fluxo Líquido</h3>
+                    <div class="kpi" style="color: ${fluxoLiquido >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoLiquido.toFixed(2)}</div>
+                </div>
+            `;
+            
+            alert('Fluxo de Caixa gerado com sucesso!');
         }
-        
-        if (contaCredito && contaCredito.nome.includes('Caixa')) {
-            if (contaDebito && (contaDebito.tipo === 'Despesa' || contaDebito.nome.includes('Compra'))) {
-                fluxoOperacional -= lancamento.valor;
-            } else if (contaDebito && contaDebito.nome.includes('Investimento')) {
-                fluxoInvestimento -= lancamento.valor;
-            } else {
-                fluxoFinanciamento -= lancamento.valor;
-            }
-        }
-    });
-    
-    const fluxoLiquido = fluxoOperacional + fluxoInvestimento + fluxoFinanciamento;
-    
-    reportResult.innerHTML = `
-        <h4>Fluxo de Caixa</h4>
-        <div class="result-item">
-            <h3>Fluxo Operacional</h3>
-            <div class="kpi" style="color: ${fluxoOperacional >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoOperacional.toFixed(2)}</div>
-        </div>
-        <div class="result-item">
-            <h3>Fluxo de Investimento</h3>
-            <div class="kpi" style="color: ${fluxoInvestimento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoInvestimento.toFixed(2)}</div>
-        </div>
-        <div class="result-item">
-            <h3>Fluxo de Financiamento</h3>
-            <div class="kpi" style="color: ${fluxoFinanciamento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoFinanciamento.toFixed(2)}</div>
-        </div>
-        <div class="result-item" style="margin-top: 10px;">
-            <h3>Fluxo Líquido</h3>
-            <div class="kpi" style="color: ${fluxoLiquido >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoLiquido.toFixed(2)}</div>
-        </div>
-    `;
-    
-    alert('Fluxo de Caixa gerado com sucesso!');
-}
 
         // ========== FUNÇÕES DE LANÇAMENTOS CONTÁBEIS ==========
         function saveLancamento(event) {
@@ -4163,132 +4089,76 @@
         }
 
         // ========== FUNÇÕES DE AUTENTICAÇÃO ==========
-        // ========== FUNÇÕES DE AUTENTICAÇÃO ==========
-// ========== FUNÇÕES DE AUTENTICAÇÃO ==========
-function login(event) {
-    if (event) event.preventDefault();
-    console.log('Tentativa de login detectada...');
-    
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    
-    console.log('Credenciais inseridas:', { username, password });
-    
-    // Garantir que os dados padrão estão inicializados
-    initializeDefaultData();
-    
-    // Recarregar os usuários do localStorage
-    loadAllDataFromLocalStorage();
-    
-    console.log('Total de usuários carregados:', users.length);
-    console.log('Usuários disponíveis:', users);
-    
-    const user = users.find(u => u.username === username && u.password === password && u.status === 'Ativo');
-    
-    if (user) {
-        console.log('Login bem-sucedido para:', user.username);
-        currentUser = user;
-        
-        // Atualizar último acesso
-        user.lastAccess = new Date().toISOString();
-        localStorage.setItem('users', JSON.stringify(users));
-        
-        // Registrar log de auditoria
-        logAudit('LOGIN', `Utilizador ${user.username} fez login`);
-        
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        
-        // Atualizar informações do utilizador
-        document.getElementById('userName').textContent = user.fullName;
-        document.getElementById('userRole').textContent = getRoleName(user.role);
-        document.getElementById('userAvatar').textContent = user.fullName.charAt(0).toUpperCase();
-        
-        // Mostrar/ocultar tabs baseado no tipo de utilizador
-        if (user.role === 'admin' || user.role === 'manager') {
-            document.getElementById('usersTab').style.display = 'block';
-            document.getElementById('approvalsTab').style.display = 'block';
-            document.getElementById('settingsTab').style.display = 'block';
-            document.getElementById('ssaTab').style.display = 'block';
-        } else if (user.role === 'ssa') {
-            document.getElementById('ssaTab').style.display = 'block';
-            document.getElementById('usersTab').style.display = 'none';
-            document.getElementById('approvalsTab').style.display = 'none';
-            document.getElementById('settingsTab').style.display = 'none';
-        } else {
-            document.getElementById('usersTab').style.display = 'none';
-            document.getElementById('approvalsTab').style.display = 'none';
-            document.getElementById('settingsTab').style.display = 'none';
-            document.getElementById('ssaTab').style.display = 'none';
+        function login(event) {
+            if (event) event.preventDefault();
+            console.log('Tentativa de login detectada...');
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            console.log('Credenciais inseridas:', { username, password });
+            
+            // Garantir que os dados padrão estão inicializados
+            initializeDefaultData();
+            
+            // Recarregar os usuários do localStorage
+            loadAllDataFromLocalStorage();
+            
+            console.log('Total de usuários carregados:', users.length);
+            console.log('Usuários disponíveis:', users);
+            
+            const user = users.find(u => u.username === username && u.password === password && u.status === 'Ativo');
+            
+            if (user) {
+                console.log('Login bem-sucedido para:', user.username);
+                currentUser = user;
+                
+                // Atualizar último acesso
+                user.lastAccess = new Date().toISOString();
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                // Registrar log de auditoria
+                logAudit('LOGIN', `Utilizador ${user.username} fez login`);
+                
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                
+                // Atualizar informações do utilizador
+                document.getElementById('userName').textContent = user.fullName;
+                document.getElementById('userRole').textContent = getRoleName(user.role);
+                document.getElementById('userAvatar').textContent = user.fullName.charAt(0).toUpperCase();
+                
+                // Mostrar/ocultar tabs baseado no tipo de utilizador
+                if (user.role === 'admin' || user.role === 'manager') {
+                    document.getElementById('usersTab').style.display = 'block';
+                    document.getElementById('approvalsTab').style.display = 'block';
+                    document.getElementById('settingsTab').style.display = 'block';
+                    document.getElementById('ssaTab').style.display = 'block';
+                } else if (user.role === 'ssa') {
+                    document.getElementById('ssaTab').style.display = 'block';
+                    document.getElementById('usersTab').style.display = 'none';
+                    document.getElementById('approvalsTab').style.display = 'none';
+                    document.getElementById('settingsTab').style.display = 'none';
+                } else {
+                    document.getElementById('usersTab').style.display = 'none';
+                    document.getElementById('approvalsTab').style.display = 'none';
+                    document.getElementById('settingsTab').style.display = 'none';
+                    document.getElementById('ssaTab').style.display = 'none';
+                }
+                
+                // Carregar dados específicos do utilizador
+                loadUserSpecificData();
+                
+                // Mostrar mensagem de boas-vindas
+                alert(`Bem-vindo, ${user.fullName}!`);
+                
+                return true;
+            } else {
+                console.log('Falha no login - credenciais inválidas');
+                alert('Credenciais inválidas ou utilizador inativo!');
+                return false;
+            }
         }
-        
-        // Carregar dados específicos do utilizador
-        loadUserSpecificData();
-        
-        // Mostrar mensagem de boas-vindas
-        alert(`Bem-vindo, ${user.fullName}!`);
-        
-        return true;
-    } else {
-        console.log('Falha no login - credenciais inválidas');
-        alert('Credenciais inválidas ou utilizador inativo!');
-        return false;
-    }
-}
-
-// Função de debug para verificar o sistema de login
-function debugLoginSystem() {
-    console.log('=== SISTEMA DE LOGIN - DEBUG ===');
-    
-    // Verificar dados no localStorage
-    const storedUsers = localStorage.getItem('users');
-    console.log('Users no localStorage:', storedUsers);
-    
-    // Verificar se há usuários
-    if (storedUsers) {
-        const usersArray = JSON.parse(storedUsers);
-        console.log('Número de usuários:', usersArray.length);
-        console.log('Usuários:', usersArray);
-        
-        // Verificar usuário admin
-        const adminUser = usersArray.find(u => u.username === 'admin');
-        console.log('Usuário admin encontrado:', adminUser);
-        
-        if (adminUser) {
-            console.log('Senha do admin:', adminUser.password);
-            console.log('Status do admin:', adminUser.status);
-        }
-    } else {
-        console.log('❌ NENHUM USUÁRIO NO LOCALSTORAGE');
-    }
-}
-
-// Função de debug para verificar o sistema de login
-function debugLoginSystem() {
-    console.log('=== SISTEMA DE LOGIN - DEBUG ===');
-    
-    // Verificar dados no localStorage
-    const storedUsers = localStorage.getItem('users');
-    console.log('Users no localStorage:', storedUsers);
-    
-    // Verificar se há usuários
-    if (storedUsers) {
-        const usersArray = JSON.parse(storedUsers);
-        console.log('Número de usuários:', usersArray.length);
-        console.log('Usuários:', usersArray);
-        
-        // Verificar usuário admin
-        const adminUser = usersArray.find(u => u.username === 'admin');
-        console.log('Usuário admin encontrado:', adminUser);
-        
-        if (adminUser) {
-            console.log('Senha do admin:', adminUser.password);
-            console.log('Status do admin:', adminUser.status);
-        }
-    } else {
-        console.log('❌ NENHUM USUÁRIO NO LOCALSTORAGE');
-    }
-}
 
         function logout() {
             if (currentUser) {
@@ -6436,110 +6306,96 @@ function debugLoginSystem() {
             };
             reader.readAsText(file);
         }
-function debugLoginSystem() {
-    console.log('=== SISTEMA DE LOGIN - DEBUG ===');
-    
-    // Verificar dados no localStorage
-    const storedUsers = localStorage.getItem('users');
-    console.log('Users no localStorage:', storedUsers);
-    
-    // Verificar se há usuários
-    if (storedUsers) {
-        const usersArray = JSON.parse(storedUsers);
-        console.log('Número de usuários:', usersArray.length);
-        console.log('Usuários:', usersArray);
-        
-        // Verificar usuário admin
-        const adminUser = usersArray.find(u => u.username === 'admin');
-        console.log('Usuário admin encontrado:', adminUser);
-        
-        if (adminUser) {
-            console.log('Senha do admin:', adminUser.password);
-            console.log('Status do admin:', adminUser.status);
-        }
-    } else {
-        console.log('❌ NENHUM USUÁRIO NO LOCALSTORAGE');
-    }
-    
-    // Verificar função login
-    console.log('Função login existe:', typeof login);
-    
-    // Verificar evento do formulário
-    const loginForm = document.getElementById('loginForm');
-    console.log('Formulário encontrado:', loginForm);
-    
-    if (loginForm) {
-        console.log('Event listener no formulário:', loginForm.onsubmit);
-    }
-}
+
         // ========== INICIALIZAÇÃO DO SISTEMA ==========
-        // ========== INICIALIZAÇÃO DO SISTEMA ==========
-// ========== INICIALIZAÇÃO DO SISTEMA ==========
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM Carregado - Inicializando sistema...');
-    
-    // Inicializar dados padrão PRIMEIRO
-    initializeDefaultData();
-    
-    // Configurar event listener CORRETO para o formulário de login
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        console.log('Formulário de login encontrado, configurando event listener...');
-        loginForm.addEventListener('submit', login);
-    } else {
-        console.error('Formulário de login NÃO encontrado!');
-    }
-    
-    // Configurar outros event listeners...
-    document.getElementById('investorForm').addEventListener('submit', saveInvestor);
-    document.getElementById('agentForm').addEventListener('submit', saveAgent);
-    document.getElementById('userForm').addEventListener('submit', saveUser);
-    document.getElementById('roleForm').addEventListener('submit', saveRole);
-    document.getElementById('ssaAccountForm').addEventListener('submit', saveSSAAccount);
-    document.getElementById('stForm').addEventListener('submit', saveST);
-    document.getElementById('afForm').addEventListener('submit', saveAF);
-    document.getElementById('subchannelForm').addEventListener('submit', saveSubchannel);
-    document.getElementById('ssaDepositForm').addEventListener('submit', saveSSADeposit);
-    document.getElementById('afDepositForm').addEventListener('submit', saveAFDeposit);
-    document.getElementById('contaForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Funcionalidade de criação de contas em desenvolvimento');
-        closeModal('novaConta');
-    });
-    document.getElementById('lancamentoForm').addEventListener('submit', saveLancamento);
-    
-    // Configurar event listeners para configurações
-    document.getElementById('generalSettingsForm').addEventListener('submit', saveGeneralSettings);
-    document.getElementById('financialSettingsForm').addEventListener('submit', saveFinancialSettings);
-    document.getElementById('usersSettingsForm').addEventListener('submit', saveUsersSettings);
-    document.getElementById('securitySettingsForm').addEventListener('submit', saveSecuritySettings);
-    document.getElementById('integrationsSettingsForm').addEventListener('submit', saveIntegrationsSettings);
-    
-    // Configurar data atual nos formulários
-    const today = new Date().toISOString().split('T')[0];
-    const startDateInput = document.getElementById('investorStartDate');
-    if (startDateInput) startDateInput.value = today;
-    
-    const endDateInput = document.getElementById('investorEndDate');
-    if (endDateInput) {
-        const endDate = new Date();
-        endDate.setDate(endDate.getDate() + 30);
-        endDateInput.value = endDate.toISOString().split('T')[0];
-    }
-    
-    // Configurar outras datas...
-    const dateInputs = ['txnDate', 'lancamentoData', 'ssaDepositDate', 'afDepositDate'];
-    dateInputs.forEach(id => {
-        const input = document.getElementById(id);
-        if (input) input.value = today;
-    });
-    
-    console.log('Sistema Great Mola inicializado com sucesso!');
-    
-    // Para debug - executar no console: debugLoginSystem()
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Carregado - Inicializando sistema...');
+            
+            // Inicializar dados padrão PRIMEIRO
+            initializeDefaultData();
+            
+            // Configurar event listener CORRETO para o formulário de login
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                console.log('Formulário de login encontrado, configurando event listener...');
+                loginForm.addEventListener('submit', login);
+            } else {
+                console.error('Formulário de login NÃO encontrado!');
+            }
+            
+            // Configurar outros event listeners...
+            document.getElementById('investorForm').addEventListener('submit', saveInvestor);
+            document.getElementById('agentForm').addEventListener('submit', saveAgent);
+            document.getElementById('userForm').addEventListener('submit', saveUser);
+            document.getElementById('roleForm').addEventListener('submit', saveRole);
+            document.getElementById('ssaAccountForm').addEventListener('submit', saveSSAAccount);
+            document.getElementById('stForm').addEventListener('submit', saveST);
+            document.getElementById('afForm').addEventListener('submit', saveAF);
+            document.getElementById('subchannelForm').addEventListener('submit', saveSubchannel);
+            document.getElementById('ssaDepositForm').addEventListener('submit', saveSSADeposit);
+            document.getElementById('afDepositForm').addEventListener('submit', saveAFDeposit);
+            document.getElementById('contaForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Funcionalidade de criação de contas em desenvolvimento');
+                closeModal('novaConta');
+            });
+            document.getElementById('lancamentoForm').addEventListener('submit', saveLancamento);
+            
+            // Configurar event listeners para configurações
+            document.getElementById('generalSettingsForm').addEventListener('submit', saveGeneralSettings);
+            document.getElementById('financialSettingsForm').addEventListener('submit', saveFinancialSettings);
+            document.getElementById('usersSettingsForm').addEventListener('submit', saveUsersSettings);
+            document.getElementById('securitySettingsForm').addEventListener('submit', saveSecuritySettings);
+            document.getElementById('integrationsSettingsForm').addEventListener('submit', saveIntegrationsSettings);
+            
+            // Configurar data atual nos formulários
+            const today = new Date().toISOString().split('T')[0];
+            const startDateInput = document.getElementById('investorStartDate');
+            if (startDateInput) startDateInput.value = today;
+            
+            const endDateInput = document.getElementById('investorEndDate');
+            if (endDateInput) {
+                const endDate = new Date();
+                endDate.setDate(endDate.getDate() + 30);
+                endDateInput.value = endDate.toISOString().split('T')[0];
+            }
+            
+            // Configurar outras datas...
+            const dateInputs = ['txnDate', 'lancamentoData', 'ssaDepositDate', 'afDepositDate'];
+            dateInputs.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) input.value = today;
+            });
+            
+            console.log('Sistema Great Mola inicializado com sucesso!');
+        });
+
         // Para debug - executar no console: debugLoginSystem()
-        // Para debug - executar no console: debugLoginSystem()
-window.debugLoginSystem = debugLoginSystem;
+        window.debugLoginSystem = function() {
+            console.log('=== SISTEMA DE LOGIN - DEBUG ===');
+            
+            // Verificar dados no localStorage
+            const storedUsers = localStorage.getItem('users');
+            console.log('Users no localStorage:', storedUsers);
+            
+            // Verificar se há usuários
+            if (storedUsers) {
+                const usersArray = JSON.parse(storedUsers);
+                console.log('Número de usuários:', usersArray.length);
+                console.log('Usuários:', usersArray);
+                
+                // Verificar usuário admin
+                const adminUser = usersArray.find(u => u.username === 'admin');
+                console.log('Usuário admin encontrado:', adminUser);
+                
+                if (adminUser) {
+                    console.log('Senha do admin:', adminUser.password);
+                    console.log('Status do admin:', adminUser.status);
+                }
+            } else {
+                console.log('❌ NENHUM USUÁRIO NO LOCALSTORAGE');
+            }
+        };
     </script>
 </body>
 </html>
