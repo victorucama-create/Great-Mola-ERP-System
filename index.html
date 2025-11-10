@@ -3872,28 +3872,66 @@
         }
 
         function generateCashFlow() {
-            // Implementação simplificada do fluxo de caixa
-            const reportResult = document.getElementById('reportResult');
-            
-            // Calcular fluxo de caixa com base nos lançamentos
-            let fluxoOperacional = 0;
-            let fluxoInvestimento = 0;
-            let fluxoFinanciamento = 0;
-            
-            lancamentos.forEach(lancamento => {
-                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-                
-                // Lógica simplificada para classificar fluxos
-                if (contaDebito && contaDebito.nome.includes('Caixa')) {
-                    if (contaCredito && (contaCredito.tipo === 'Receita' || contaCredito.nome.includes('Venda'))) {
-                        fluxoOperacional += lancamento.valor;
-                    } else if (contaCredito && contaCredito.nome.includes('Investimento')) {
-                        fluxoInvestimento += lancamento.valor;
-                    } else {
-                        fluxoFinanciamento += lancamento.valor;
-                    }
-                }// ========== CONFIGURAÇÃO DO MAPEAMENTO DE CONTAS ==========
+    // Implementação simplificada do fluxo de caixa
+    const reportResult = document.getElementById('reportResult');
+    
+    // Calcular fluxo de caixa com base nos lançamentos
+    let fluxoOperacional = 0;
+    let fluxoInvestimento = 0;
+    let fluxoFinanciamento = 0;
+    
+    lancamentos.forEach(lancamento => {
+        const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+        const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+        
+        // Lógica simplificada para classificar fluxos
+        if (contaDebito && contaDebito.nome.includes('Caixa')) {
+            if (contaCredito && (contaCredito.tipo === 'Receita' || contaCredito.nome.includes('Venda'))) {
+                fluxoOperacional += lancamento.valor;
+            } else if (contaCredito && contaCredito.nome.includes('Investimento')) {
+                fluxoInvestimento += lancamento.valor;
+            } else {
+                fluxoFinanciamento += lancamento.valor;
+            }
+        }
+        
+        if (contaCredito && contaCredito.nome.includes('Caixa')) {
+            if (contaDebito && (contaDebito.tipo === 'Despesa' || contaDebito.nome.includes('Compra'))) {
+                fluxoOperacional -= lancamento.valor;
+            } else if (contaDebito && contaDebito.nome.includes('Investimento')) {
+                fluxoInvestimento -= lancamento.valor;
+            } else {
+                fluxoFinanciamento -= lancamento.valor;
+            }
+        }
+    });
+    
+    const fluxoLiquido = fluxoOperacional + fluxoInvestimento + fluxoFinanciamento;
+    
+    reportResult.innerHTML = `
+        <h4>Fluxo de Caixa</h4>
+        <div class="result-item">
+            <h3>Fluxo Operacional</h3>
+            <div class="kpi" style="color: ${fluxoOperacional >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoOperacional.toFixed(2)}</div>
+        </div>
+        <div class="result-item">
+            <h3>Fluxo de Investimento</h3>
+            <div class="kpi" style="color: ${fluxoInvestimento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoInvestimento.toFixed(2)}</div>
+        </div>
+        <div class="result-item">
+            <h3>Fluxo de Financiamento</h3>
+            <div class="kpi" style="color: ${fluxoFinanciamento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoFinanciamento.toFixed(2)}</div>
+        </div>
+        <div class="result-item" style="margin-top: 10px;">
+            <h3>Fluxo Líquido</h3>
+            <div class="kpi" style="color: ${fluxoLiquido >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoLiquido.toFixed(2)}</div>
+        </div>
+    `;
+    
+    alert('Fluxo de Caixa gerado com sucesso!');
+}
+
+// ========== CONFIGURAÇÃO DO MAPEAMENTO DE CONTAS ==========
 const accountMapping = {
     "balance_sheet": {
         "assets": ["1.1.1", "1.1.2", "1.1.3", "1.1.4", "1.1.5", "1.1.6", "1.1.7", "1.1.8", 
