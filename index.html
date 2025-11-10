@@ -734,7 +734,7 @@
                 <button class="sub-tab active" onclick="switchSubTab('planning')">Planejamento Financeiro</button>
                 <button class="sub-tab" onclick="switchSubTab('chartOfAccounts')">Plano de Contas</button>
                 <button class="sub-tab" onclick="switchSubTab('reports')">Relatórios Financeiros</button>
-                <button class="sub-tab" onclick="switchSubTab('transactions')">Transações</button>
+                <button class="sub-tab" onclick="switchSubTab('transactions')">Diário de Movimentos</button>
                 <button class="sub-tab" onclick="switchSubTab('internalControl')">Controlo Interno</button>
                 <button class="sub-tab" onclick="switchSubTab('accountingEntries')">Lançamentos</button>
             </div>
@@ -886,14 +886,32 @@
                 </div>
             </div>
             
-            <!-- Sub-tab Transações -->
+            <!-- Sub-tab Diário de Movimentos -->
             <div class="sub-content" id="transactions">
                 <div class="card">
                     <h3>Diário de Movimentos</h3>
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>Data Início</label>
+                            <input type="date" id="journalFilterStart" onchange="updateJournalTable()">
+                        </div>
+                        <div class="filter-group">
+                            <label>Data Fim</label>
+                            <input type="date" id="journalFilterEnd" onchange="updateJournalTable()">
+                        </div>
+                        <div class="filter-group">
+                            <label>Conta</label>
+                            <select id="journalFilterAccount" onchange="updateJournalTable()">
+                                <option value="">Todas as contas</option>
+                            </select>
+                        </div>
+                    </div>
+                    
                     <div class="export-buttons">
                         <button class="btn btn-secondary" onclick="exportTransactions('excel')">📊 Exportar Excel</button>
                         <button class="btn btn-success" onclick="exportTransactions('csv')">📄 Exportar CSV</button>
                     </div>
+                    
                     <table id="journalTable">
                         <thead>
                             <tr>
@@ -2977,9 +2995,10 @@
             const creditoSelect = document.getElementById('lancamentoCredito');
             const contaPaiSelect = document.getElementById('contaPai');
             const filterContaSelect = document.getElementById('filterConta');
+            const journalFilterAccount = document.getElementById('journalFilterAccount');
             
             // Limpar selects
-            [debitoSelect, creditoSelect, contaPaiSelect, filterContaSelect].forEach(select => {
+            [debitoSelect, creditoSelect, contaPaiSelect, filterContaSelect, journalFilterAccount].forEach(select => {
                 if (select) {
                     select.innerHTML = select.id === 'contaPai' 
                         ? '<option value="">Nenhuma (Conta Principal)</option>'
@@ -2991,7 +3010,7 @@
             planoContas.forEach(conta => {
                 const optionText = `${conta.codigo} - ${conta.nome}`;
                 
-                [debitoSelect, creditoSelect, contaPaiSelect, filterContaSelect].forEach(select => {
+                [debitoSelect, creditoSelect, contaPaiSelect, filterContaSelect, journalFilterAccount].forEach(select => {
                     if (select) {
                         const option = document.createElement('option');
                         option.value = conta.id;
@@ -3030,17 +3049,22 @@
             let filename = '';
             let mimeType = '';
             
+            // Gerar relatórios com base nos lançamentos
+            const reportData = generateFinancialReportsData();
+            
             if (format === 'csv') {
                 content = 'Tipo,Descrição,Valor,Data,Status\n';
-                content += 'Receita,Vendas do mês,15000.00,2024-01-15,Concluído\n';
-                content += 'Despesa,Salários,8000.00,2024-01-05,Pago\n';
+                reportData.forEach(item => {
+                    content += `"${item.tipo}","${item.descricao}","${item.valor}","${item.data}","${item.status}"\n`;
+                });
                 
                 filename = `relatorios_financeiros_${Date.now()}.csv`;
                 mimeType = 'text/csv;charset=utf-8;';
             } else if (format === 'excel') {
                 content = 'Tipo\tDescrição\tValor\tData\tStatus\n';
-                content += 'Receita\tVendas do mês\t15000.00\t2024-01-15\tConcluído\n';
-                content += 'Despesa\tSalários\t8000.00\t2024-01-05\tPago\n';
+                reportData.forEach(item => {
+                    content += `${item.tipo}\t${item.descricao}\t${item.valor}\t${item.data}\t${item.status}\n`;
+                });
                 
                 filename = `relatorios_financeiros_${Date.now()}.xls`;
                 mimeType = 'application/vnd.ms-excel;charset=utf-8;';
@@ -3067,20 +3091,15 @@
                                     <th>Data</th>
                                     <th>Status</th>
                                 </tr>
-                                <tr>
-                                    <td>Receita</td>
-                                    <td>Vendas do mês</td>
-                                    <td>15,000.00</td>
-                                    <td>2024-01-15</td>
-                                    <td>Concluído</td>
-                                </tr>
-                                <tr>
-                                    <td>Despesa</td>
-                                    <td>Salários</td>
-                                    <td>8,000.00</td>
-                                    <td>2024-01-05</td>
-                                    <td>Pago</td>
-                                </tr>
+                                ${reportData.map(item => `
+                                    <tr>
+                                        <td>${item.tipo}</td>
+                                        <td>${item.descricao}</td>
+                                        <td>${item.valor}</td>
+                                        <td>${item.data}</td>
+                                        <td>${item.status}</td>
+                                    </tr>
+                                `).join('')}
                             </table>
                         </body>
                     </html>
@@ -3093,6 +3112,31 @@
             downloadFile(dataBlob, filename);
         }
 
+        function generateFinancialReportsData() {
+            // Gerar dados de relatórios com base nos lançamentos
+            const reportData = [];
+            
+            lancamentos.forEach(lancamento => {
+                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                
+                // Determinar tipo com base nas contas
+                let tipo = 'Lançamento';
+                if (contaDebito && contaDebito.tipo === 'Receita') tipo = 'Receita';
+                if (contaCredito && contaCredito.tipo === 'Despesa') tipo = 'Despesa';
+                
+                reportData.push({
+                    tipo: tipo,
+                    descricao: lancamento.descricao,
+                    valor: lancamento.valor.toFixed(2),
+                    data: lancamento.data,
+                    status: lancamento.status || 'Registado'
+                });
+            });
+            
+            return reportData;
+        }
+
         function exportTransactions(format) {
             let content = '';
             let filename = '';
@@ -3100,16 +3144,22 @@
             
             if (format === 'csv') {
                 content = 'Data,Descrição,Conta Débito,Conta Crédito,Valor (MZN)\n';
-                transactions.forEach(txn => {
-                    content += `"${txn.date}","${txn.description}","${txn.debitAccount}","${txn.creditAccount}","${txn.amount}"\n`;
+                lancamentos.forEach(lancamento => {
+                    const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                    const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                    
+                    content += `"${lancamento.data}","${lancamento.descricao}","${contaDebito ? contaDebito.nome : 'N/A'}","${contaCredito ? contaCredito.nome : 'N/A'}","${lancamento.valor}"\n`;
                 });
                 
                 filename = `transacoes_${Date.now()}.csv`;
                 mimeType = 'text/csv;charset=utf-8;';
             } else if (format === 'excel') {
                 content = 'Data\tDescrição\tConta Débito\tConta Crédito\tValor (MZN)\n';
-                transactions.forEach(txn => {
-                    content += `${txn.date}\t${txn.description}\t${txn.debitAccount}\t${txn.creditAccount}\t${txn.amount}\n`;
+                lancamentos.forEach(lancamento => {
+                    const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                    const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                    
+                    content += `${lancamento.data}\t${lancamento.descricao}\t${contaDebito ? contaDebito.nome : 'N/A'}\t${contaCredito ? contaCredito.nome : 'N/A'}\t${lancamento.valor}\n`;
                 });
                 
                 filename = `transacoes_${Date.now()}.xls`;
@@ -3377,6 +3427,10 @@
             } else if (subTabName === 'accountingEntries') {
                 loadPlanoContasForDropdown();
                 updateLancamentosTable();
+            } else if (subTabName === 'transactions') {
+                updateJournalTable();
+            } else if (subTabName === 'reports') {
+                updateFinancialReports();
             }
         }
 
@@ -3578,6 +3632,377 @@
             } else {
                 container.innerHTML = '<p style="color: #6c757d; text-align: center; padding: 20px;">Apenas disponível para agentes</p>';
             }
+        }
+
+        // ========== FUNÇÕES DE CONTABILIDADE ==========
+        function updateAccountingData() {
+            // Atualizar dados da contabilidade
+            renderPlanoContas();
+            loadPlanoContasForDropdown();
+            updateJournalTable();
+            updateFinancialReports();
+        }
+
+        function updateJournalTable() {
+            const tbody = document.getElementById('journalTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            // Aplicar filtros
+            let filteredLancamentos = [...lancamentos];
+            const startDate = document.getElementById('journalFilterStart')?.value;
+            const endDate = document.getElementById('journalFilterEnd')?.value;
+            const accountFilter = document.getElementById('journalFilterAccount')?.value;
+            
+            if (startDate) {
+                filteredLancamentos = filteredLancamentos.filter(l => l.data >= startDate);
+            }
+            
+            if (endDate) {
+                filteredLancamentos = filteredLancamentos.filter(l => l.data <= endDate);
+            }
+            
+            if (accountFilter) {
+                filteredLancamentos = filteredLancamentos.filter(l => 
+                    l.debito == accountFilter || l.credito == accountFilter
+                );
+            }
+            
+            // Ordenar por data (mais recente primeiro)
+            filteredLancamentos.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            filteredLancamentos.forEach(lancamento => {
+                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${lancamento.data}</td>
+                    <td>${lancamento.descricao}</td>
+                    <td>${contaDebito ? contaDebito.codigo + ' - ' + contaDebito.nome : 'N/A'}</td>
+                    <td>${contaCredito ? contaCredito.codigo + ' - ' + contaCredito.nome : 'N/A'}</td>
+                    <td>MT ${lancamento.valor.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateFinancialReports() {
+            const reportResult = document.getElementById('reportResult');
+            if (!reportResult) return;
+            
+            // Calcular totais por tipo de conta
+            const totals = {
+                Ativo: 0,
+                Passivo: 0,
+                Patrimonio: 0,
+                Receita: 0,
+                Despesa: 0
+            };
+            
+            // Calcular saldos das contas com base nos lançamentos
+            const accountBalances = {};
+            
+            planoContas.forEach(conta => {
+                accountBalances[conta.id] = 0;
+            });
+            
+            lancamentos.forEach(lancamento => {
+                // Para débito: aumenta Ativo/Despesa, diminui Passivo/Receita
+                // Para crédito: aumenta Passivo/Receita, diminui Ativo/Despesa
+                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                
+                if (contaDebito) {
+                    if (contaDebito.tipo === 'Ativo' || contaDebito.tipo === 'Despesa') {
+                        accountBalances[contaDebito.id] += lancamento.valor;
+                    } else {
+                        accountBalances[contaDebito.id] -= lancamento.valor;
+                    }
+                }
+                
+                if (contaCredito) {
+                    if (contaCredito.tipo === 'Passivo' || contaCredito.tipo === 'Receita' || contaCredito.tipo === 'Patrimonio') {
+                        accountBalances[contaCredito.id] += lancamento.valor;
+                    } else {
+                        accountBalances[contaCredito.id] -= lancamento.valor;
+                    }
+                }
+            });
+            
+            // Agregar totais por tipo
+            planoContas.forEach(conta => {
+                if (totals[conta.tipo] !== undefined) {
+                    totals[conta.tipo] += accountBalances[conta.id] || 0;
+                }
+            });
+            
+            // Calcular resultado
+            const resultado = totals.Receita - totals.Despesa;
+            
+            // Exibir relatório
+            reportResult.innerHTML = `
+                <h4>Balanço Patrimonial</h4>
+                <div class="grid grid-2">
+                    <div class="result-item">
+                        <h3>Ativo Total</h3>
+                        <div class="kpi">MT ${totals.Ativo.toFixed(2)}</div>
+                    </div>
+                    <div class="result-item">
+                        <h3>Passivo Total</h3>
+                        <div class="kpi">MT ${totals.Passivo.toFixed(2)}</div>
+                    </div>
+                </div>
+                
+                <h4 style="margin-top: 20px;">Demonstração de Resultados</h4>
+                <div class="grid grid-2">
+                    <div class="result-item">
+                        <h3>Receitas</h3>
+                        <div class="kpi">MT ${totals.Receita.toFixed(2)}</div>
+                    </div>
+                    <div class="result-item">
+                        <h3>Despesas</h3>
+                        <div class="kpi">MT ${totals.Despesa.toFixed(2)}</div>
+                    </div>
+                </div>
+                <div class="result-item" style="margin-top: 10px;">
+                    <h3>Resultado Líquido</h3>
+                    <div class="kpi" style="color: ${resultado >= 0 ? '#28a745' : '#dc3545'}">MT ${resultado.toFixed(2)}</div>
+                </div>
+            `;
+        }
+
+        function generateBalanceSheet() {
+            updateFinancialReports();
+            alert('Balanço gerado com sucesso!');
+        }
+
+        function generateIncomeStatement() {
+            updateFinancialReports();
+            alert('Demonstração de Resultados gerada com sucesso!');
+        }
+
+        function generateCashFlow() {
+            // Implementação simplificada do fluxo de caixa
+            const reportResult = document.getElementById('reportResult');
+            
+            // Calcular fluxo de caixa com base nos lançamentos
+            let fluxoOperacional = 0;
+            let fluxoInvestimento = 0;
+            let fluxoFinanciamento = 0;
+            
+            lancamentos.forEach(lancamento => {
+                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                
+                // Lógica simplificada para classificar fluxos
+                if (contaDebito && contaDebito.nome.includes('Caixa')) {
+                    if (contaCredito && (contaCredito.tipo === 'Receita' || contaCredito.nome.includes('Venda'))) {
+                        fluxoOperacional += lancamento.valor;
+                    } else if (contaCredito && contaCredito.nome.includes('Investimento')) {
+                        fluxoInvestimento += lancamento.valor;
+                    } else {
+                        fluxoFinanciamento += lancamento.valor;
+                    }
+                }
+                
+                if (contaCredito && contaCredito.nome.includes('Caixa')) {
+                    if (contaDebito && (contaDebito.tipo === 'Despesa' || contaDebito.nome.includes('Compra'))) {
+                        fluxoOperacional -= lancamento.valor;
+                    } else if (contaDebito && contaDebito.nome.includes('Investimento')) {
+                        fluxoInvestimento -= lancamento.valor;
+                    } else {
+                        fluxoFinanciamento -= lancamento.valor;
+                    }
+                }
+            });
+            
+            const fluxoLiquido = fluxoOperacional + fluxoInvestimento + fluxoFinanciamento;
+            
+            reportResult.innerHTML = `
+                <h4>Fluxo de Caixa</h4>
+                <div class="result-item">
+                    <h3>Fluxo Operacional</h3>
+                    <div class="kpi" style="color: ${fluxoOperacional >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoOperacional.toFixed(2)}</div>
+                </div>
+                <div class="result-item">
+                    <h3>Fluxo de Investimento</h3>
+                    <div class="kpi" style="color: ${fluxoInvestimento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoInvestimento.toFixed(2)}</div>
+                </div>
+                <div class="result-item">
+                    <h3>Fluxo de Financiamento</h3>
+                    <div class="kpi" style="color: ${fluxoFinanciamento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoFinanciamento.toFixed(2)}</div>
+                </div>
+                <div class="result-item" style="margin-top: 10px;">
+                    <h3>Fluxo Líquido</h3>
+                    <div class="kpi" style="color: ${fluxoLiquido >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoLiquido.toFixed(2)}</div>
+                </div>
+            `;
+            
+            alert('Fluxo de Caixa gerado com sucesso!');
+        }
+
+        // ========== FUNÇÕES DE LANÇAMENTOS CONTÁBEIS ==========
+        function saveLancamento(event) {
+            if (event) event.preventDefault();
+            
+            const data = document.getElementById('lancamentoData').value;
+            const descricao = document.getElementById('lancamentoDescricao').value;
+            const debito = document.getElementById('lancamentoDebito').value;
+            const credito = document.getElementById('lancamentoCredito').value;
+            const valor = parseFloat(document.getElementById('lancamentoValor').value);
+            
+            // Validações
+            if (!data || !descricao || !debito || !credito || !valor) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+            
+            if (debito === credito) {
+                alert('As contas de débito e crédito não podem ser iguais!');
+                return;
+            }
+            
+            if (valor <= 0) {
+                alert('O valor deve ser maior que zero!');
+                return;
+            }
+            
+            // Processar arquivos anexos
+            const fileInput = document.getElementById('lancamentoFile');
+            const anexos = [];
+            
+            if (fileInput.files && fileInput.files.length > 0) {
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const file = fileInput.files[i];
+                    anexos.push({
+                        nome: file.name,
+                        tipo: file.type,
+                        tamanho: file.size,
+                        dataUpload: new Date().toISOString()
+                    });
+                }
+            }
+            
+            // Criar novo lançamento
+            const novoLancamento = {
+                id: Date.now(),
+                data,
+                descricao,
+                debito: parseInt(debito),
+                credito: parseInt(credito),
+                valor,
+                anexos,
+                status: 'Registado',
+                userId: currentUser.id,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Adicionar ao array de lançamentos
+            lancamentos.push(novoLancamento);
+            
+            // Salvar no localStorage
+            localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+            
+            // Atualizar as tabelas
+            updateLancamentosTable();
+            updateJournalTable();
+            updateFinancialReports();
+            
+            // Limpar formulário
+            document.getElementById('lancamentoForm').reset();
+            document.getElementById('lancamentoFilePreview').innerHTML = '';
+            document.getElementById('lancamentoData').value = new Date().toISOString().split('T')[0];
+            
+            // Registrar log de auditoria
+            logAudit('CREATE_LANCAMENTO', `Criou lançamento: ${descricao} - MT ${valor.toFixed(2)}`);
+            
+            alert('Lançamento registado com sucesso!');
+        }
+
+        function updateLancamentosTable() {
+            const tbody = document.getElementById('lancamentosTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            // Aplicar filtros
+            let filteredLancamentos = [...lancamentos];
+            const startDate = document.getElementById('filterDataInicio')?.value;
+            const endDate = document.getElementById('filterDataFim')?.value;
+            const accountFilter = document.getElementById('filterConta')?.value;
+            
+            if (startDate) {
+                filteredLancamentos = filteredLancamentos.filter(l => l.data >= startDate);
+            }
+            
+            if (endDate) {
+                filteredLancamentos = filteredLancamentos.filter(l => l.data <= endDate);
+            }
+            
+            if (accountFilter) {
+                filteredLancamentos = filteredLancamentos.filter(l => 
+                    l.debito == accountFilter || l.credito == accountFilter
+                );
+            }
+            
+            // Ordenar por data (mais recente primeiro)
+            filteredLancamentos.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            filteredLancamentos.forEach(lancamento => {
+                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${lancamento.data}</td>
+                    <td>${lancamento.descricao}</td>
+                    <td>${contaDebito ? contaDebito.codigo + ' - ' + contaDebito.nome : 'N/A'}</td>
+                    <td>${contaCredito ? contaCredito.codigo + ' - ' + contaCredito.nome : 'N/A'}</td>
+                    <td>MT ${lancamento.valor.toFixed(2)}</td>
+                    <td>${lancamento.anexos && lancamento.anexos.length > 0 ? '📎 ' + lancamento.anexos.length + ' arquivo(s)' : 'Nenhum'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filtrarLancamentos() {
+            updateLancamentosTable();
+        }
+
+        function previewFile(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            
+            preview.innerHTML = '';
+            
+            if (input.files && input.files.length > 0) {
+                for (let i = 0; i < input.files.length; i++) {
+                    const file = input.files[i];
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-preview-item';
+                    fileItem.innerHTML = `
+                        <span>📎 ${file.name}</span>
+                        <span class="remove-file" onclick="removeFile('${inputId}', ${i})">×</span>
+                    `;
+                    preview.appendChild(fileItem);
+                }
+            }
+        }
+
+        function removeFile(inputId, index) {
+            const input = document.getElementById(inputId);
+            const files = Array.from(input.files);
+            files.splice(index, 1);
+            
+            // Criar nova FileList
+            const dt = new DataTransfer();
+            files.forEach(file => dt.items.add(file));
+            input.files = dt.files;
+            
+            // Atualizar preview
+            previewFile(inputId, inputId + 'Preview');
         }
 
         // ========== FUNÇÕES DE DROPDOWNS ==========
@@ -5901,150 +6326,6 @@
                 }
             };
             reader.readAsText(file);
-        }
-
-        // ========== FUNÇÕES DE CONTABILIDADE ==========
-        function updateAccountingData() {
-            // Atualizar dados da contabilidade
-            renderPlanoContas();
-            loadPlanoContasForDropdown();
-        }
-
-        function updateLancamentosTable() {
-            const tbody = document.getElementById('lancamentosTable').querySelector('tbody');
-            if (!tbody) return;
-            
-            tbody.innerHTML = '';
-            
-            lancamentos.forEach(lancamento => {
-                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${lancamento.data}</td>
-                    <td>${lancamento.descricao}</td>
-                    <td>${contaDebito ? contaDebito.codigo + ' - ' + contaDebito.nome : 'N/A'}</td>
-                    <td>${contaCredito ? contaCredito.codigo + ' - ' + contaCredito.nome : 'N/A'}</td>
-                    <td>MT ${lancamento.valor.toFixed(2)}</td>
-                    <td>${lancamento.anexos && lancamento.anexos.length > 0 ? '📎 ' + lancamento.anexos.length + ' arquivo(s)' : 'Nenhum'}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function filtrarLancamentos() {
-            updateLancamentosTable();
-        }
-
-        function previewFile(inputId, previewId) {
-            const input = document.getElementById(inputId);
-            const preview = document.getElementById(previewId);
-            
-            preview.innerHTML = '';
-            
-            if (input.files && input.files.length > 0) {
-                for (let i = 0; i < input.files.length; i++) {
-                    const file = input.files[i];
-                    const fileItem = document.createElement('div');
-                    fileItem.className = 'file-preview-item';
-                    fileItem.innerHTML = `
-                        <span>📎 ${file.name}</span>
-                        <span class="remove-file" onclick="removeFile('${inputId}', ${i})">×</span>
-                    `;
-                    preview.appendChild(fileItem);
-                }
-            }
-        }
-
-        function removeFile(inputId, index) {
-            const input = document.getElementById(inputId);
-            const files = Array.from(input.files);
-            files.splice(index, 1);
-            
-            // Criar nova FileList
-            const dt = new DataTransfer();
-            files.forEach(file => dt.items.add(file));
-            input.files = dt.files;
-            
-            // Atualizar preview
-            previewFile(inputId, inputId + 'Preview');
-        }
-
-        // ========== FUNÇÕES DE LANÇAMENTOS CONTÁBEIS ==========
-        function saveLancamento(event) {
-            if (event) event.preventDefault();
-            
-            const data = document.getElementById('lancamentoData').value;
-            const descricao = document.getElementById('lancamentoDescricao').value;
-            const debito = document.getElementById('lancamentoDebito').value;
-            const credito = document.getElementById('lancamentoCredito').value;
-            const valor = parseFloat(document.getElementById('lancamentoValor').value);
-            
-            // Validações
-            if (!data || !descricao || !debito || !credito || !valor) {
-                alert('Por favor, preencha todos os campos obrigatórios!');
-                return;
-            }
-            
-            if (debito === credito) {
-                alert('As contas de débito e crédito não podem ser iguais!');
-                return;
-            }
-            
-            if (valor <= 0) {
-                alert('O valor deve ser maior que zero!');
-                return;
-            }
-            
-            // Processar arquivos anexos
-            const fileInput = document.getElementById('lancamentoFile');
-            const anexos = [];
-            
-            if (fileInput.files && fileInput.files.length > 0) {
-                for (let i = 0; i < fileInput.files.length; i++) {
-                    const file = fileInput.files[i];
-                    anexos.push({
-                        nome: file.name,
-                        tipo: file.type,
-                        tamanho: file.size,
-                        dataUpload: new Date().toISOString()
-                    });
-                }
-            }
-            
-            // Criar novo lançamento
-            const novoLancamento = {
-                id: Date.now(),
-                data,
-                descricao,
-                debito: parseInt(debito),
-                credito: parseInt(credito),
-                valor,
-                anexos,
-                status: 'Registado',
-                userId: currentUser.id,
-                createdAt: new Date().toISOString()
-            };
-            
-            // Adicionar ao array de lançamentos
-            lancamentos.push(novoLancamento);
-            
-            // Salvar no localStorage
-            localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
-            
-            // Atualizar a tabela
-            updateLancamentosTable();
-            
-            // Limpar formulário
-            document.getElementById('lancamentoForm').reset();
-            document.getElementById('lancamentoFilePreview').innerHTML = '';
-            document.getElementById('lancamentoData').value = new Date().toISOString().split('T')[0];
-            
-            // Registrar log de auditoria
-            logAudit('CREATE_LANCAMENTO', `Criou lançamento: ${descricao} - MT ${valor.toFixed(2)}`);
-            
-            alert('Lançamento registado com sucesso!');
         }
 
         // ========== INICIALIZAÇÃO DO SISTEMA ==========
