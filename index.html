@@ -4142,50 +4142,7 @@ function saveLancamento(event) {
             alert('Lançamento registado com sucesso!');
         }
 
-        function updateLancamentosTable() {
-            const tbody = document.getElementById('lancamentosTable').querySelector('tbody');
-            if (!tbody) return;
-            
-            tbody.innerHTML = '';
-            
-            // Aplicar filtros
-            let filteredLancamentos = [...lancamentos];
-            const startDate = document.getElementById('filterDataInicio')?.value;
-            const endDate = document.getElementById('filterDataFim')?.value;
-            const accountFilter = document.getElementById('filterConta')?.value;
-            
-            if (startDate) {
-                filteredLancamentos = filteredLancamentos.filter(l => l.data >= startDate);
-            }
-            
-            if (endDate) {
-                filteredLancamentos = filteredLancamentos.filter(l => l.data <= endDate);
-            }
-            
-            if (accountFilter) {
-                filteredLancamentos = filteredLancamentos.filter(l => 
-                    l.debito == accountFilter || l.credito == accountFilter
-                );
-            }
-            
-            // Ordenar por data (mais recente primeiro)
-            filteredLancamentos.sort((a, b) => new Date(b.data) - new Date(a.data));
-            
-            filteredLancamentos.forEach(lancamento => {
-                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${lancamento.data}</td>
-                    <td>${lancamento.descricao}</td>
-                    <td>${contaDebito ? contaDebito.codigo + ' - ' + contaDebito.nome : 'N/A'}</td>
-                    <td>${contaCredito ? contaCredito.codigo + ' - ' + contaCredito.nome : 'N/A'}</td>
-                    <td>MT ${lancamento.valor.toFixed(2)}</td>
-                    <td>${lancamento.anexos && lancamento.anexos.length > 0 ? '📎 ' + lancamento.anexos.length + ' arquivo(s)' : 'Nenhum'}</td>
-                `;
-                tbody.appendChild(row);
-            });
+                    });
         }
 
         function filtrarLancamentos() {
