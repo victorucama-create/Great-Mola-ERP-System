@@ -16,7 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
     <style>
-        /* Todos os estilos permanecem exatamente como estavam */
+        /* Estilos CSS permanecem os mesmos */
         :root {
             --primary: #c81f1f;
             --secondary: #007bff;
@@ -1587,7 +1587,6 @@
             </div>
         </div>
 
-        <!-- Resto do código permanece igual (Agentes, Utilizadores, Aprovações, SSA, Configurações) -->
         <!-- Tab Agentes -->
         <div class="tab-content" id="agents">
             <h2>Gestão de Agentes</h2>
@@ -3299,12 +3298,18 @@
                     document.querySelectorAll('#reports .tab-content').forEach(c => c.classList.remove('active'));
                     
                     this.classList.add('active');
-                    document.getElementById(this.dataset.tab).classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    if (tabId) {
+                        const tabElement = document.getElementById(tabId);
+                        if (tabElement) {
+                            tabElement.classList.add('active');
+                        }
+                    }
                     
                     // Atualizar o relatório específico quando a aba é selecionada
-                    if (this.dataset.tab === 'dashboard-reports') {
+                    if (tabId === 'dashboard-reports') {
                         atualizarDashboardRelatorios();
-                    } else if (this.dataset.tab === 'balanco') {
+                    } else if (tabId === 'balanco') {
                         atualizarTabelaBalanco();
                     }
                 });
@@ -3313,19 +3318,28 @@
             // Event listeners para exportação
             document.querySelectorAll('.export-excel').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    exportarRelatorio(this.dataset.report, 'excel');
+                    const reportType = this.getAttribute('data-report');
+                    if (reportType) {
+                        exportarRelatorio(reportType, 'excel');
+                    }
                 });
             });
             
             document.querySelectorAll('.export-csv').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    exportarRelatorio(this.dataset.report, 'csv');
+                    const reportType = this.getAttribute('data-report');
+                    if (reportType) {
+                        exportarRelatorio(reportType, 'csv');
+                    }
                 });
             });
             
             document.querySelectorAll('.export-pdf').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    exportarRelatorio(this.dataset.report, 'pdf');
+                    const reportType = this.getAttribute('data-report');
+                    if (reportType) {
+                        exportarRelatorio(reportType, 'pdf');
+                    }
                 });
             });
         }
@@ -3451,13 +3465,18 @@
         }
 
         function aplicarFiltrosRelatorios() {
-            dataInicialRelatorios = document.getElementById('start-date').value;
-            dataFinalRelatorios = document.getElementById('end-date').value;
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
             
-            processarTransacoesRelatorios();
-            atualizarDashboardRelatorios();
-            
-            showNotification('Filtros aplicados com sucesso', 'success');
+            if (startDateInput && endDateInput) {
+                dataInicialRelatorios = startDateInput.value;
+                dataFinalRelatorios = endDateInput.value;
+                
+                processarTransacoesRelatorios();
+                atualizarDashboardRelatorios();
+                
+                showNotification('Filtros aplicados com sucesso', 'success');
+            }
         }
 
         function processarTransacoesRelatorios() {
@@ -3490,7 +3509,10 @@
             });
             
             // Atualizar período exibido
-            document.getElementById('period-range').textContent = `${dataInicialRelatorios} a ${dataFinalRelatorios}`;
+            const periodRangeElement = document.getElementById('period-range');
+            if (periodRangeElement) {
+                periodRangeElement.textContent = `${dataInicialRelatorios} a ${dataFinalRelatorios}`;
+            }
         }
 
         function atualizarDashboardRelatorios() {
@@ -3499,7 +3521,11 @@
             for (const [conta, saldo] of Object.entries(saldosContasRelatorios)) {
                 saldoTotal += saldo;
             }
-            document.getElementById('total-balance').textContent = formatarMoeda(saldoTotal);
+            
+            const totalBalanceElement = document.getElementById('total-balance');
+            if (totalBalanceElement) {
+                totalBalanceElement.textContent = formatarMoeda(saldoTotal);
+            }
             
             // Calcular indicadores financeiros
             const receitas = calcularTotalPorTipoRelatorios('Receita');
@@ -3507,17 +3533,48 @@
             const lucro = receitas - despesas;
             
             // Atualizar indicadores
-            document.getElementById('liquidez-corrente').textContent = calcularLiquidezCorrente().toFixed(1);
-            document.getElementById('liquidez-status').textContent = getStatusLiquidez(calcularLiquidezCorrente());
+            const liquidezCorrente = calcularLiquidezCorrente();
+            const liquidezCorrenteElement = document.getElementById('liquidez-corrente');
+            const liquidezStatusElement = document.getElementById('liquidez-status');
             
-            document.getElementById('margem-liquida').textContent = `${((lucro / receitas) * 100).toFixed(1)}%`;
-            document.getElementById('margem-status').textContent = lucro > 0 ? 'Lucrativa' : 'Prejuízo';
+            if (liquidezCorrenteElement) {
+                liquidezCorrenteElement.textContent = liquidezCorrente.toFixed(1);
+            }
+            if (liquidezStatusElement) {
+                liquidezStatusElement.textContent = getStatusLiquidez(liquidezCorrente);
+            }
             
-            document.getElementById('roe').textContent = `${calcularROE().toFixed(1)}%`;
-            document.getElementById('roe-status').textContent = getStatusROE(calcularROE());
+            const margemLiquidaElement = document.getElementById('margem-liquida');
+            const margemStatusElement = document.getElementById('margem-status');
             
-            document.getElementById('endividamento').textContent = `${calcularEndividamento().toFixed(1)}%`;
-            document.getElementById('endividamento-status').textContent = getStatusEndividamento(calcularEndividamento());
+            if (margemLiquidaElement) {
+                margemLiquidaElement.textContent = `${((lucro / (receitas || 1)) * 100).toFixed(1)}%`;
+            }
+            if (margemStatusElement) {
+                margemStatusElement.textContent = lucro > 0 ? 'Lucrativa' : 'Prejuízo';
+            }
+            
+            const roe = calcularROE();
+            const roeElement = document.getElementById('roe');
+            const roeStatusElement = document.getElementById('roe-status');
+            
+            if (roeElement) {
+                roeElement.textContent = `${roe.toFixed(1)}%`;
+            }
+            if (roeStatusElement) {
+                roeStatusElement.textContent = getStatusROE(roe);
+            }
+            
+            const endividamento = calcularEndividamento();
+            const endividamentoElement = document.getElementById('endividamento');
+            const endividamentoStatusElement = document.getElementById('endividamento-status');
+            
+            if (endividamentoElement) {
+                endividamentoElement.textContent = `${endividamento.toFixed(1)}%`;
+            }
+            if (endividamentoStatusElement) {
+                endividamentoStatusElement.textContent = getStatusEndividamento(endividamento);
+            }
             
             // Atualizar previsões
             atualizarPrevisoes();
@@ -3598,13 +3655,27 @@
             const despesas = calcularTotalPorTipoRelatorios('Despesa');
             const lucro = receitas - despesas;
             
-            document.getElementById('predicted-revenue').textContent = formatarMoeda(receitas * 1.05);
-            document.getElementById('predicted-profit').textContent = formatarMoeda(lucro * 1.03);
-            document.getElementById('predicted-cashflow').textContent = formatarMoeda(lucro * 0.85);
+            const predictedRevenueElement = document.getElementById('predicted-revenue');
+            const predictedProfitElement = document.getElementById('predicted-profit');
+            const predictedCashflowElement = document.getElementById('predicted-cashflow');
             
-            document.getElementById('revenue-trend').textContent = '📈 Tendência de alta';
-            document.getElementById('profit-trend').textContent = '📈 Crescimento esperado';
-            document.getElementById('cashflow-trend').textContent = '📈 Positivo';
+            const revenueTrendElement = document.getElementById('revenue-trend');
+            const profitTrendElement = document.getElementById('profit-trend');
+            const cashflowTrendElement = document.getElementById('cashflow-trend');
+            
+            if (predictedRevenueElement) {
+                predictedRevenueElement.textContent = formatarMoeda(receitas * 1.05);
+            }
+            if (predictedProfitElement) {
+                predictedProfitElement.textContent = formatarMoeda(lucro * 1.03);
+            }
+            if (predictedCashflowElement) {
+                predictedCashflowElement.textContent = formatarMoeda(lucro * 0.85);
+            }
+            
+            if (revenueTrendElement) revenueTrendElement.textContent = '📈 Tendência de alta';
+            if (profitTrendElement) profitTrendElement.textContent = '📈 Crescimento esperado';
+            if (cashflowTrendElement) cashflowTrendElement.textContent = '📈 Positivo';
         }
 
         function atualizarInsightsML() {
@@ -3667,9 +3738,9 @@
                 recomendacoesHTML = '<p>✅ Sua empresa está em boa situação financeira. Mantenha o bom trabalho!</p>';
             }
             
-            insightsContainer.innerHTML = insightsHTML;
-            anomaliesContainer.innerHTML = anomaliesHTML;
-            recomendacoesContainer.innerHTML = recomendacoesHTML;
+            if (insightsContainer) insightsContainer.innerHTML = insightsHTML;
+            if (anomaliesContainer) anomaliesContainer.innerHTML = anomaliesHTML;
+            if (recomendacoesContainer) recomendacoesContainer.innerHTML = recomendacoesHTML;
         }
 
         function criarGraficosRelatorios() {
@@ -3756,7 +3827,9 @@
             
             for (const [conta, saldo] of Object.entries(saldosContasRelatorios)) {
                 // Aplicar filtro de ocultar contas com saldo zero
-                const hideZero = document.getElementById('hide-zero').checked;
+                const hideZeroCheckbox = document.getElementById('hide-zero');
+                const hideZero = hideZeroCheckbox ? hideZeroCheckbox.checked : true;
+                
                 if (hideZero && saldo === 0) continue;
                 
                 const row = document.createElement('tr');
@@ -4151,10 +4224,12 @@
 
         function togglePasswordVisibility(inputId) {
             const input = document.getElementById(inputId);
-            if (input.type === 'password') {
-                input.type = 'text';
-            } else {
-                input.type = 'password';
+            if (input) {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                } else {
+                    input.type = 'password';
+                }
             }
         }
 
@@ -4177,8 +4252,9 @@
             }
             
             // Ativar botão selecionado
-            if (event && event.target) {
-                event.target.classList.add('active');
+            const clickedButton = event ? event.target : null;
+            if (clickedButton) {
+                clickedButton.classList.add('active');
             }
             
             // Atualizar dados específicos da tab
@@ -4254,8 +4330,9 @@
             }
             
             // Ativar botão selecionado
-            if (event && event.target) {
-                event.target.classList.add('active');
+            const clickedButton = event ? event.target : null;
+            if (clickedButton) {
+                clickedButton.classList.add('active');
             }
             
             // Atualizar dados específicos da sub-tab
@@ -4291,8 +4368,9 @@
             }
             
             // Ativar botão selecionado
-            if (event && event.target) {
-                event.target.classList.add('active');
+            const clickedButton = event ? event.target : null;
+            if (clickedButton) {
+                clickedButton.classList.add('active');
             }
             
             // Atualizar dados específicos da sub-tab
@@ -4320,8 +4398,9 @@
             }
             
             // Ativar botão selecionado
-            if (event && event.target) {
-                event.target.classList.add('active');
+            const clickedButton = event ? event.target : null;
+            if (clickedButton) {
+                clickedButton.classList.add('active');
             }
         }
 
@@ -4344,8 +4423,9 @@
             }
             
             // Ativar botão selecionado
-            if (event && event.target) {
-                event.target.classList.add('active');
+            const clickedButton = event ? event.target : null;
+            if (clickedButton) {
+                clickedButton.classList.add('active');
             }
         }
 
@@ -4481,7 +4561,7 @@
         }
 
         function updateJournalTable() {
-            const tbody = document.getElementById('journalTable').querySelector('tbody');
+            const tbody = document.getElementById('journalTable')?.querySelector('tbody');
             if (!tbody) return;
             
             tbody.innerHTML = '';
@@ -4555,7 +4635,7 @@
             const fileInput = document.getElementById('lancamentoFile');
             const anexos = [];
             
-            if (fileInput.files && fileInput.files.length > 0) {
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
                 for (let i = 0; i < fileInput.files.length; i++) {
                     const file = fileInput.files[i];
                     anexos.push({
@@ -4595,9 +4675,20 @@
             sincronizarDadosDiarioMovimentos();
             
             // Limpar formulário
-            document.getElementById('lancamentoForm').reset();
-            document.getElementById('lancamentoFilePreview').innerHTML = '';
-            document.getElementById('lancamentoData').value = new Date().toISOString().split('T')[0];
+            const lancamentoForm = document.getElementById('lancamentoForm');
+            if (lancamentoForm) {
+                lancamentoForm.reset();
+            }
+            
+            const lancamentoFilePreview = document.getElementById('lancamentoFilePreview');
+            if (lancamentoFilePreview) {
+                lancamentoFilePreview.innerHTML = '';
+            }
+            
+            const lancamentoDataInput = document.getElementById('lancamentoData');
+            if (lancamentoDataInput) {
+                lancamentoDataInput.value = new Date().toISOString().split('T')[0];
+            }
             
             // Registrar log de auditoria
             logAudit('CREATE_LANCAMENTO', `Criou lançamento: ${descricao} - MT ${valor.toFixed(2)}`);
@@ -4606,7 +4697,7 @@
         }
 
         function updateLancamentosTable() {
-            const tbody = document.getElementById('lancamentosTable').querySelector('tbody');
+            const tbody = document.getElementById('lancamentosTable')?.querySelector('tbody');
             if (!tbody) return;
             
             tbody.innerHTML = '';
@@ -4659,9 +4750,11 @@
             const input = document.getElementById(inputId);
             const preview = document.getElementById(previewId);
             
+            if (!preview) return;
+            
             preview.innerHTML = '';
             
-            if (input.files && input.files.length > 0) {
+            if (input && input.files && input.files.length > 0) {
                 for (let i = 0; i < input.files.length; i++) {
                     const file = input.files[i];
                     const fileItem = document.createElement('div');
@@ -4677,6 +4770,8 @@
 
         function removeFile(inputId, index) {
             const input = document.getElementById(inputId);
+            if (!input) return;
+            
             const files = Array.from(input.files);
             files.splice(index, 1);
             
@@ -4872,7 +4967,10 @@
             currentUser = null;
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('app').style.display = 'none';
-            document.getElementById('loginForm').reset();
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.reset();
+            }
         }
 
         function loadUserSpecificData() {
@@ -4979,18 +5077,29 @@
         }
 
         function clearInvestorForm() {
-            document.getElementById('investorForm').reset();
+            const investorForm = document.getElementById('investorForm');
+            if (investorForm) {
+                investorForm.reset();
+            }
+            
             document.getElementById('investorId').value = '';
-            document.getElementById('investorStartDate').value = new Date().toISOString().split('T')[0];
+            
+            const startDateInput = document.getElementById('investorStartDate');
+            if (startDateInput) {
+                startDateInput.value = new Date().toISOString().split('T')[0];
+            }
             
             // Definir data de fim padrão para 30 dias após a data de início
             const endDate = new Date();
             endDate.setDate(endDate.getDate() + 30);
-            document.getElementById('investorEndDate').value = endDate.toISOString().split('T')[0];
+            const endDateInput = document.getElementById('investorEndDate');
+            if (endDateInput) {
+                endDateInput.value = endDate.toISOString().split('T')[0];
+            }
         }
 
         function updateInvestorsTable() {
-            const tbody = document.getElementById('investorsTable').querySelector('tbody');
+            const tbody = document.getElementById('investorsTable')?.querySelector('tbody');
             if (!tbody) return;
             
             tbody.innerHTML = '';
@@ -5051,7 +5160,10 @@
                 document.getElementById('investorIRPS').value = investor.irps;
                 
                 // Scroll para o formulário
-                document.getElementById('investorForm').scrollIntoView({ behavior: 'smooth' });
+                const investorForm = document.getElementById('investorForm');
+                if (investorForm) {
+                    investorForm.scrollIntoView({ behavior: 'smooth' });
+                }
             }
         }
 
@@ -5092,8 +5204,12 @@
             const resultDiv = document.getElementById('calcResult');
             const amountSpan = document.getElementById('calcAmount');
             
-            amountSpan.textContent = `MT ${netYield.toFixed(2)} (Bruto: MT ${grossYield.toFixed(2)}, IRPS: MT ${irpsAmount.toFixed(2)})`;
-            resultDiv.style.display = 'block';
+            if (amountSpan) {
+                amountSpan.textContent = `MT ${netYield.toFixed(2)} (Bruto: MT ${grossYield.toFixed(2)}, IRPS: MT ${irpsAmount.toFixed(2)})`;
+            }
+            if (resultDiv) {
+                resultDiv.style.display = 'block';
+            }
         }
 
         function exportInvestorsExcel() {
@@ -5175,13 +5291,16 @@
         }
 
         function clearAgentForm() {
-            document.getElementById('agentForm').reset();
+            const agentForm = document.getElementById('agentForm');
+            if (agentForm) {
+                agentForm.reset();
+            }
             document.getElementById('agentId').value = '';
             document.getElementById('agentStatus').value = 'Ativo';
         }
 
         function updateAgentsTable() {
-            const tbody = document.getElementById('agentsTable').querySelector('tbody');
+            const tbody = document.getElementById('agentsTable')?.querySelector('tbody');
             if (!tbody) return;
             
             tbody.innerHTML = '';
@@ -5221,7 +5340,10 @@
                 document.getElementById('agentStatus').value = agent.status;
                 
                 // Scroll para o formulário
-                document.getElementById('agentForm').scrollIntoView({ behavior: 'smooth' });
+                const agentForm = document.getElementById('agentForm');
+                if (agentForm) {
+                    agentForm.scrollIntoView({ behavior: 'smooth' });
+                }
             }
         }
 
@@ -5322,13 +5444,16 @@
         }
 
         function clearUserForm() {
-            document.getElementById('userForm').reset();
+            const userForm = document.getElementById('userForm');
+            if (userForm) {
+                userForm.reset();
+            }
             document.getElementById('userId').value = '';
             document.getElementById('userStatus').value = 'Ativo';
         }
 
         function updateUsersTable() {
-            const tbody = document.getElementById('usersTable').querySelector('tbody');
+            const tbody = document.getElementById('usersTable')?.querySelector('tbody');
             if (!tbody) return;
             
             tbody.innerHTML = '';
@@ -5363,7 +5488,10 @@
                 document.getElementById('userStatus').value = user.status;
                 
                 // Scroll para o formulário
-                document.getElementById('userForm').scrollIntoView({ behavior: 'smooth' });
+                const userForm = document.getElementById('userForm');
+                if (userForm) {
+                    userForm.scrollIntoView({ behavior: 'smooth' });
+                }
             }
         }
 
@@ -5398,11 +5526,17 @@
 
         // ========== FUNÇÕES DE MODAIS ==========
         function showModal(modalId) {
-            document.getElementById(modalId).style.display = 'block';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'block';
+            }
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
         }
 
         // ========== FUNÇÕES DE BACKUP ==========
@@ -5435,7 +5569,7 @@
 
         function importBackup() {
             const fileInput = document.getElementById('backupFile');
-            const file = fileInput.files[0];
+            const file = fileInput?.files[0];
             
             if (!file) {
                 alert('Por favor, selecione um arquivo de backup');
@@ -5506,42 +5640,136 @@
             initializeDefaultData();
             
             // Configurar event listeners
-            document.getElementById('loginForm').addEventListener('submit', login);
-            document.getElementById('investorForm').addEventListener('submit', saveInvestor);
-            document.getElementById('agentForm').addEventListener('submit', saveAgent);
-            document.getElementById('userForm').addEventListener('submit', saveUser);
-            document.getElementById('roleForm').addEventListener('submit', saveRole);
-            document.getElementById('ssaAccountForm').addEventListener('submit', saveSSAAccount);
-            document.getElementById('stForm').addEventListener('submit', saveST);
-            document.getElementById('afForm').addEventListener('submit', saveAF);
-            document.getElementById('subchannelForm').addEventListener('submit', saveSubchannel);
-            document.getElementById('ssaDepositForm').addEventListener('submit', saveSSADeposit);
-            document.getElementById('afDepositForm').addEventListener('submit', saveAFDeposit);
-            document.getElementById('contaForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('Funcionalidade de criação de contas em desenvolvimento');
-                closeModal('novaConta');
-            });
-            document.getElementById('lancamentoForm').addEventListener('submit', saveLancamento);
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', login);
+            }
+            
+            const investorForm = document.getElementById('investorForm');
+            if (investorForm) {
+                investorForm.addEventListener('submit', saveInvestor);
+            }
+            
+            const agentForm = document.getElementById('agentForm');
+            if (agentForm) {
+                agentForm.addEventListener('submit', saveAgent);
+            }
+            
+            const userForm = document.getElementById('userForm');
+            if (userForm) {
+                userForm.addEventListener('submit', saveUser);
+            }
+            
+            const roleForm = document.getElementById('roleForm');
+            if (roleForm) {
+                roleForm.addEventListener('submit', saveRole);
+            }
+            
+            const ssaAccountForm = document.getElementById('ssaAccountForm');
+            if (ssaAccountForm) {
+                ssaAccountForm.addEventListener('submit', saveSSAAccount);
+            }
+            
+            const stForm = document.getElementById('stForm');
+            if (stForm) {
+                stForm.addEventListener('submit', saveST);
+            }
+            
+            const afForm = document.getElementById('afForm');
+            if (afForm) {
+                afForm.addEventListener('submit', saveAF);
+            }
+            
+            const subchannelForm = document.getElementById('subchannelForm');
+            if (subchannelForm) {
+                subchannelForm.addEventListener('submit', saveSubchannel);
+            }
+            
+            const ssaDepositForm = document.getElementById('ssaDepositForm');
+            if (ssaDepositForm) {
+                ssaDepositForm.addEventListener('submit', saveSSADeposit);
+            }
+            
+            const afDepositForm = document.getElementById('afDepositForm');
+            if (afDepositForm) {
+                afDepositForm.addEventListener('submit', saveAFDeposit);
+            }
+            
+            const contaForm = document.getElementById('contaForm');
+            if (contaForm) {
+                contaForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Funcionalidade de criação de contas em desenvolvimento');
+                    closeModal('novaConta');
+                });
+            }
+            
+            const lancamentoForm = document.getElementById('lancamentoForm');
+            if (lancamentoForm) {
+                lancamentoForm.addEventListener('submit', saveLancamento);
+            }
             
             // Configurar event listeners para configurações
-            document.getElementById('generalSettingsForm').addEventListener('submit', saveGeneralSettings);
-            document.getElementById('financialSettingsForm').addEventListener('submit', saveFinancialSettings);
-            document.getElementById('usersSettingsForm').addEventListener('submit', saveUsersSettings);
-            document.getElementById('securitySettingsForm').addEventListener('submit', saveSecuritySettings);
-            document.getElementById('integrationsSettingsForm').addEventListener('submit', saveIntegrationsSettings);
+            const generalSettingsForm = document.getElementById('generalSettingsForm');
+            if (generalSettingsForm) {
+                generalSettingsForm.addEventListener('submit', saveGeneralSettings);
+            }
+            
+            const financialSettingsForm = document.getElementById('financialSettingsForm');
+            if (financialSettingsForm) {
+                financialSettingsForm.addEventListener('submit', saveFinancialSettings);
+            }
+            
+            const usersSettingsForm = document.getElementById('usersSettingsForm');
+            if (usersSettingsForm) {
+                usersSettingsForm.addEventListener('submit', saveUsersSettings);
+            }
+            
+            const securitySettingsForm = document.getElementById('securitySettingsForm');
+            if (securitySettingsForm) {
+                securitySettingsForm.addEventListener('submit', saveSecuritySettings);
+            }
+            
+            const integrationsSettingsForm = document.getElementById('integrationsSettingsForm');
+            if (integrationsSettingsForm) {
+                integrationsSettingsForm.addEventListener('submit', saveIntegrationsSettings);
+            }
             
             // Configurar data atual nos formulários
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('investorStartDate').value = today;
+            
+            const investorStartDate = document.getElementById('investorStartDate');
+            if (investorStartDate) {
+                investorStartDate.value = today;
+            }
+            
             // Definir data de fim padrão para 30 dias após a data de início
             const endDate = new Date();
             endDate.setDate(endDate.getDate() + 30);
-            document.getElementById('investorEndDate').value = endDate.toISOString().split('T')[0];
-            document.getElementById('txnDate').value = today;
-            document.getElementById('lancamentoData').value = today;
-            document.getElementById('ssaDepositDate').value = today;
-            document.getElementById('afDepositDate').value = today;
+            const investorEndDate = document.getElementById('investorEndDate');
+            if (investorEndDate) {
+                investorEndDate.value = endDate.toISOString().split('T')[0];
+            }
+            
+            const txnDate = document.getElementById('txnDate');
+            if (txnDate) {
+                txnDate.value = today;
+            }
+            
+            const lancamentoData = document.getElementById('lancamentoData');
+            if (lancamentoData) {
+                lancamentoData.value = today;
+            }
+            
+            const ssaDepositDate = document.getElementById('ssaDepositDate');
+            if (ssaDepositDate) {
+                ssaDepositDate.value = today;
+            }
+            
+            const afDepositDate = document.getElementById('afDepositDate');
+            if (afDepositDate) {
+                afDepositDate.value = today;
+            }
             
             console.log('Sistema Great Mola inicializado com sucesso!');
         });
