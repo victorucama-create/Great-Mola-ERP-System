@@ -857,46 +857,37 @@
             <!-- Sub-tab Relatórios Financeiros -->
             <div class="sub-content" id="reports">
                 <div class="card">
-                    <h3>📊 Relatórios Financeiros</h3>
+                    <h3>Relatórios Financeiros</h3>
+                   <div class="grid grid-4">
+    <div class="result-item">
+        <h3>Balancete</h3>
+        <p>Lista de contas com saldos</p>
+        <button class="btn btn-primary" onclick="generateTrialBalance()">Gerar</button>
+    </div>
+    <div class="result-item">
+        <h3>Balanço Patrimonial</h3>
+        <p>Posição financeira atual</p>
+        <button class="btn btn-primary" onclick="generateBalanceSheet()">Gerar</button>
+    </div>
+    <div class="result-item">
+        <h3>Demonstração de Resultados</h3>
+        <p>Lucro ou prejuízo do período</p>
+        <button class="btn btn-primary" onclick="generateIncomeStatement()">Gerar</button>
+    </div>
+    <div class="result-item">
+        <h3>Fluxo de Caixa</h3>
+        <p>Entradas e saídas de dinheiro</p>
+        <button class="btn btn-primary" onclick="generateCashFlow()">Gerar</button>
+    </div>
+</div>
                     
-                    <!-- Filtros Rápidos -->
-                    <div class="grid grid-4">
-                        <div class="result-item">
-                            <h3>Balancete</h3>
-                            <p>Verificação débitos = créditos</p>
-                            <button class="btn btn-primary" onclick="generateTrialBalance()">Configurar</button>
-                        </div>
-                        <div class="result-item">
-                            <h3>Balanço Patrimonial</h3>
-                            <p>Posição financeira em data</p>
-                            <button class="btn btn-primary" onclick="generateBalanceSheet()">Configurar</button>
-                        </div>
-                        <div class="result-item">
-                            <h3>Demonstração de Resultados</h3>
-                            <p>Receitas - Despesas = Resultado</p>
-                            <button class="btn btn-primary" onclick="generateIncomeStatement()">Configurar</button>
-                        </div>
-                        <div class="result-item">
-                            <h3>Fluxo de Caixa</h3>
-                            <p>Entradas e saídas de dinheiro</p>
-                            <button class="btn btn-primary" onclick="generateCashFlow()">Configurar</button>
-                        </div>
+                    <div class="export-buttons">
+                        <button class="btn btn-secondary" onclick="exportFinancialReports('excel')">📊 Exportar Excel</button>
+                        <button class="btn btn-success" onclick="exportFinancialReports('csv')">📄 Exportar CSV</button>
+                        <button class="btn btn-primary" onclick="exportFinancialReports('pdf')">📑 Exportar PDF</button>
                     </div>
                     
-                    <div class="export-buttons" style="margin-top: 20px;">
-                        <button class="btn btn-secondary" onclick="initializeFinancialReports()">🔄 Inicializar Sistema</button>
-                    </div>
-                    
-                    <div id="reportResult" style="margin-top: 20px;">
-                        <div class="card">
-                            <h4>💡 Como usar os relatórios</h4>
-                            <p>1. Clique em "Configurar" para escolher período e opções</p>
-                            <p>2. Use os filtros para selecionar datas e comparativos</p>
-                            <p>3. Clique em "Gerar Relatório" para visualizar</p>
-                            <p>4. Use os botões de exportação para baixar os dados</p>
-                            <p>5. Clique em qualquer valor para ver detalhes (drill-down)</p>
-                        </div>
-                    </div>
+                    <div id="reportResult" style="margin-top: 20px;"></div>
                 </div>
             </div>
             
@@ -3935,6 +3926,52 @@
             alert('Lançamento registado com sucesso!');
         }
 
+        function updateLancamentosTable() {
+            const tbody = document.getElementById('lancamentosTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            // Aplicar filtros
+            let filteredLancamentos = [...lancamentos];
+            const startDate = document.getElementById('filterDataInicio')?.value;
+            const endDate = document.getElementById('filterDataFim')?.value;
+            const accountFilter = document.getElementById('filterConta')?.value;
+            
+            if (startDate) {
+                filteredLancamentos = filteredLancamentos.filter(l => l.data >= startDate);
+            }
+            
+            if (endDate) {
+                filteredLancamentos = filteredLancamentos.filter(l => l.data <= endDate);
+            }
+            
+            if (accountFilter) {
+                filteredLancamentos = filteredLancamentos.filter(l => 
+                    l.debito == accountFilter || l.credito == accountFilter
+                );
+            }
+            
+            // Ordenar por data (mais recente primeiro)
+            filteredLancamentos.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            filteredLancamentos.forEach(lancamento => {
+                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
+                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${lancamento.data}</td>
+                    <td>${lancamento.descricao}</td>
+                    <td>${contaDebito ? contaDebito.codigo + ' - ' + contaDebito.nome : 'N/A'}</td>
+                    <td>${contaCredito ? contaCredito.codigo + ' - ' + contaCredito.nome : 'N/A'}</td>
+                    <td>MT ${lancamento.valor.toFixed(2)}</td>
+                    <td>${lancamento.anexos && lancamento.anexos.length > 0 ? '📎 ' + lancamento.anexos.length + ' arquivo(s)' : 'Nenhum'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
         function filtrarLancamentos() {
             updateLancamentosTable();
         }
@@ -4091,12 +4128,9 @@
         // ========== FUNÇÕES DE AUTENTICAÇÃO ==========
         function login(event) {
             if (event) event.preventDefault();
-            console.log('Tentativa de login detectada...');
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            
-            console.log('Credenciais inseridas:', { username, password });
             
             // Garantir que os dados padrão estão inicializados
             initializeDefaultData();
@@ -4104,13 +4138,9 @@
             // Recarregar os usuários do localStorage
             loadAllDataFromLocalStorage();
             
-            console.log('Total de usuários carregados:', users.length);
-            console.log('Usuários disponíveis:', users);
-            
             const user = users.find(u => u.username === username && u.password === password && u.status === 'Ativo');
             
             if (user) {
-                console.log('Login bem-sucedido para:', user.username);
                 currentUser = user;
                 
                 // Atualizar último acesso
@@ -4151,12 +4181,8 @@
                 
                 // Mostrar mensagem de boas-vindas
                 alert(`Bem-vindo, ${user.fullName}!`);
-                
-                return true;
             } else {
-                console.log('Falha no login - credenciais inválidas');
                 alert('Credenciais inválidas ou utilizador inativo!');
-                return false;
             }
         }
 
@@ -6309,21 +6335,11 @@
 
         // ========== INICIALIZAÇÃO DO SISTEMA ==========
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM Carregado - Inicializando sistema...');
-            
-            // Inicializar dados padrão PRIMEIRO
+            // Inicializar dados padrão
             initializeDefaultData();
             
-            // Configurar event listener CORRETO para o formulário de login
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm) {
-                console.log('Formulário de login encontrado, configurando event listener...');
-                loginForm.addEventListener('submit', login);
-            } else {
-                console.error('Formulário de login NÃO encontrado!');
-            }
-            
-            // Configurar outros event listeners...
+            // Configurar event listeners
+            document.getElementById('loginForm').addEventListener('submit', login);
             document.getElementById('investorForm').addEventListener('submit', saveInvestor);
             document.getElementById('agentForm').addEventListener('submit', saveAgent);
             document.getElementById('userForm').addEventListener('submit', saveUser);
@@ -6350,52 +6366,18 @@
             
             // Configurar data atual nos formulários
             const today = new Date().toISOString().split('T')[0];
-            const startDateInput = document.getElementById('investorStartDate');
-            if (startDateInput) startDateInput.value = today;
-            
-            const endDateInput = document.getElementById('investorEndDate');
-            if (endDateInput) {
-                const endDate = new Date();
-                endDate.setDate(endDate.getDate() + 30);
-                endDateInput.value = endDate.toISOString().split('T')[0];
-            }
-            
-            // Configurar outras datas...
-            const dateInputs = ['txnDate', 'lancamentoData', 'ssaDepositDate', 'afDepositDate'];
-            dateInputs.forEach(id => {
-                const input = document.getElementById(id);
-                if (input) input.value = today;
-            });
+            document.getElementById('investorStartDate').value = today;
+            // Definir data de fim padrão para 30 dias após a data de início
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 30);
+            document.getElementById('investorEndDate').value = endDate.toISOString().split('T')[0];
+            document.getElementById('txnDate').value = today;
+            document.getElementById('lancamentoData').value = today;
+            document.getElementById('ssaDepositDate').value = today;
+            document.getElementById('afDepositDate').value = today;
             
             console.log('Sistema Great Mola inicializado com sucesso!');
         });
-
-        // Para debug - executar no console: debugLoginSystem()
-        window.debugLoginSystem = function() {
-            console.log('=== SISTEMA DE LOGIN - DEBUG ===');
-            
-            // Verificar dados no localStorage
-            const storedUsers = localStorage.getItem('users');
-            console.log('Users no localStorage:', storedUsers);
-            
-            // Verificar se há usuários
-            if (storedUsers) {
-                const usersArray = JSON.parse(storedUsers);
-                console.log('Número de usuários:', usersArray.length);
-                console.log('Usuários:', usersArray);
-                
-                // Verificar usuário admin
-                const adminUser = usersArray.find(u => u.username === 'admin');
-                console.log('Usuário admin encontrado:', adminUser);
-                
-                if (adminUser) {
-                    console.log('Senha do admin:', adminUser.password);
-                    console.log('Status do admin:', adminUser.status);
-                }
-            } else {
-                console.log('❌ NENHUM USUÁRIO NO LOCALSTORAGE');
-            }
-        };
     </script>
 </body>
 </html>
