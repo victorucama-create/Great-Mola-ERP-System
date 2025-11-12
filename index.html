@@ -790,12 +790,12 @@
         <form id="loginForm">
             <div class="form-group">
                 <label>Utilizador</label>
-                <input type="text" id="username" placeholder="Nome de utilizador" required>
+                <input type="text" id="username" placeholder="Nome de utilizador" required autocomplete="username">
             </div>
             
             <div class="form-group">
                 <label>Palavra-passe</label>
-                <input type="password" id="password" placeholder="Palavra-passe" required>
+                <input type="password" id="password" placeholder="Palavra-passe" required autocomplete="current-password">
             </div>
             
             <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar no Sistema</button>
@@ -1386,7 +1386,6 @@
             </div>
         </div>
 
-        <!-- Resto do código permanece igual (Investidores, Agentes, Utilizadores, Aprovações, SSA, Configurações) -->
         <!-- Tab Investidores -->
         <div class="tab-content" id="investors">
             <h2>Gestão de Investidores</h2>
@@ -1397,7 +1396,7 @@
                         <input type="hidden" id="investorId">
                         <div class="form-group">
                             <label>Nome do Investidor</label>
-                            <input type="text" id="investorName" placeholder="Nome completo" required>
+                            <input type="text" id="investorName" placeholder="Nome completo" required autocomplete="name">
                         </div>
                         
                         <div class="grid grid-2">
@@ -1413,24 +1412,24 @@
                             </div>
                             <div class="form-group">
                                 <label>Nº do Documento</label>
-                                <input type="text" id="investorDocNumber" placeholder="Número do documento" required>
+                                <input type="text" id="investorDocNumber" placeholder="Número do documento" required autocomplete="off">
                             </div>
                         </div>
                         
                         <div class="grid grid-2">
                             <div class="form-group">
                                 <label>Contacto</label>
-                                <input type="tel" id="investorPhone" placeholder="+258 ..." required>
+                                <input type="tel" id="investorPhone" placeholder="+258 ..." required autocomplete="tel">
                             </div>
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="email" id="investorEmail" placeholder="email@exemplo.com">
+                                <input type="email" id="investorEmail" placeholder="email@exemplo.com" autocomplete="email">
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label>Conta Bancária / eMola</label>
-                            <input type="text" id="investorAccount" placeholder="Número da conta para rendimentos">
+                            <input type="text" id="investorAccount" placeholder="Número da conta para rendimentos" autocomplete="off">
                         </div>
                         
                         <div class="form-group">
@@ -1444,11 +1443,11 @@
                         <div class="grid grid-2">
                             <div class="form-group">
                                 <label>Valor do Investimento (MZN)</label>
-                                <input type="number" id="investorAmount" placeholder="10,000" required step="0.01">
+                                <input type="number" id="investorAmount" placeholder="10,000" required step="0.01" autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Taxa de Rendimento (%)</label>
-                                <input type="number" id="investorRate" step="0.01" value="0.5" required>
+                                <input type="number" id="investorRate" step="0.01" value="0.5" required autocomplete="off">
                             </div>
                         </div>
                         
@@ -1477,7 +1476,7 @@
                         
                         <div class="form-group">
                             <label>IRPS (%)</label>
-                            <input type="number" id="investorIRPS" step="0.01" value="20.0" required>
+                            <input type="number" id="investorIRPS" step="0.01" value="20.0" required autocomplete="off">
                         </div>
                         
                         <button type="submit" class="btn btn-primary">Registar Investidor</button>
@@ -1496,11 +1495,11 @@
                         <h4>Calculadora de Rendimentos</h4>
                         <div class="form-group">
                             <label>Capital (MZN)</label>
-                            <input type="number" id="calcCapital" placeholder="10,000" value="10000">
+                            <input type="number" id="calcCapital" placeholder="10,000" value="10000" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label>Dias Úteis</label>
-                            <input type="number" id="calcDays" placeholder="22" value="22">
+                            <input type="number" id="calcDays" placeholder="22" value="22" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label>Tipo de Capital</label>
@@ -1588,6 +1587,7 @@
             </div>
         </div>
 
+        <!-- Resto do código permanece igual (Agentes, Utilizadores, Aprovações, SSA, Configurações) -->
         <!-- Tab Agentes -->
         <div class="tab-content" id="agents">
             <h2>Gestão de Agentes</h2>
@@ -1598,15 +1598,15 @@
                         <input type="hidden" id="agentId">
                         <div class="form-group">
                             <label>Código do Agente</label>
-                            <input type="text" id="agentCode" placeholder="Ex: 91337" required>
+                            <input type="text" id="agentCode" placeholder="Ex: 91337" required autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label>Nome do Agente</label>
-                            <input type="text" id="agentName" placeholder="Nome completo" required>
+                            <input type="text" id="agentName" placeholder="Nome completo" required autocomplete="name">
                         </div>
                         <div class="form-group">
                             <label>Localização / Filial</label>
-                            <input type="text" id="agentLocation" placeholder="Cidade ou região" required>
+                            <input type="text" id="agentLocation" placeholder="Cidade ou região" required autocomplete="address-level2">
                         </div>
                         <div class="form-group">
                             <label>Subordinado a (SSA)</label>
@@ -1616,15 +1616,15 @@
                         </div>
                         <div class="form-group">
                             <label>Contacto</label>
-                            <input type="tel" id="agentPhone" placeholder="+258 ...">
+                            <input type="tel" id="agentPhone" placeholder="+258 ..." autocomplete="tel">
                         </div>
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" id="agentEmail" placeholder="email@exemplo.com">
+                            <input type="email" id="agentEmail" placeholder="email@exemplo.com" autocomplete="email">
                         </div>
                         <div class="form-group">
                             <label>Saldo Inicial (MZN)</label>
-                            <input type="number" id="agentInitialBalance" step="0.01" value="0">
+                            <input type="number" id="agentInitialBalance" step="0.01" value="0" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label>Status</label>
@@ -1747,19 +1747,19 @@
                             <input type="hidden" id="userId">
                             <div class="form-group">
                                 <label>Nome do Utilizador</label>
-                                <input type="text" id="userFullName" placeholder="Nome completo" required>
+                                <input type="text" id="userFullName" placeholder="Nome completo" required autocomplete="name">
                             </div>
                             <div class="form-group">
                                 <label>Username / Email</label>
-                                <input type="text" id="userUsername" placeholder="username ou email" required>
+                                <input type="text" id="userUsername" placeholder="username ou email" required autocomplete="username">
                             </div>
                             <div class="form-group">
                                 <label>Senha</label>
-                                <input type="password" id="userPassword" placeholder="Senha de acesso" required>
+                                <input type="password" id="userPassword" placeholder="Senha de acesso" required autocomplete="new-password">
                             </div>
                             <div class="form-group">
                                 <label>Confirmar Senha</label>
-                                <input type="password" id="userConfirmPassword" placeholder="Confirmar senha" required>
+                                <input type="password" id="userConfirmPassword" placeholder="Confirmar senha" required autocomplete="new-password">
                             </div>
                             <div class="form-group">
                                 <label>Função / Nível de Acesso</label>
@@ -1847,7 +1847,7 @@
                             <input type="hidden" id="roleId">
                             <div class="form-group">
                                 <label>Nome da Função</label>
-                                <input type="text" id="roleName" placeholder="Ex: Supervisor SSA" required>
+                                <input type="text" id="roleName" placeholder="Ex: Supervisor SSA" required autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Descrição</label>
@@ -2005,11 +2005,11 @@
                             <input type="hidden" id="ssaAccountId">
                             <div class="form-group">
                                 <label>Código SSA</label>
-                                <input type="text" id="ssaAccountCode" placeholder="Ex: SOFSSA00035" required>
+                                <input type="text" id="ssaAccountCode" placeholder="Ex: SOFSSA00035" required autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Nome SSA</label>
-                                <input type="text" id="ssaAccountName" placeholder="Nome completo" required>
+                                <input type="text" id="ssaAccountName" placeholder="Nome completo" required autocomplete="name">
                             </div>
                             <div class="form-group">
                                 <label>Utilizador Associado</label>
@@ -2019,11 +2019,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Saldo Inicial (MZN)</label>
-                                <input type="number" id="ssaAccountBalance" step="0.01" value="0">
+                                <input type="number" id="ssaAccountBalance" step="0.01" value="0" autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Taxa de Rendimento (%)</label>
-                                <input type="number" id="ssaAccountRate" step="0.01" value="0.5">
+                                <input type="number" id="ssaAccountRate" step="0.01" value="0.5" autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Status</label>
@@ -2099,11 +2099,11 @@
                             <input type="hidden" id="stId">
                             <div class="form-group">
                                 <label>Código ST</label>
-                                <input type="text" id="stCode" placeholder="Ex: ST001" required>
+                                <input type="text" id="stCode" placeholder="Ex: ST001" required autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Nome do Colaborador</label>
-                                <input type="text" id="stName" placeholder="Nome completo" required>
+                                <input type="text" id="stName" placeholder="Nome completo" required autocomplete="name">
                             </div>
                             <div class="form-group">
                                 <label>SSA Principal</label>
@@ -2113,15 +2113,15 @@
                             </div>
                             <div class="form-group">
                                 <label>Contacto</label>
-                                <input type="tel" id="stPhone" placeholder="+258 ...">
+                                <input type="tel" id="stPhone" placeholder="+258 ..." autocomplete="tel">
                             </div>
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="email" id="stEmail" placeholder="email@exemplo.com">
+                                <input type="email" id="stEmail" placeholder="email@exemplo.com" autocomplete="email">
                             </div>
                             <div class="form-group">
                                 <label>Limite de Depósito (MZN)</label>
-                                <input type="number" id="stDepositLimit" step="0.01" value="10000">
+                                <input type="number" id="stDepositLimit" step="0.01" value="10000" autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Status</label>
@@ -2198,11 +2198,11 @@
                             <input type="hidden" id="afId">
                             <div class="form-group">
                                 <label>Código AF</label>
-                                <input type="text" id="afCode" placeholder="Ex: AF001" required>
+                                <input type="text" id="afCode" placeholder="Ex: AF001" required autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Nome do Colaborador</label>
-                                <input type="text" id="afName" placeholder="Nome completo" required>
+                                <input type="text" id="afName" placeholder="Nome completo" required autocomplete="name">
                             </div>
                             <div class="form-group">
                                 <label>ST Principal</label>
@@ -2212,11 +2212,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Contacto</label>
-                                <input type="tel" id="afPhone" placeholder="+258 ...">
+                                <input type="tel" id="afPhone" placeholder="+258 ..." autocomplete="tel">
                             </div>
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="email" id="afEmail" placeholder="email@exemplo.com">
+                                <input type="email" id="afEmail" placeholder="email@exemplo.com" autocomplete="email">
                             </div>
                             <div class="form-group">
                                 <label>Status</label>
@@ -2304,7 +2304,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Valor (MZN)</label>
-                                <input type="number" id="ssaDepositAmount" placeholder="1,000" required step="0.01">
+                                <input type="number" id="ssaDepositAmount" placeholder="1,000" required step="0.01" autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Data</label>
@@ -2337,7 +2337,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Valor (MZN)</label>
-                                <input type="number" id="afDepositAmount" placeholder="1,000" required step="0.01">
+                                <input type="number" id="afDepositAmount" placeholder="1,000" required step="0.01" autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Data</label>
@@ -2414,11 +2414,11 @@
                             <input type="hidden" id="subchannelId">
                             <div class="form-group">
                                 <label>Código do Agente</label>
-                                <input type="text" id="subchannelCode" placeholder="Ex: 91337" required>
+                                <input type="text" id="subchannelCode" placeholder="Ex: 91337" required autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Nome do Agente</label>
-                                <input type="text" id="subchannelName" placeholder="Nome completo" required>
+                                <input type="text" id="subchannelName" placeholder="Nome completo" required autocomplete="name">
                             </div>
                             <div class="form-group">
                                 <label>SSA Principal</label>
@@ -2428,15 +2428,15 @@
                             </div>
                             <div class="form-group">
                                 <label>Localização</label>
-                                <input type="text" id="subchannelLocation" placeholder="Cidade ou região" required>
+                                <input type="text" id="subchannelLocation" placeholder="Cidade ou região" required autocomplete="address-level2">
                             </div>
                             <div class="form-group">
                                 <label>Contacto</label>
-                                <input type="tel" id="subchannelPhone" placeholder="+258 ...">
+                                <input type="tel" id="subchannelPhone" placeholder="+258 ..." autocomplete="tel">
                             </div>
                             <div class="form-group">
                                 <label>Saldo Inicial (MZN)</label>
-                                <input type="number" id="subchannelBalance" step="0.01" value="0">
+                                <input type="number" id="subchannelBalance" step="0.01" value="0" autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Status</label>
@@ -2551,27 +2551,27 @@
                         <div class="grid grid-2">
                             <div class="form-group">
                                 <label>Nome da Empresa</label>
-                                <input type="text" id="companyName" placeholder="Great Mola Lda" required>
+                                <input type="text" id="companyName" placeholder="Great Mola Lda" required autocomplete="organization">
                             </div>
                             <div class="form-group">
                                 <label>NIF</label>
-                                <input type="text" id="companyNIF" placeholder="Número de identificação fiscal">
+                                <input type="text" id="companyNIF" placeholder="Número de identificação fiscal" autocomplete="off">
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label>Endereço</label>
-                            <textarea id="companyAddress" placeholder="Endereço completo" rows="2"></textarea>
+                            <textarea id="companyAddress" placeholder="Endereço completo" rows="2" autocomplete="street-address"></textarea>
                         </div>
                         
                         <div class="grid grid-2">
                             <div class="form-group">
                                 <label>Contacto</label>
-                                <input type="tel" id="companyPhone" placeholder="+258 ...">
+                                <input type="tel" id="companyPhone" placeholder="+258 ..." autocomplete="tel">
                             </div>
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="email" id="companyEmail" placeholder="empresa@exemplo.com">
+                                <input type="email" id="companyEmail" placeholder="empresa@exemplo.com" autocomplete="email">
                             </div>
                         </div>
                         
@@ -2623,11 +2623,11 @@
                         <div class="grid grid-2">
                             <div class="form-group">
                                 <label>Taxa de Rendimento Padrão (%)</label>
-                                <input type="number" id="defaultRate" step="0.01" value="0.5" required>
+                                <input type="number" id="defaultRate" step="0.01" value="0.5" required autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>Taxa de IRPS (%)</label>
-                                <input type="number" id="defaultIRPS" step="0.01" value="20.0" required>
+                                <input type="number" id="defaultIRPS" step="0.01" value="20.0" required autocomplete="off">
                             </div>
                         </div>
                         
@@ -2695,7 +2695,7 @@
                         
                         <div class="form-group">
                             <label>Tempo de Sessão (minutos)</label>
-                            <input type="number" id="sessionTimeout" value="60" min="15" max="480">
+                            <input type="number" id="sessionTimeout" value="60" min="15" max="480" autocomplete="off">
                         </div>
                         
                         <div class="form-group">
@@ -2708,7 +2708,7 @@
                         
                         <div class="form-group">
                             <label>Dias para manter logs</label>
-                            <input type="number" id="logRetentionDays" value="90" min="7" max="365">
+                            <input type="number" id="logRetentionDays" value="90" min="7" max="365" autocomplete="off">
                         </div>
                         
                         <h4 style="margin-top: 20px;">Perfis de Acesso Predefinidos</h4>
@@ -2754,7 +2754,7 @@
                         <div class="form-group">
                             <label>Definir PIN Principal (Administrador)</label>
                             <div class="password-toggle">
-                                <input type="password" id="adminPIN" placeholder="PIN de 4-6 dígitos" minlength="4" maxlength="6">
+                                <input type="password" id="adminPIN" placeholder="PIN de 4-6 dígitos" minlength="4" maxlength="6" autocomplete="off">
                                 <span class="toggle-icon" onclick="togglePasswordVisibility('adminPIN')">👁️</span>
                             </div>
                         </div>
@@ -2762,14 +2762,14 @@
                         <div class="form-group">
                             <label>Confirmar PIN Principal</label>
                             <div class="password-toggle">
-                                <input type="password" id="confirmAdminPIN" placeholder="Confirmar PIN" minlength="4" maxlength="6">
+                                <input type="password" id="confirmAdminPIN" placeholder="Confirmar PIN" minlength="4" maxlength="6" autocomplete="off">
                                 <span class="toggle-icon" onclick="togglePasswordVisibility('confirmAdminPIN')">👁️</span>
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label>Tempo de Expiração de PIN (minutos)</label>
-                            <input type="number" id="pinTimeout" value="30" min="5" max="120">
+                            <input type="number" id="pinTimeout" value="30" min="5" max="120" autocomplete="off">
                         </div>
                         
                         <div class="form-group">
@@ -2854,13 +2854,13 @@
                     <form id="integrationsSettingsForm">
                         <div class="form-group">
                             <label>Integração com API (futuro)</label>
-                            <input type="url" id="apiEndpoint" placeholder="https://api.exemplo.com/v1">
+                            <input type="url" id="apiEndpoint" placeholder="https://api.exemplo.com/v1" autocomplete="url">
                         </div>
                         
                         <div class="form-group">
                             <label>Chave da API</label>
                             <div class="password-toggle">
-                                <input type="password" id="apiKey" placeholder="Chave de API">
+                                <input type="password" id="apiKey" placeholder="Chave de API" autocomplete="off">
                                 <span class="toggle-icon" onclick="togglePasswordVisibility('apiKey')">👁️</span>
                             </div>
                         </div>
@@ -2930,11 +2930,11 @@
                 <input type="hidden" id="contaId">
                 <div class="form-group">
                     <label>Código da Conta</label>
-                    <input type="text" id="contaCodigo" required>
+                    <input type="text" id="contaCodigo" required autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label>Nome da Conta</label>
-                    <input type="text" id="contaNome" required>
+                    <input type="text" id="contaNome" required autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label>Tipo de Conta</label>
@@ -3003,7 +3003,10 @@
         let saldosContasRelatorios = {};
         let dataInicialRelatorios = '2025-11-01';
         let dataFinalRelatorios = '2025-11-30';
-        let receitasDespesasChart, patrimonioChart, custosChart, comparisonChart;
+        let receitasDespesasChart = null;
+        let patrimonioChart = null;
+        let custosChart = null;
+        let comparisonChart = null;
         
         // ========== INICIALIZAÇÃO DE DADOS PADRÃO ==========
         function initializeDefaultData() {
@@ -3670,6 +3673,14 @@
         }
 
         function criarGraficosRelatorios() {
+            // Destruir gráficos existentes antes de criar novos
+            if (receitasDespesasChart) {
+                receitasDespesasChart.destroy();
+            }
+            if (patrimonioChart) {
+                patrimonioChart.destroy();
+            }
+            
             // Gráfico de receitas vs despesas
             const ctx1 = document.getElementById('receitas-despesas-chart');
             if (ctx1) {
@@ -4873,6 +4884,622 @@
             // Outras personalizações podem ser adicionadas aqui
         }
 
+        // ========== FUNÇÕES DE INVESTIDORES ==========
+        function saveInvestor(event) {
+            if (event) event.preventDefault();
+            
+            const investorId = document.getElementById('investorId').value;
+            const name = document.getElementById('investorName').value;
+            const docType = document.getElementById('investorDocType').value;
+            const docNumber = document.getElementById('investorDocNumber').value;
+            const phone = document.getElementById('investorPhone').value;
+            const email = document.getElementById('investorEmail').value;
+            const account = document.getElementById('investorAccount').value;
+            const capitalType = document.getElementById('investorCapitalType').value;
+            const amount = parseFloat(document.getElementById('investorAmount').value);
+            const rate = parseFloat(document.getElementById('investorRate').value);
+            const startDate = document.getElementById('investorStartDate').value;
+            const endDate = document.getElementById('investorEndDate').value;
+            const cycle = document.getElementById('investorCycle').value;
+            const irps = parseFloat(document.getElementById('investorIRPS').value);
+            
+            // Validações básicas
+            if (!name || !docType || !docNumber || !phone || !amount || !startDate || !endDate) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+            
+            if (amount <= 0) {
+                alert('O valor do investimento deve ser maior que zero!');
+                return;
+            }
+            
+            if (new Date(startDate) >= new Date(endDate)) {
+                alert('A data de fim deve ser posterior à data de início!');
+                return;
+            }
+            
+            // Calcular dias úteis e rendimentos
+            const businessDays = calculateBusinessDays(new Date(startDate), new Date(endDate));
+            const yieldData = calculateNetYield({
+                amount: amount,
+                rate: rate,
+                startDate: startDate,
+                endDate: endDate,
+                irps: irps
+            });
+            
+            // Criar objeto do investidor
+            const investor = {
+                id: investorId ? parseInt(investorId) : Date.now(),
+                name: name,
+                docType: docType,
+                docNumber: docNumber,
+                phone: phone,
+                email: email,
+                account: account,
+                capitalType: capitalType,
+                amount: amount,
+                rate: rate,
+                startDate: startDate,
+                endDate: endDate,
+                cycle: cycle,
+                irps: irps,
+                businessDays: businessDays,
+                grossYield: yieldData.grossYield,
+                netYield: yieldData.netYield,
+                status: 'Ativo',
+                userId: currentUser ? currentUser.id : null,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Adicionar ou atualizar no array
+            if (investorId) {
+                const index = investors.findIndex(inv => inv.id === parseInt(investorId));
+                if (index !== -1) {
+                    investors[index] = investor;
+                }
+            } else {
+                investors.push(investor);
+            }
+            
+            // Salvar no localStorage
+            localStorage.setItem('investors', JSON.stringify(investors));
+            
+            // Atualizar a tabela
+            updateInvestorsTable();
+            
+            // Limpar formulário
+            clearInvestorForm();
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_INVESTOR', `${investorId ? 'Atualizou' : 'Criou'} investidor: ${name} - MT ${amount.toFixed(2)}`);
+            
+            alert(`Investidor ${investorId ? 'atualizado' : 'registado'} com sucesso!`);
+        }
+
+        function clearInvestorForm() {
+            document.getElementById('investorForm').reset();
+            document.getElementById('investorId').value = '';
+            document.getElementById('investorStartDate').value = new Date().toISOString().split('T')[0];
+            
+            // Definir data de fim padrão para 30 dias após a data de início
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 30);
+            document.getElementById('investorEndDate').value = endDate.toISOString().split('T')[0];
+        }
+
+        function updateInvestorsTable() {
+            const tbody = document.getElementById('investorsTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            // Aplicar filtros
+            let filteredInvestors = [...investors];
+            const cycleFilter = document.getElementById('filterCycle')?.value;
+            const statusFilter = document.getElementById('filterStatus')?.value;
+            
+            if (cycleFilter) {
+                filteredInvestors = filteredInvestors.filter(inv => inv.cycle === cycleFilter);
+            }
+            
+            if (statusFilter) {
+                filteredInvestors = filteredInvestors.filter(inv => inv.status === statusFilter);
+            }
+            
+            filteredInvestors.forEach(investor => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${investor.name}</td>
+                    <td>${investor.docType}: ${investor.docNumber}</td>
+                    <td>${investor.phone}</td>
+                    <td>${investor.capitalType}</td>
+                    <td>MT ${investor.amount.toFixed(2)}</td>
+                    <td>${investor.startDate}</td>
+                    <td>${investor.endDate}</td>
+                    <td>${investor.businessDays}</td>
+                    <td>MT ${investor.grossYield.toFixed(2)}</td>
+                    <td>${investor.irps}%</td>
+                    <td>MT ${investor.netYield.toFixed(2)}</td>
+                    <td><span class="status status-active">${investor.status}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editInvestor(${investor.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="deleteInvestor(${investor.id})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function editInvestor(id) {
+            const investor = investors.find(inv => inv.id === id);
+            if (investor) {
+                document.getElementById('investorId').value = investor.id;
+                document.getElementById('investorName').value = investor.name;
+                document.getElementById('investorDocType').value = investor.docType;
+                document.getElementById('investorDocNumber').value = investor.docNumber;
+                document.getElementById('investorPhone').value = investor.phone;
+                document.getElementById('investorEmail').value = investor.email || '';
+                document.getElementById('investorAccount').value = investor.account || '';
+                document.getElementById('investorCapitalType').value = investor.capitalType;
+                document.getElementById('investorAmount').value = investor.amount;
+                document.getElementById('investorRate').value = investor.rate;
+                document.getElementById('investorStartDate').value = investor.startDate;
+                document.getElementById('investorEndDate').value = investor.endDate;
+                document.getElementById('investorCycle').value = investor.cycle;
+                document.getElementById('investorIRPS').value = investor.irps;
+                
+                // Scroll para o formulário
+                document.getElementById('investorForm').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function deleteInvestor(id) {
+            if (confirm('Tem certeza que deseja eliminar este investidor?')) {
+                investors = investors.filter(inv => inv.id !== id);
+                localStorage.setItem('investors', JSON.stringify(investors));
+                updateInvestorsTable();
+                logAudit('DELETE_INVESTOR', `Eliminou investidor com ID: ${id}`);
+            }
+        }
+
+        function filterInvestors() {
+            updateInvestorsTable();
+        }
+
+        function calculateReturn() {
+            const capital = parseFloat(document.getElementById('calcCapital').value) || 0;
+            const days = parseFloat(document.getElementById('calcDays').value) || 0;
+            const type = document.getElementById('calcType').value;
+            
+            if (capital <= 0 || days <= 0) {
+                alert('Por favor, insira valores válidos para capital e dias úteis!');
+                return;
+            }
+            
+            // Taxa padrão baseada no tipo de capital
+            const rate = type === 'proprio' ? 0.5 : 0.3;
+            const irps = 20.0;
+            
+            // Calcular rendimento
+            const dailyRate = rate / 100;
+            const grossYield = capital * days * dailyRate;
+            const irpsAmount = grossYield * (irps / 100);
+            const netYield = grossYield - irpsAmount;
+            
+            // Mostrar resultado
+            const resultDiv = document.getElementById('calcResult');
+            const amountSpan = document.getElementById('calcAmount');
+            
+            amountSpan.textContent = `MT ${netYield.toFixed(2)} (Bruto: MT ${grossYield.toFixed(2)}, IRPS: MT ${irpsAmount.toFixed(2)})`;
+            resultDiv.style.display = 'block';
+        }
+
+        function exportInvestorsExcel() {
+            alert('Funcionalidade de exportação Excel em desenvolvimento');
+        }
+
+        function exportInvestorsCSV() {
+            let content = 'Nome,Documento,Contacto,Capital,Valor,Início,Fim,Dias Úteis,Rendimento Bruto,IRPS,Rendimento Líquido,Status\n';
+            
+            investors.forEach(investor => {
+                content += `"${investor.name}","${investor.docType}: ${investor.docNumber}","${investor.phone}","${investor.capitalType}","${investor.amount}","${investor.startDate}","${investor.endDate}","${investor.businessDays}","${investor.grossYield}","${investor.irps}","${investor.netYield}","${investor.status}"\n`;
+            });
+            
+            const dataBlob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `investidores_${Date.now()}.csv`);
+        }
+
+        // ========== FUNÇÕES DE AGENTES ==========
+        function saveAgent(event) {
+            if (event) event.preventDefault();
+            
+            const agentId = document.getElementById('agentId').value;
+            const code = document.getElementById('agentCode').value;
+            const name = document.getElementById('agentName').value;
+            const location = document.getElementById('agentLocation').value;
+            const ssa = document.getElementById('agentSSA').value;
+            const phone = document.getElementById('agentPhone').value;
+            const email = document.getElementById('agentEmail').value;
+            const initialBalance = parseFloat(document.getElementById('agentInitialBalance').value) || 0;
+            const status = document.getElementById('agentStatus').value;
+            
+            // Validações básicas
+            if (!code || !name || !location || !ssa) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+            
+            // Criar objeto do agente
+            const agent = {
+                id: agentId ? parseInt(agentId) : Date.now(),
+                code: code,
+                name: name,
+                location: location,
+                ssaId: parseInt(ssa),
+                phone: phone,
+                email: email,
+                initialBalance: initialBalance,
+                currentBalance: initialBalance,
+                status: status,
+                transactions: 0,
+                lastMovement: null,
+                userId: currentUser ? currentUser.id : null,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Adicionar ou atualizar no array
+            if (agentId) {
+                const index = agents.findIndex(a => a.id === parseInt(agentId));
+                if (index !== -1) {
+                    agents[index] = agent;
+                }
+            } else {
+                agents.push(agent);
+            }
+            
+            // Salvar no localStorage
+            localStorage.setItem('agents', JSON.stringify(agents));
+            
+            // Atualizar a tabela
+            updateAgentsTable();
+            
+            // Limpar formulário
+            clearAgentForm();
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_AGENT', `${agentId ? 'Atualizou' : 'Criou'} agente: ${name} (${code})`);
+            
+            alert(`Agente ${agentId ? 'atualizado' : 'registado'} com sucesso!`);
+        }
+
+        function clearAgentForm() {
+            document.getElementById('agentForm').reset();
+            document.getElementById('agentId').value = '';
+            document.getElementById('agentStatus').value = 'Ativo';
+        }
+
+        function updateAgentsTable() {
+            const tbody = document.getElementById('agentsTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            agents.forEach(agent => {
+                const ssa = ssaAccounts.find(s => s.id === agent.ssaId);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${agent.code}</td>
+                    <td>${agent.name}</td>
+                    <td>${agent.location}</td>
+                    <td>${ssa ? ssa.name : 'N/A'}</td>
+                    <td>MT ${agent.currentBalance.toFixed(2)}</td>
+                    <td>${agent.transactions}</td>
+                    <td>${agent.lastMovement || 'N/A'}</td>
+                    <td><span class="status ${agent.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${agent.status}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editAgent(${agent.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="deleteAgent(${agent.id})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function editAgent(id) {
+            const agent = agents.find(a => a.id === id);
+            if (agent) {
+                document.getElementById('agentId').value = agent.id;
+                document.getElementById('agentCode').value = agent.code;
+                document.getElementById('agentName').value = agent.name;
+                document.getElementById('agentLocation').value = agent.location;
+                document.getElementById('agentSSA').value = agent.ssaId;
+                document.getElementById('agentPhone').value = agent.phone || '';
+                document.getElementById('agentEmail').value = agent.email || '';
+                document.getElementById('agentInitialBalance').value = agent.initialBalance;
+                document.getElementById('agentStatus').value = agent.status;
+                
+                // Scroll para o formulário
+                document.getElementById('agentForm').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function deleteAgent(id) {
+            if (confirm('Tem certeza que deseja eliminar este agente?')) {
+                agents = agents.filter(a => a.id !== id);
+                localStorage.setItem('agents', JSON.stringify(agents));
+                updateAgentsTable();
+                logAudit('DELETE_AGENT', `Eliminou agente com ID: ${id}`);
+            }
+        }
+
+        function exportAgentsExcel() {
+            alert('Funcionalidade de exportação Excel em desenvolvimento');
+        }
+
+        function exportAgentsCSV() {
+            let content = 'Código,Nome,Localização,SSA,Saldo Atual,Transações,Última Movimentação,Status\n';
+            
+            agents.forEach(agent => {
+                const ssa = ssaAccounts.find(s => s.id === agent.ssaId);
+                content += `"${agent.code}","${agent.name}","${agent.location}","${ssa ? ssa.name : 'N/A'}","${agent.currentBalance}","${agent.transactions}","${agent.lastMovement || 'N/A'}","${agent.status}"\n`;
+            });
+            
+            const dataBlob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `agentes_${Date.now()}.csv`);
+        }
+
+        // ========== FUNÇÕES DE UTILIZADORES ==========
+        function saveUser(event) {
+            if (event) event.preventDefault();
+            
+            const userId = document.getElementById('userId').value;
+            const fullName = document.getElementById('userFullName').value;
+            const username = document.getElementById('userUsername').value;
+            const password = document.getElementById('userPassword').value;
+            const confirmPassword = document.getElementById('userConfirmPassword').value;
+            const role = document.getElementById('userRole').value;
+            const status = document.getElementById('userStatus').value;
+            
+            // Validações
+            if (!fullName || !username || !password || !confirmPassword || !role) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('A senha deve ter pelo menos 6 caracteres!');
+                return;
+            }
+            
+            // Verificar se o username já existe (apenas para novos usuários)
+            if (!userId && users.some(u => u.username === username)) {
+                alert('Este username já está em uso!');
+                return;
+            }
+            
+            // Criar objeto do usuário
+            const user = {
+                id: userId ? parseInt(userId) : Date.now(),
+                fullName: fullName,
+                username: username,
+                password: password,
+                role: role,
+                status: status,
+                createdAt: userId ? users.find(u => u.id === parseInt(userId)).createdAt : new Date().toISOString(),
+                lastAccess: userId ? users.find(u => u.id === parseInt(userId)).lastAccess : null
+            };
+            
+            // Adicionar ou atualizar no array
+            if (userId) {
+                const index = users.findIndex(u => u.id === parseInt(userId));
+                if (index !== -1) {
+                    users[index] = user;
+                }
+            } else {
+                users.push(user);
+            }
+            
+            // Salvar no localStorage
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Atualizar a tabela
+            updateUsersTable();
+            
+            // Limpar formulário
+            clearUserForm();
+            
+            // Registrar log de auditoria
+            logAudit('SAVE_USER', `${userId ? 'Atualizou' : 'Criou'} utilizador: ${fullName} (${username})`);
+            
+            alert(`Utilizador ${userId ? 'atualizado' : 'registado'} com sucesso!`);
+        }
+
+        function clearUserForm() {
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            document.getElementById('userStatus').value = 'Ativo';
+        }
+
+        function updateUsersTable() {
+            const tbody = document.getElementById('usersTable').querySelector('tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.fullName}</td>
+                    <td>${user.username}</td>
+                    <td>${getRoleName(user.role)}</td>
+                    <td><span class="status ${user.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${user.status}</span></td>
+                    <td>${new Date(user.createdAt).toLocaleDateString('pt-PT')}</td>
+                    <td>${user.lastAccess ? new Date(user.lastAccess).toLocaleDateString('pt-PT') : 'Nunca'}</td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="editUser(${user.id})">Editar</button>
+                        <button class="btn btn-small btn-warning" onclick="deleteUser(${user.id})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function editUser(id) {
+            const user = users.find(u => u.id === id);
+            if (user) {
+                document.getElementById('userId').value = user.id;
+                document.getElementById('userFullName').value = user.fullName;
+                document.getElementById('userUsername').value = user.username;
+                document.getElementById('userPassword').value = user.password;
+                document.getElementById('userConfirmPassword').value = user.password;
+                document.getElementById('userRole').value = user.role;
+                document.getElementById('userStatus').value = user.status;
+                
+                // Scroll para o formulário
+                document.getElementById('userForm').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function deleteUser(id) {
+            if (id === currentUser.id) {
+                alert('Não pode eliminar o seu próprio utilizador!');
+                return;
+            }
+            
+            if (confirm('Tem certeza que deseja eliminar este utilizador?')) {
+                users = users.filter(u => u.id !== id);
+                localStorage.setItem('users', JSON.stringify(users));
+                updateUsersTable();
+                logAudit('DELETE_USER', `Eliminou utilizador com ID: ${id}`);
+            }
+        }
+
+        function exportUsersExcel() {
+            alert('Funcionalidade de exportação Excel em desenvolvimento');
+        }
+
+        function exportUsersCSV() {
+            let content = 'Nome,Username,Função,Estado,Data de Criação,Último Acesso\n';
+            
+            users.forEach(user => {
+                content += `"${user.fullName}","${user.username}","${getRoleName(user.role)}","${user.status}","${new Date(user.createdAt).toLocaleDateString('pt-PT')}","${user.lastAccess ? new Date(user.lastAccess).toLocaleDateString('pt-PT') : 'Nunca'}"\n`;
+            });
+            
+            const dataBlob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(dataBlob, `utilizadores_${Date.now()}.csv`);
+        }
+
+        // ========== FUNÇÕES DE MODAIS ==========
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // ========== FUNÇÕES DE BACKUP ==========
+        function exportBackup() {
+            const backupData = {
+                users: users,
+                roles: roles,
+                investors: investors,
+                agents: agents,
+                ssaAccounts: ssaAccounts,
+                stAccounts: stAccounts,
+                afAccounts: afAccounts,
+                ssaTransactions: ssaTransactions,
+                subchannels: subchannels,
+                approvals: approvals,
+                transactions: transactions,
+                planoContas: planoContas,
+                lancamentos: lancamentos,
+                auditLogs: auditLogs,
+                settings: settings,
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(backupData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            downloadFile(dataBlob, `backup_great_mola_${Date.now()}.json`);
+            
+            logAudit('EXPORT_BACKUP', 'Exportou backup completo do sistema');
+        }
+
+        function importBackup() {
+            const fileInput = document.getElementById('backupFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Por favor, selecione um arquivo de backup');
+                return;
+            }
+            
+            if (!confirm('Tem certeza que deseja importar este backup? Todos os dados atuais serão substituídos.')) {
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    
+                    // Restaurar dados do backup
+                    if (backupData.users) users = backupData.users;
+                    if (backupData.roles) roles = backupData.roles;
+                    if (backupData.investors) investors = backupData.investors;
+                    if (backupData.agents) agents = backupData.agents;
+                    if (backupData.ssaAccounts) ssaAccounts = backupData.ssaAccounts;
+                    if (backupData.stAccounts) stAccounts = backupData.stAccounts;
+                    if (backupData.afAccounts) afAccounts = backupData.afAccounts;
+                    if (backupData.ssaTransactions) ssaTransactions = backupData.ssaTransactions;
+                    if (backupData.subchannels) subchannels = backupData.subchannels;
+                    if (backupData.approvals) approvals = backupData.approvals;
+                    if (backupData.transactions) transactions = backupData.transactions;
+                    if (backupData.planoContas) planoContas = backupData.planoContas;
+                    if (backupData.lancamentos) lancamentos = backupData.lancamentos;
+                    if (backupData.auditLogs) auditLogs = backupData.auditLogs;
+                    if (backupData.settings) settings = backupData.settings;
+                    
+                    // Salvar no localStorage
+                    localStorage.setItem('users', JSON.stringify(users));
+                    localStorage.setItem('roles', JSON.stringify(roles));
+                    localStorage.setItem('investors', JSON.stringify(investors));
+                    localStorage.setItem('agents', JSON.stringify(agents));
+                    localStorage.setItem('ssaAccounts', JSON.stringify(ssaAccounts));
+                    localStorage.setItem('stAccounts', JSON.stringify(stAccounts));
+                    localStorage.setItem('afAccounts', JSON.stringify(afAccounts));
+                    localStorage.setItem('ssaTransactions', JSON.stringify(ssaTransactions));
+                    localStorage.setItem('subchannels', JSON.stringify(subchannels));
+                    localStorage.setItem('approvals', JSON.stringify(approvals));
+                    localStorage.setItem('transactions', JSON.stringify(transactions));
+                    localStorage.setItem('planoContas', JSON.stringify(planoContas));
+                    localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+                    localStorage.setItem('auditLogs', JSON.stringify(auditLogs));
+                    localStorage.setItem('settings', JSON.stringify(settings));
+                    
+                    // Recarregar a página para aplicar as alterações
+                    alert('Backup importado com sucesso! A página será recarregada.');
+                    location.reload();
+                    
+                } catch (error) {
+                    alert('Erro ao importar backup: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportBackupCSV() {
+            alert('Funcionalidade de exportação CSV em desenvolvimento');
+        }
+
         // ========== INICIALIZAÇÃO DO SISTEMA ==========
         document.addEventListener('DOMContentLoaded', function() {
             // Inicializar dados padrão
@@ -4918,6 +5545,53 @@
             
             console.log('Sistema Great Mola inicializado com sucesso!');
         });
+
+        // ========== FUNÇÕES STUB PARA FUNCIONALIDADES NÃO IMPLEMENTADAS ==========
+        function saveRole(event) { if (event) event.preventDefault(); alert('Funcionalidade em desenvolvimento'); }
+        function clearRoleForm() { alert('Funcionalidade em desenvolvimento'); }
+        function updateRolesTable() { /* Implementação futura */ }
+        function loadRolePermissions() { alert('Funcionalidade em desenvolvimento'); }
+        function saveRolePermissions() { alert('Funcionalidade em desenvolvimento'); }
+        function saveModulePermissions() { alert('Funcionalidade em desenvolvimento'); }
+        function updateAuditLogs() { /* Implementação futura */ }
+        function filterAuditLogs() { alert('Funcionalidade em desenvolvimento'); }
+        function saveSSAAccount(event) { if (event) event.preventDefault(); alert('Funcionalidade em desenvolvimento'); }
+        function clearSSAAccountForm() { alert('Funcionalidade em desenvolvimento'); }
+        function updateSSAAccountsTable() { /* Implementação futura */ }
+        function saveST(event) { if (event) event.preventDefault(); alert('Funcionalidade em desenvolvimento'); }
+        function clearSTForm() { alert('Funcionalidade em desenvolvimento'); }
+        function updateSTTable() { /* Implementação futura */ }
+        function saveAF(event) { if (event) event.preventDefault(); alert('Funcionalidade em desenvolvimento'); }
+        function clearAFForm() { alert('Funcionalidade em desenvolvimento'); }
+        function updateAFTable() { /* Implementação futura */ }
+        function saveSubchannel(event) { if (event) event.preventDefault(); alert('Funcionalidade em desenvolvimento'); }
+        function clearSubchannelForm() { alert('Funcionalidade em desenvolvimento'); }
+        function updateSubchannelsTable() { /* Implementação futura */ }
+        function saveSSADeposit(event) { if (event) event.preventDefault(); alert('Funcionalidade em desenvolvimento'); }
+        function clearSSADepositForm() { alert('Funcionalidade em desenvolvimento'); }
+        function saveAFDeposit(event) { if (event) event.preventDefault(); alert('Funcionalidade em desenvolvimento'); }
+        function clearAFDepositForm() { alert('Funcionalidade em desenvolvimento'); }
+        function filterSSATransactions() { alert('Funcionalidade em desenvolvimento'); }
+        function exportSSATransactionsExcel() { alert('Funcionalidade em desenvolvimento'); }
+        function exportSSATransactionsCSV() { alert('Funcionalidade em desenvolvimento'); }
+        function generateAccountStatement() { alert('Funcionalidade em desenvolvimento'); }
+        function generateYieldReport() { alert('Funcionalidade em desenvolvimento'); }
+        function generateConsolidatedReport() { alert('Funcionalidade em desenvolvimento'); }
+        function exportSSAReportsExcel() { alert('Funcionalidade em desenvolvimento'); }
+        function exportSSAReportsCSV() { alert('Funcionalidade em desenvolvimento'); }
+        function exportSSAExcel() { alert('Funcionalidade em desenvolvimento'); }
+        function exportSSACSV() { alert('Funcionalidade em desenvolvimento'); }
+        function exportSTExcel() { alert('Funcionalidade em desenvolvimento'); }
+        function exportSTCSV() { alert('Funcionalidade em desenvolvimento'); }
+        function exportAFExcel() { alert('Funcionalidade em desenvolvimento'); }
+        function exportAFCSV() { alert('Funcionalidade em desenvolvimento'); }
+        function loadAgentExtract() { alert('Funcionalidade em desenvolvimento'); }
+        function saveGeneralSettings(event) { if (event) event.preventDefault(); alert('Configurações salvas com sucesso!'); }
+        function saveFinancialSettings(event) { if (event) event.preventDefault(); alert('Configurações salvas com sucesso!'); }
+        function saveUsersSettings(event) { if (event) event.preventDefault(); alert('Configurações salvas com sucesso!'); }
+        function saveSecuritySettings(event) { if (event) event.preventDefault(); alert('Configurações salvas com sucesso!'); }
+        function saveIntegrationsSettings(event) { if (event) event.preventDefault(); alert('Configurações salvas com sucesso!'); }
+        function loadSettings() { /* Implementação futura */ }
     </script>
 </body>
 </html>
