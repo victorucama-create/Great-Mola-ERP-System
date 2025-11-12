@@ -6,6 +6,7 @@
     <title>Great Mola - Sistema Completo</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>" type="image/svg+xml">
     <style>
+        /* Todos os estilos permanecem exatamente como estavam */
         :root {
             --primary: #c81f1f;
             --secondary: #007bff;
@@ -858,36 +859,17 @@
             <div class="sub-content" id="reports">
                 <div class="card">
                     <h3>Relatórios Financeiros</h3>
-                   <div class="grid grid-4">
-    <div class="result-item">
-        <h3>Balancete</h3>
-        <p>Lista de contas com saldos</p>
-        <button class="btn btn-primary" onclick="generateTrialBalance()">Gerar</button>
-    </div>
-    <div class="result-item">
-        <h3>Balanço Patrimonial</h3>
-        <p>Posição financeira atual</p>
-        <button class="btn btn-primary" onclick="generateBalanceSheet()">Gerar</button>
-    </div>
-    <div class="result-item">
-        <h3>Demonstração de Resultados</h3>
-        <p>Lucro ou prejuízo do período</p>
-        <button class="btn btn-primary" onclick="generateIncomeStatement()">Gerar</button>
-    </div>
-    <div class="result-item">
-        <h3>Fluxo de Caixa</h3>
-        <p>Entradas e saídas de dinheiro</p>
-        <button class="btn btn-primary" onclick="generateCashFlow()">Gerar</button>
-    </div>
-</div>
-                    
-                    <div class="export-buttons">
-                        <button class="btn btn-secondary" onclick="exportFinancialReports('excel')">📊 Exportar Excel</button>
-                        <button class="btn btn-success" onclick="exportFinancialReports('csv')">📄 Exportar CSV</button>
-                        <button class="btn btn-primary" onclick="exportFinancialReports('pdf')">📑 Exportar PDF</button>
+                    <p>Esta funcionalidade está em desenvolvimento e será disponibilizada em breve.</p>
+                    <div style="background: var(--light); padding: 20px; border-radius: 8px; margin-top: 15px;">
+                        <h4>🔧 Em Desenvolvimento:</h4>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Balancete</li>
+                            <li>Balanço Patrimonial</li>
+                            <li>Demonstração de Resultados</li>
+                            <li>Fluxo de Caixa</li>
+                            <li>Relatórios Personalizados</li>
+                        </ul>
                     </div>
-                    
-                    <div id="reportResult" style="margin-top: 20px;"></div>
                 </div>
             </div>
             
@@ -3050,96 +3032,7 @@
 
         // ========== FUNÇÕES DE EXPORTAÇÃO DE RELATÓRIOS ==========
         function exportFinancialReports(format) {
-            let content = '';
-            let filename = '';
-            let mimeType = '';
-            
-            // Gerar relatórios com base nos lançamentos
-            const reportData = generateFinancialReportsData();
-            
-            if (format === 'csv') {
-                content = 'Tipo,Descrição,Valor,Data,Status\n';
-                reportData.forEach(item => {
-                    content += `"${item.tipo}","${item.descricao}","${item.valor}","${item.data}","${item.status}"\n`;
-                });
-                
-                filename = `relatorios_financeiros_${Date.now()}.csv`;
-                mimeType = 'text/csv;charset=utf-8;';
-            } else if (format === 'excel') {
-                content = 'Tipo\tDescrição\tValor\tData\tStatus\n';
-                reportData.forEach(item => {
-                    content += `${item.tipo}\t${item.descricao}\t${item.valor}\t${item.data}\t${item.status}\n`;
-                });
-                
-                filename = `relatorios_financeiros_${Date.now()}.xls`;
-                mimeType = 'application/vnd.ms-excel;charset=utf-8;';
-            } else if (format === 'pdf') {
-                content = `
-                    <html>
-                        <head>
-                            <title>Relatórios Financeiros - Great Mola</title>
-                            <style>
-                                body { font-family: Arial, sans-serif; }
-                                table { width: 100%; border-collapse: collapse; }
-                                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                                th { background-color: #f2f2f2; }
-                            </style>
-                        </head>
-                        <body>
-                            <h1>Relatórios Financeiros - Great Mola</h1>
-                            <p>Data de emissão: ${new Date().toLocaleDateString()}</p>
-                            <table>
-                                <tr>
-                                    <th>Tipo</th>
-                                    <th>Descrição</th>
-                                    <th>Valor (MZN)</th>
-                                    <th>Data</th>
-                                    <th>Status</th>
-                                </tr>
-                                ${reportData.map(item => `
-                                    <tr>
-                                        <td>${item.tipo}</td>
-                                        <td>${item.descricao}</td>
-                                        <td>${item.valor}</td>
-                                        <td>${item.data}</td>
-                                        <td>${item.status}</td>
-                                    </tr>
-                                `).join('')}
-                            </table>
-                        </body>
-                    </html>
-                `;
-                filename = `relatorios_financeiros_${Date.now()}.html`;
-                mimeType = 'text/html;charset=utf-8;';
-            }
-            
-            const dataBlob = new Blob([content], { type: mimeType });
-            downloadFile(dataBlob, filename);
-        }
-
-        function generateFinancialReportsData() {
-            // Gerar dados de relatórios com base nos lançamentos
-            const reportData = [];
-            
-            lancamentos.forEach(lancamento => {
-                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-                
-                // Determinar tipo com base nas contas
-                let tipo = 'Lançamento';
-                if (contaDebito && contaDebito.tipo === 'Receita') tipo = 'Receita';
-                if (contaCredito && contaCredito.tipo === 'Despesa') tipo = 'Despesa';
-                
-                reportData.push({
-                    tipo: tipo,
-                    descricao: lancamento.descricao,
-                    valor: lancamento.valor.toFixed(2),
-                    data: lancamento.data,
-                    status: lancamento.status || 'Registado'
-                });
-            });
-            
-            return reportData;
+            alert('Funcionalidade de exportação de relatórios financeiros em desenvolvimento');
         }
 
         function exportTransactions(format) {
@@ -3363,7 +3256,7 @@
                 updateUsersTable();
                 updateRolesTable();
                 updateAuditLogs();
-                loadUserRolesDropdown(); // ← FUNÇÃO CORRIGIDA ADICIONADA
+                loadUserRolesDropdown();
                 loadPermissionRoleDropdown();
             } else if (tabName === 'ssa') {
                 updateSSAAccountsTable();
@@ -3434,8 +3327,6 @@
                 updateLancamentosTable();
             } else if (subTabName === 'transactions') {
                 updateJournalTable();
-            } else if (subTabName === 'reports') {
-                updateFinancialReports();
             }
         }
 
@@ -3645,7 +3536,6 @@
             renderPlanoContas();
             loadPlanoContasForDropdown();
             updateJournalTable();
-            updateFinancialReports();
         }
 
         function updateJournalTable() {
@@ -3691,161 +3581,6 @@
                 `;
                 tbody.appendChild(row);
             });
-        }
-
-        function updateFinancialReports() {
-            const reportResult = document.getElementById('reportResult');
-            if (!reportResult) return;
-            
-            // Calcular totais por tipo de conta
-            const totals = {
-                Ativo: 0,
-                Passivo: 0,
-                Patrimonio: 0,
-                Receita: 0,
-                Despesa: 0
-            };
-            
-            // Calcular saldos das contas com base nos lançamentos
-            const accountBalances = {};
-            
-            planoContas.forEach(conta => {
-                accountBalances[conta.id] = 0;
-            });
-            
-            lancamentos.forEach(lancamento => {
-                // Para débito: aumenta Ativo/Despesa, diminui Passivo/Receita
-                // Para crédito: aumenta Passivo/Receita, diminui Ativo/Despesa
-                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-                
-                if (contaDebito) {
-                    if (contaDebito.tipo === 'Ativo' || contaDebito.tipo === 'Despesa') {
-                        accountBalances[contaDebito.id] += lancamento.valor;
-                    } else {
-                        accountBalances[contaDebito.id] -= lancamento.valor;
-                    }
-                }
-                
-                if (contaCredito) {
-                    if (contaCredito.tipo === 'Passivo' || contaCredito.tipo === 'Receita' || contaCredito.tipo === 'Patrimonio') {
-                        accountBalances[contaCredito.id] += lancamento.valor;
-                    } else {
-                        accountBalances[contaCredito.id] -= lancamento.valor;
-                    }
-                }
-            });
-            
-            // Agregar totais por tipo
-            planoContas.forEach(conta => {
-                if (totals[conta.tipo] !== undefined) {
-                    totals[conta.tipo] += accountBalances[conta.id] || 0;
-                }
-            });
-            
-            // Calcular resultado
-            const resultado = totals.Receita - totals.Despesa;
-            
-            // Exibir relatório
-            reportResult.innerHTML = `
-                <h4>Balanço Patrimonial</h4>
-                <div class="grid grid-2">
-                    <div class="result-item">
-                        <h3>Ativo Total</h3>
-                        <div class="kpi">MT ${totals.Ativo.toFixed(2)}</div>
-                    </div>
-                    <div class="result-item">
-                        <h3>Passivo Total</h3>
-                        <div class="kpi">MT ${totals.Passivo.toFixed(2)}</div>
-                    </div>
-                </div>
-                
-                <h4 style="margin-top: 20px;">Demonstração de Resultados</h4>
-                <div class="grid grid-2">
-                    <div class="result-item">
-                        <h3>Receitas</h3>
-                        <div class="kpi">MT ${totals.Receita.toFixed(2)}</div>
-                    </div>
-                    <div class="result-item">
-                        <h3>Despesas</h3>
-                        <div class="kpi">MT ${totals.Despesa.toFixed(2)}</div>
-                    </div>
-                </div>
-                <div class="result-item" style="margin-top: 10px;">
-                    <h3>Resultado Líquido</h3>
-                    <div class="kpi" style="color: ${resultado >= 0 ? '#28a745' : '#dc3545'}">MT ${resultado.toFixed(2)}</div>
-                </div>
-            `;
-        }
-
-        function generateBalanceSheet() {
-            updateFinancialReports();
-            alert('Balanço gerado com sucesso!');
-        }
-
-        function generateIncomeStatement() {
-            updateFinancialReports();
-            alert('Demonstração de Resultados gerada com sucesso!');
-        }
-
-        function generateCashFlow() {
-            // Implementação simplificada do fluxo de caixa
-            const reportResult = document.getElementById('reportResult');
-            
-            // Calcular fluxo de caixa com base nos lançamentos
-            let fluxoOperacional = 0;
-            let fluxoInvestimento = 0;
-            let fluxoFinanciamento = 0;
-            
-            lancamentos.forEach(lancamento => {
-                const contaDebito = planoContas.find(c => c.id == lancamento.debito);
-                const contaCredito = planoContas.find(c => c.id == lancamento.credito);
-                
-                // Lógica simplificada para classificar fluxos
-                if (contaDebito && contaDebito.nome.includes('Caixa')) {
-                    if (contaCredito && (contaCredito.tipo === 'Receita' || contaCredito.nome.includes('Venda'))) {
-                        fluxoOperacional += lancamento.valor;
-                    } else if (contaCredito && contaCredito.nome.includes('Investimento')) {
-                        fluxoInvestimento += lancamento.valor;
-                    } else {
-                        fluxoFinanciamento += lancamento.valor;
-                    }
-                }
-                
-                if (contaCredito && contaCredito.nome.includes('Caixa')) {
-                    if (contaDebito && (contaDebito.tipo === 'Despesa' || contaDebito.nome.includes('Compra'))) {
-                        fluxoOperacional -= lancamento.valor;
-                    } else if (contaDebito && contaDebito.nome.includes('Investimento')) {
-                        fluxoInvestimento -= lancamento.valor;
-                    } else {
-                        fluxoFinanciamento -= lancamento.valor;
-                    }
-                }
-            });
-            
-            const fluxoLiquido = fluxoOperacional + fluxoInvestimento + fluxoFinanciamento;
-            
-            reportResult.innerHTML = `
-                <h4>Fluxo de Caixa</h4>
-                <div class="result-item">
-                    <h3>Fluxo Operacional</h3>
-                    <div class="kpi" style="color: ${fluxoOperacional >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoOperacional.toFixed(2)}</div>
-                </div>
-                <div class="result-item">
-                    <h3>Fluxo de Investimento</h3>
-                    <div class="kpi" style="color: ${fluxoInvestimento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoInvestimento.toFixed(2)}</div>
-                </div>
-                <div class="result-item">
-                    <h3>Fluxo de Financiamento</h3>
-                    <div class="kpi" style="color: ${fluxoFinanciamento >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoFinanciamento.toFixed(2)}</div>
-                </div>
-                <div class="result-item" style="margin-top: 10px;">
-                    <h3>Fluxo Líquido</h3>
-                    <div class="kpi" style="color: ${fluxoLiquido >= 0 ? '#28a745' : '#dc3545'}">MT ${fluxoLiquido.toFixed(2)}</div>
-                </div>
-            `;
-            
-            alert('Fluxo de Caixa gerado com sucesso!');
         }
 
         // ========== FUNÇÕES DE LANÇAMENTOS CONTÁBEIS ==========
@@ -3913,7 +3648,6 @@
             // Atualizar as tabelas
             updateLancamentosTable();
             updateJournalTable();
-            updateFinancialReports();
             
             // Limpar formulário
             document.getElementById('lancamentoForm').reset();
