@@ -3007,9 +3007,19 @@
         let custosChart = null;
         let comparisonChart = null;
         
+        // Flag para controlar se a inicialização já foi feita
+        let systemInitialized = false;
+
         // ========== INICIALIZAÇÃO DE DADOS PADRÃO ==========
         function initializeDefaultData() {
+            // Evitar inicialização dupla
+            if (systemInitialized) {
+                console.log('Sistema já inicializado, ignorando nova inicialização');
+                return;
+            }
+            
             console.log('Inicializando dados padrão...');
+            systemInitialized = true;
             
             // Verificar se já existem dados no localStorage
             const storedUsers = localStorage.getItem('users');
@@ -5642,6 +5652,12 @@
 
         // ========== INICIALIZAÇÃO DO SISTEMA ==========
         document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se já foi inicializado
+            if (systemInitialized) {
+                console.log('Sistema já inicializado, ignorando nova inicialização');
+                return;
+            }
+            
             // Inicializar dados padrão
             initializeDefaultData();
             
