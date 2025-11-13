@@ -3070,7 +3070,7 @@ function initializeAPIData() {
                 key: generateAPIKey(),
                 secret: generateSecret(),
                 userId: 1,
-                permissions: ['investors:read', 'investors:write', 'agents:read', 'agents:write', 'transactions:read'],
+                permissions: ['investors:read', 'investors:write', 'agents:read', 'agents:write', 'transactions:read', 'accounting:read', 'accounting:write', 'reports:read', '*'],
                 status: 'active',
                 createdAt: new Date().toISOString(),
                 lastUsed: null
