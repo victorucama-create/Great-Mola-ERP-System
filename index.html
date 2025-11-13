@@ -3008,8 +3008,89 @@
         let comparisonChart = null;
         
         // Flag para controlar se a inicialização já foi feita
-        let systemInitialized = false;
+        let systemInitialized = false;// ========== SISTEMA DE API ==========
+        
+let apiKeys = [];
+let apiLogs = [];
 
+// Inicializar dados da API
+function initializeAPIData() {
+    const storedApiKeys = localStorage.getItem('apiKeys');
+    if (!storedApiKeys) {
+        // Criar API Key padrão para administrador
+        apiKeys = [
+            {
+                id: 1,
+                name: 'API Key Principal',
+                key: generateAPIKey(),
+                secret: generateSecret(),
+                userId: 1,
+                permissions: ['investors:read', 'investors:write', 'agents:read', 'agents:write', 'transactions:read'],
+                status: 'active',
+                createdAt: new Date().toISOString(),
+                lastUsed: null
+            }
+        ];
+        localStorage.setItem('apiKeys', JSON.stringify(apiKeys));
+    } else {
+        apiKeys = JSON.parse(storedApiKeys);
+    }
+    
+    const storedApiLogs = localStorage.getItem('apiLogs');
+    if (storedApiLogs) {
+        apiLogs = JSON.parse(storedApiLogs);
+    }
+}
+
+// Gerar API Key
+function generateAPIKey() {
+    return 'gm_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+}
+
+// Gerar Secret
+function generateSecret() {
+    return 'sec_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+}
+
+// Registrar log da API
+function logAPICall(apiKeyId, endpoint, method, status, details) {
+    const log = {
+        id: Date.now(),
+        apiKeyId: apiKeyId,
+        endpoint: endpoint,
+        method: method,
+        status: status,
+        details: details,
+        timestamp: new Date().toISOString(),
+        ip: '127.0.0.1'
+    };
+    
+    apiLogs.push(log);
+    
+    if (apiLogs.length > 1000) {
+        apiLogs = apiLogs.slice(-1000);
+    }
+    
+    localStorage.setItem('apiLogs', JSON.stringify(apiLogs));
+}
+
+// Verificar autenticação da API
+function authenticateAPI(key, secret) {
+    const apiKey = apiKeys.find(k => k.key === key && k.secret === secret && k.status === 'active');
+    if (apiKey) {
+        // Atualizar último uso
+        apiKey.lastUsed = new Date().toISOString();
+        localStorage.setItem('apiKeys', JSON.stringify(apiKeys));
+        return apiKey;
+    }
+    return null;
+}
+
+// Verificar permissões
+function checkPermissions(apiKey, resource, action) {
+    const permission = `${resource}:${action}`;
+    return apiKey.permissions.includes(permission) || apiKey.permissions.includes('*');
+}
         // ========== INICIALIZAÇÃO DE DADOS PADRÃO ==========
         function initializeDefaultData() {
             // Evitar inicialização dupla
