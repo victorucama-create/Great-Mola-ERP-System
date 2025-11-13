@@ -745,7 +745,48 @@
             color: var(--danger);
         }
         
-        @media (max-width: 768px) {
+        /* Estilos para a API */
+.endpoint {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    border-left: 4px solid var(--primary);
+}
+
+.endpoint h6 {
+    margin: 0 0 10px 0;
+    color: var(--primary);
+}
+
+.endpoint pre {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 10px 0;
+}
+
+.endpoint code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+}
+
+.api-credentials {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.api-credentials code {
+    background: #fff;
+    padding: 5px;
+    border-radius: 3px;
+    font-weight: bold;
+}@media (max-width: 768px) {
             .grid-2, .grid-3, .grid-4 {
                 grid-template-columns: 1fr;
             }
