@@ -6876,7 +6876,559 @@ function checkPermissions(apiKey, resource, action) {
             
             const dataBlob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
             downloadFile(dataBlob, `colaboradores_af_${Date.now()}.csv`);
+        }// ========== ENDPOINTS DA API ==========
+// Endpoint: /api/investors
+function apiGetInvestors(key, secret, queryParams = {}) {
+    const auth = authenticateAPI(key, secret);
+    if (!auth) {
+        return { success: false, error: 'Autenticação inválida' };
+    }
+    
+    if (!checkPermissions(auth, 'investors', 'read')) {
+        logAPICall(auth.id, '/api/investors', 'GET', 403, 'Permissão negada');
+        return { success: false, error: 'Permissão negada' };
+    }
+    
+    let filteredInvestors = [...investors];
+    
+    // Aplicar filtros
+    if (queryParams.status) {
+        filteredInvestors = filteredInvestors.filter(inv => inv.status === queryParams.status);
+    }
+    
+    if (queryParams.cycle) {
+        filteredInvestors = filteredInvestors.filter(inv => inv.cycle === queryParams.cycle);
+    }
+    
+    logAPICall(auth.id, '/api/investors', 'GET', 200, `Retornados ${filteredInvestors.length} investidores`);
+    
+    return {
+        success: true,
+        data: filteredInvestors,
+        count: filteredInvestors.length,
+        timestamp: new Date().toISOString()
+    };
+}
+
+function apiCreateInvestor(key, secret, investorData) {
+    const auth = authenticateAPI(key, secret);
+    if (!auth) {
+        return { success: false, error: 'Autenticação inválida' };
+    }
+    
+    if (!checkPermissions(auth, 'investors', 'write')) {
+        logAPICall(auth.id, '/api/investors', 'POST', 403, 'Permissão negada');
+        return { success: false, error: 'Permissão negada' };
+    }
+    
+    // Validação básica
+    if (!investorData.name || !investorData.amount) {
+        return { success: false, error: 'Dados do investidor inválidos' };
+    }
+    
+    const newInvestor = {
+        id: Date.now(),
+        ...investorData,
+        status: 'Ativo',
+        createdAt: new Date().toISOString(),
+        businessDays: 0,
+        grossYield: 0,
+        netYield: 0
+    };
+    
+    investors.push(newInvestor);
+    localStorage.setItem('investors', JSON.stringify(investors));
+    
+    logAPICall(auth.id, '/api/investors', 'POST', 201, `Investidor criado: ${newInvestor.name}`);
+    
+    return {
+        success: true,
+        data: newInvestor,
+        message: 'Investidor criado com sucesso'
+    };
+}
+
+// Endpoint: /api/agents
+function apiGetAgents(key, secret, queryParams = {}) {
+    const auth = authenticateAPI(key, secret);
+    if (!auth) {
+        return { success: false, error: 'Autenticação inválida' };
+    }
+    
+    if (!checkPermissions(auth, 'agents', 'read')) {
+        logAPICall(auth.id, '/api/agents', 'GET', 403, 'Permissão negada');
+        return { success: false, error: 'Permissão negada' };
+    }
+    
+    let filteredAgents = [...agents];
+    
+    if (queryParams.status) {
+        filteredAgents = filteredAgents.filter(agent => agent.status === queryParams.status);
+    }
+    
+    logAPICall(auth.id, '/api/agents', 'GET', 200, `Retornados ${filteredAgents.length} agentes`);
+    
+    return {
+        success: true,
+        data: filteredAgents,
+        count: filteredAgents.length,
+        timestamp: new Date().toISOString()
+    };
+}
+
+// Endpoint: /api/transactions
+function apiGetTransactions(key, secret, queryParams = {}) {
+    const auth = authenticateAPI(key, secret);
+    if (!auth) {
+        return { success: false, error: 'Autenticação inválida' };
+    }
+    
+    if (!checkPermissions(auth, 'transactions', 'read')) {
+        logAPICall(auth.id, '/api/transactions', 'GET', 403, 'Permissão negada');
+        return { success: false, error: 'Permissão negada' };
+    }
+    
+    let filteredTransactions = [...ssaTransactions];
+    
+    // Aplicar filtros
+    if (queryParams.type) {
+        filteredTransactions = filteredTransactions.filter(t => t.type === queryParams.type);
+    }
+    
+    if (queryParams.startDate) {
+        filteredTransactions = filteredTransactions.filter(t => t.date >= queryParams.startDate);
+    }
+    
+    if (queryParams.endDate) {
+        filteredTransactions = filteredTransactions.filter(t => t.date <= queryParams.endDate);
+    }
+    
+    logAPICall(auth.id, '/api/transactions', 'GET', 200, `Retornadas ${filteredTransactions.length} transações`);
+    
+    return {
+        success: true,
+        data: filteredTransactions,
+        count: filteredTransactions.length,
+        timestamp: new Date().toISOString()
+    };
+}
+
+// Endpoint: /api/health
+function apiHealthCheck(key, secret) {
+    const auth = authenticateAPI(key, secret);
+    if (!auth) {
+        return { success: false, error: 'Autenticação inválida' };
+    }
+    
+    logAPICall(auth.id, '/api/health', 'GET', 200, 'Health check realizado');
+    
+    return {
+        success: true,
+        status: 'operational',
+        timestamp: new Date().toISOString(),
+        version: '1.0.0',
+        endpoints: [
+            '/api/investors',
+            '/api/agents', 
+            '/api/transactions',
+            '/api/health'
+        ]
+    };
+}
+
+// Simular chamada de API (para demonstração)
+function simulateAPICall() {
+    const apiKey = apiKeys[0];
+    if (!apiKey) {
+        alert('Nenhuma API Key configurada');
+        return;
+    }
+    
+    const result = apiGetInvestors(apiKey.key, apiKey.secret, { status: 'Ativo' });
+    console.log('Simulação API - Investidores:', result);
+    
+    alert(`API simulada com sucesso! Retornados ${result.count} investidores ativos. Verifique o console para detalhes.`);
+}
+
+// ========== GESTÃO DE API KEYS ==========
+function generateNewAPIKey(userId, name, permissions = []) {
+    const newKey = {
+        id: Date.now(),
+        name: name,
+        key: generateAPIKey(),
+        secret: generateSecret(),
+        userId: userId,
+        permissions: permissions,
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        lastUsed: null
+    };
+    
+    apiKeys.push(newKey);
+    localStorage.setItem('apiKeys', JSON.stringify(apiKeys));
+    
+    return newKey;
+}
+
+function revokeAPIKey(keyId) {
+    const keyIndex = apiKeys.findIndex(k => k.id === keyId);
+    if (keyIndex !== -1) {
+        apiKeys[keyIndex].status = 'revoked';
+        localStorage.setItem('apiKeys', JSON.stringify(apiKeys));
+        return true;
+    }
+    return false;
+}
+
+function getAPIKeysByUser(userId) {
+    return apiKeys.filter(key => key.userId === userId);
+}
+
+// ========== INTERFACE DA API ==========
+function showAPIModal() {
+    const modal = document.getElementById('apiModal');
+    if (!modal) {
+        createAPIModal();
+    } else {
+        modal.style.display = 'block';
+    }
+    loadAPIKeysTable();
+}
+
+function createAPIModal() {
+    const modal = document.createElement('div');
+    modal.id = 'apiModal';
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3>🔑 Gestão de API</h3>
+                <span class="close" onclick="closeModal('apiModal')">&times;</span>
+            </div>
+            
+            <div class="sub-tabs">
+                <button class="sub-tab active" onclick="switchAPISubTab('keys')">API Keys</button>
+                <button class="sub-tab" onclick="switchAPISubTab('documentation')">Documentação</button>
+                <button class="sub-tab" onclick="switchAPISubTab('logs')">Logs</button>
+            </div>
+            
+            <div class="sub-content active" id="apiKeys">
+                <div class="card">
+                    <h4>➕ Nova API Key</h4>
+                    <form id="apiKeyForm">
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Nome da API Key</label>
+                                <input type="text" id="apiKeyName" placeholder="Ex: Sistema de Integração" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Utilizador</label>
+                                <select id="apiKeyUser" required>
+                                    <option value="">Selecionar utilizador</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Permissões</label>
+                            <div class="permissions-grid">
+                                <div class="permission-category">Investidores</div>
+                                <div class="permission-item">
+                                    <input type="checkbox" id="perm_inv_read" value="investors:read">
+                                    <label for="perm_inv_read">Ler investidores</label>
+                                </div>
+                                <div class="permission-item">
+                                    <input type="checkbox" id="perm_inv_write" value="investors:write">
+                                    <label for="perm_inv_write">Criar/editar investidores</label>
+                                </div>
+                                
+                                <div class="permission-category">Agentes</div>
+                                <div class="permission-item">
+                                    <input type="checkbox" id="perm_agt_read" value="agents:read">
+                                    <label for="perm_agt_read">Ler agentes</label>
+                                </div>
+                                <div class="permission-item">
+                                    <input type="checkbox" id="perm_agt_write" value="agents:write">
+                                    <label for="perm_agt_write">Criar/editar agentes</label>
+                                </div>
+                                
+                                <div class="permission-category">Transações</div>
+                                <div class="permission-item">
+                                    <input type="checkbox" id="perm_txn_read" value="transactions:read">
+                                    <label for="perm_txn_read">Ler transações</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Gerar API Key</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h4>🔑 API Keys Existentes</h4>
+                    <table id="apiKeysTable">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>API Key</th>
+                                <th>Utilizador</th>
+                                <th>Permissões</th>
+                                <th>Status</th>
+                                <th>Último Uso</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="sub-content" id="apiDocumentation">
+                <div class="card">
+                    <h4>📚 Documentação da API</h4>
+                    
+                    <h5>Autenticação</h5>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                        <p>Todas as requisições devem incluir os headers de autenticação:</p>
+                        <code>
+                            X-API-Key: sua_api_key_aqui<br>
+                            X-API-Secret: seu_secret_aqui
+                        </code>
+                    </div>
+                    
+                    <h5>Endpoints Disponíveis</h5>
+                    
+                    <div class="endpoint">
+                        <h6>GET /api/investors</h6>
+                        <p>Lista todos os investidores</p>
+                        <p><strong>Parâmetros:</strong> status, cycle</p>
+                        <pre><code>{
+    "success": true,
+    "data": [...],
+    "count": 10,
+    "timestamp": "2024-01-01T00:00:00.000Z"
+}</code></pre>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <h6>POST /api/investors</h6>
+                        <p>Cria um novo investidor</p>
+                        <p><strong>Body:</strong> { "name": "Nome", "amount": 10000, ... }</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <h6>GET /api/agents</h6>
+                        <p>Lista todos os agentes</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <h6>GET /api/transactions</h6>
+                        <p>Lista todas as transações</p>
+                        <p><strong>Parâmetros:</strong> type, startDate, endDate</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <h6>GET /api/health</h6>
+                        <p>Verifica o status da API</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sub-content" id="apiLogs">
+                <div class="card">
+                    <h4>📊 Logs da API</h4>
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>API Key</label>
+                            <select id="apiLogKey" onchange="filterAPILogs()">
+                                <option value="">Todas as keys</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select id="apiLogStatus" onchange="filterAPILogs()">
+                                <option value="">Todos</option>
+                                <option value="200">200 OK</option>
+                                <option value="403">403 Forbidden</option>
+                                <option value="500">500 Error</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <table id="apiLogsTable">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>API Key</th>
+                                <th>Endpoint</th>
+                                <th>Método</th>
+                                <th>Status</th>
+                                <th>Detalhes</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Configurar event listeners
+    const apiKeyForm = document.getElementById('apiKeyForm');
+    if (apiKeyForm) {
+        apiKeyForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            createNewAPIKey();
+        });
+    }
+    
+    loadUsersForAPIDropdown();
+}
+
+function switchAPISubTab(subTabName) {
+    document.querySelectorAll('#apiModal .sub-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('#apiModal .sub-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    const element = document.getElementById('api' + subTabName.charAt(0).toUpperCase() + subTabName.slice(1));
+    if (element) {
+        element.classList.add('active');
+    }
+    
+    event.target.classList.add('active');
+}
+
+function loadUsersForAPIDropdown() {
+    const select = document.getElementById('apiKeyUser');
+    if (select) {
+        select.innerHTML = '<option value="">Selecionar utilizador</option>';
+        users.forEach(user => {
+            const option = document.createElement('option');
+            option.value = user.id;
+            option.textContent = `${user.username} - ${user.fullName}`;
+            select.appendChild(option);
+        });
+    }
+}
+
+function createNewAPIKey() {
+    const name = document.getElementById('apiKeyName').value;
+    const userId = document.getElementById('apiKeyUser').value;
+    
+    if (!name || !userId) {
+        alert('Por favor, preencha todos os campos obrigatórios!');
+        return;
+    }
+    
+    // Coletar permissões
+    const permissions = [];
+    const checkboxes = document.querySelectorAll('#apiKeyForm input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => {
+        permissions.push(checkbox.value);
+    });
+    
+    if (permissions.length === 0) {
+        alert('Selecione pelo menos uma permissão!');
+        return;
+    }
+    
+    const newKey = generateNewAPIKey(parseInt(userId), name, permissions);
+    
+    // Mostrar credenciais
+    alert(`API Key criada com sucesso!\n\nAPI Key: ${newKey.key}\nSecret: ${newKey.secret}\n\nGuarde estas credenciais em local seguro!`);
+    
+    // Limpar formulário
+    document.getElementById('apiKeyForm').reset();
+    loadAPIKeysTable();
+}
+
+function loadAPIKeysTable() {
+    const tbody = document.getElementById('apiKeysTable')?.querySelector('tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    apiKeys.forEach(apiKey => {
+        const user = users.find(u => u.id === apiKey.userId);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${apiKey.name}</td>
+            <td><code>${apiKey.key}</code></td>
+            <td>${user ? user.username : 'N/A'}</td>
+            <td>${apiKey.permissions.length} permissões</td>
+            <td><span class="status ${apiKey.status === 'active' ? 'status-active' : 'status-inactive'}">${apiKey.status}</span></td>
+            <td>${apiKey.lastUsed ? new Date(apiKey.lastUsed).toLocaleDateString('pt-PT') : 'Nunca'}</td>
+            <td>
+                <button class="btn btn-small btn-warning" onclick="revokeAPIKeyUI(${apiKey.id})">Revogar</button>
+                <button class="btn btn-small btn-danger" onclick="deleteAPIKey(${apiKey.id})">Eliminar</button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function revokeAPIKeyUI(keyId) {
+    if (confirm('Tem certeza que deseja revogar esta API Key?')) {
+        if (revokeAPIKey(keyId)) {
+            loadAPIKeysTable();
+            alert('API Key revogada com sucesso!');
         }
+    }
+}
+
+function deleteAPIKey(keyId) {
+    if (confirm('Tem certeza que deseja eliminar permanentemente esta API Key?')) {
+        apiKeys = apiKeys.filter(k => k.id !== keyId);
+        localStorage.setItem('apiKeys', JSON.stringify(apiKeys));
+        loadAPIKeysTable();
+        alert('API Key eliminada com sucesso!');
+    }
+}
+
+function filterAPILogs() {
+    const tbody = document.getElementById('apiLogsTable')?.querySelector('tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    let filteredLogs = [...apiLogs];
+    const keyFilter = document.getElementById('apiLogKey')?.value;
+    const statusFilter = document.getElementById('apiLogStatus')?.value;
+    
+    if (keyFilter) {
+        filteredLogs = filteredLogs.filter(log => log.apiKeyId == keyFilter);
+    }
+    
+    if (statusFilter) {
+        filteredLogs = filteredLogs.filter(log => log.status == statusFilter);
+    }
+    
+    // Ordenar por data (mais recente primeiro)
+    filteredLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    // Mostrar apenas os 100 logs mais recentes
+    filteredLogs.slice(0, 100).forEach(log => {
+        const apiKey = apiKeys.find(k => k.id === log.apiKeyId);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${new Date(log.timestamp).toLocaleString('pt-PT')}</td>
+            <td>${apiKey ? apiKey.name : 'N/A'}</td>
+            <td>${log.endpoint}</td>
+            <td>${log.method}</td>
+            <td><span class="status ${log.status === 200 ? 'status-active' : 'status-rejected'}">${log.status}</span></td>
+            <td>${log.details}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Carregar dados da API na inicialização
+initializeAPIData();
         
         function loadAgentExtract() { 
             const agentId = document.getElementById('extractAgent').value;
