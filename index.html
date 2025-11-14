@@ -5327,9 +5327,18 @@ function loadSSAForDropdowns() {
     dropdowns.forEach(dropdownId => {
         const select = document.getElementById(dropdownId);
         if (select) {
-            // Limpar opções existentes, mantendo a primeira
-            while (select.options.length > 1) {
-                select.remove(1);
+            // CORREÇÃO: Usar uma abordagem diferente para limpar options
+            // Manter apenas a primeira opção
+            const firstOption = select.options[0];
+            select.innerHTML = ''; // Limpar tudo
+            if (firstOption) {
+                select.appendChild(firstOption); // Adicionar a primeira opção de volta
+            } else {
+                // Se não havia primeira opção, criar uma padrão
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Selecionar SSA';
+                select.appendChild(defaultOption);
             }
             
             ssaAccounts
@@ -5350,9 +5359,16 @@ function loadAgentsForDropdown() {
     selects.forEach(selectId => {
         const select = document.getElementById(selectId);
         if (select) {
-            // Limpar opções existentes, mantendo a primeira
-            while (select.options.length > 1) {
-                select.remove(1);
+            // CORREÇÃO: Usar innerHTML para limpar
+            const firstOption = select.options[0];
+            select.innerHTML = '';
+            if (firstOption) {
+                select.appendChild(firstOption);
+            } else {
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Selecionar agente';
+                select.appendChild(defaultOption);
             }
             
             agents.forEach(agent => {
@@ -5368,9 +5384,16 @@ function loadAgentsForDropdown() {
 function loadSSAUsersForDropdown() {
     const select = document.getElementById('ssaAccountUser');
     if (select) {
-        // Limpar opções existentes, mantendo a primeira
-        while (select.options.length > 1) {
-            select.remove(1);
+        // CORREÇÃO: Usar innerHTML para limpar
+        const firstOption = select.options[0];
+        select.innerHTML = '';
+        if (firstOption) {
+            select.appendChild(firstOption);
+        } else {
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Selecionar utilizador';
+            select.appendChild(defaultOption);
         }
         
         users
@@ -5387,9 +5410,16 @@ function loadSSAUsersForDropdown() {
 function loadUserRolesDropdown() {
     const roleSelect = document.getElementById('userRole');
     if (roleSelect) {
-        // Limpar opções existentes, mantendo a primeira
-        while (roleSelect.options.length > 1) {
-            roleSelect.remove(1);
+        // CORREÇÃO: Usar innerHTML para limpar
+        const firstOption = roleSelect.options[0];
+        roleSelect.innerHTML = '';
+        if (firstOption) {
+            roleSelect.appendChild(firstOption);
+        } else {
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Selecionar função';
+            roleSelect.appendChild(defaultOption);
         }
         
         // Adicionar funções disponíveis
@@ -5414,9 +5444,16 @@ function loadUserRolesDropdown() {
 function loadPermissionRoleDropdown() {
     const select = document.getElementById('permissionRoleSelect');
     if (select) {
-        // Limpar opções existentes, mantendo a primeira
-        while (select.options.length > 1) {
-            select.remove(1);
+        // CORREÇÃO: Usar innerHTML para limpar
+        const firstOption = select.options[0];
+        select.innerHTML = '';
+        if (firstOption) {
+            select.appendChild(firstOption);
+        } else {
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Selecionar função';
+            select.appendChild(defaultOption);
         }
         
         roles.forEach(role => {
@@ -5434,9 +5471,16 @@ function loadSTForDropdown() {
     selects.forEach(selectId => {
         const select = document.getElementById(selectId);
         if (select) {
-            // Limpar opções existentes, mantendo a primeira
-            while (select.options.length > 1) {
-                select.remove(1);
+            // CORREÇÃO: Usar innerHTML para limpar
+            const firstOption = select.options[0];
+            select.innerHTML = '';
+            if (firstOption) {
+                select.appendChild(firstOption);
+            } else {
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Selecionar ST';
+                select.appendChild(defaultOption);
             }
             
             stAccounts
@@ -5457,9 +5501,16 @@ function loadAFForDropdown() {
     selects.forEach(selectId => {
         const select = document.getElementById(selectId);
         if (select) {
-            // Limpar opções existentes, mantendo a primeira
-            while (select.options.length > 1) {
-                select.remove(1);
+            // CORREÇÃO: Usar innerHTML para limpar
+            const firstOption = select.options[0];
+            select.innerHTML = '';
+            if (firstOption) {
+                select.appendChild(firstOption);
+            } else {
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Selecionar AF';
+                select.appendChild(defaultOption);
             }
             
             afAccounts
@@ -5472,6 +5523,30 @@ function loadAFForDropdown() {
                 });
         }
     });
+}
+
+function loadUsersForAPIDropdown() {
+    const select = document.getElementById('apiKeyUser');
+    if (select) {
+        // CORREÇÃO: Usar innerHTML para limpar
+        const firstOption = select.options[0];
+        select.innerHTML = '';
+        if (firstOption) {
+            select.appendChild(firstOption);
+        } else {
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Selecionar utilizador';
+            select.appendChild(defaultOption);
+        }
+        
+        users.forEach(user => {
+            const option = document.createElement('option');
+            option.value = user.id;
+            option.textContent = `${user.username} - ${user.fullName}`;
+            select.appendChild(option);
+        });
+    }
 }
 
 function loadUsersForAPIDropdown() {
