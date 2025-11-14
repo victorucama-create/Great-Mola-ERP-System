@@ -5317,119 +5317,120 @@ function switchSubTab(subTabName) {
         }
 
         // ========== FUNÇÕES DE DROPDOWNS ==========
-        function loadSSAForDropdowns() {
-            const dropdowns = [
-                'agentSSA', 'ssaDepositFrom', 'ssaDepositTo', 
-                'ssaReceiveTo', 'subchannelSSA', 'ssaTransactionAccount',
-                'ssaReportAccount', 'mainSSAAccount', 'stSSA'
-            ];
+function loadSSAForDropdowns() {
+    const dropdowns = [
+        'agentSSA', 'ssaDepositFrom', 'ssaDepositTo', 
+        'ssaReceiveTo', 'subchannelSSA', 'ssaTransactionAccount',
+        'ssaReportAccount', 'mainSSAAccount', 'stSSA'
+    ];
+    
+    dropdowns.forEach(dropdownId => {
+        const select = document.getElementById(dropdownId);
+        if (select) {
+            select.innerHTML = '<option value="">Selecionar SSA</option>';
             
-            dropdowns.forEach(dropdownId => {
-                const select = document.getElementById(dropdownId);
-                if (select) {
-                    select.innerHTML = '<option value="">Selecionar SSA</option>';
-                    
-                    ssaAccounts
-                        .filter(acc => acc.status === 'Ativo')
-                        .forEach(account => {
-                            const option = document.createElement('option');
-                            option.value = account.id;
-                            option.textContent = `${account.code} - ${account.name}`;
-                            select.appendChild(option);
-                    });
-                }
+            ssaAccounts
+                .filter(acc => acc.status === 'Ativo')
+                .forEach(account => {
+                    const option = document.createElement('option');
+                    option.value = account.id;
+                    option.textContent = `${account.code} - ${account.name}`;
+                    select.appendChild(option);
             });
         }
+    });
+}
 
-        function loadAgentsForDropdown() {
-            const select = document.getElementById('extractAgent');
-            if (select) {
-                select.innerHTML = '<option value="">Selecionar agente</option>';
-                
-                agents.forEach(agent => {
-                    const option = document.createElement('option');
-                    option.value = agent.id;
-                    option.textContent = `${agent.code} - ${agent.name}`;
-                    select.appendChild(option);
-                });
-            }
-        }
+function loadAgentsForDropdown() {
+    const select = document.getElementById('extractAgent');
+    if (select) {
+        select.innerHTML = '<option value="">Selecionar agente</option>';
+        
+        agents.forEach(agent => {
+            const option = document.createElement('option');
+            option.value = agent.id;
+            option.textContent = `${agent.code} - ${agent.name}`;
+            select.appendChild(option);
+        });
+    }
+}
 
-        function loadSSAUsersForDropdown() {
-            const select = document.getElementById('ssaAccountUser');
-            if (select) {
-                select.innerHTML = '<option value="">Selecionar utilizador</option>';
-                
-                users
-                    .filter(user => user.role === 'ssa' && user.status === 'Ativo')
-                    .forEach(user => {
-                        const option = document.createElement('option');
-                        option.value = user.id;
-                        option.textContent = `${user.username} - ${user.fullName}`;
-                        select.appendChild(option);
-                });
-            }
-        }
+function loadSSAUsersForDropdown() {
+    const select = document.getElementById('ssaAccountUser');
+    if (select) {
+        select.innerHTML = '<option value="">Selecionar utilizador</option>';
+        
+        users
+            .filter(user => user.role === 'ssa' && user.status === 'Ativo')
+            .forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.id;
+                option.textContent = `${user.username} - ${user.fullName}`;
+                select.appendChild(option);
+        });
+    }
+}
 
-        function loadRolesForDropdown() {
-            const select = document.getElementById('userRole');
-            if (select) {
-                select.innerHTML = '<option value="">Selecionar função</option>';
-                
-                roles.forEach(role => {
-                    const option = document.createElement('option');
-                    option.value = role.name;
-                    option.textContent = `${role.name} - ${role.description}`;
-                    select.appendChild(option);
-                });
-            }
-        }
+function loadRolesForDropdown() {
+    const select = document.getElementById('userRole');
+    if (select) {
+        select.innerHTML = '<option value="">Selecionar função</option>';
+        
+        roles.forEach(role => {
+            const option = document.createElement('option');
+            option.value = role.name;
+            option.textContent = `${role.name} - ${role.description}`;
+            select.appendChild(option);
+        });
+    }
+}
 
-        function loadPermissionRoleDropdown() {
-            const select = document.getElementById('permissionRoleSelect');
-            if (select) {
-                select.innerHTML = '<option value="">Selecionar função</option>';
-                
-                roles.forEach(role => {
-                    const option = document.createElement('option');
-                    option.value = role.id;
-                    option.textContent = `${role.name} - ${role.description}`;
-                    select.appendChild(option);
-                });
-            }
-        }
+function loadPermissionRoleDropdown() {
+    const select = document.getElementById('permissionRoleSelect');
+    if (select) {
+        select.innerHTML = '<option value="">Selecionar função</option>';
+        
+        roles.forEach(role => {
+            const option = document.createElement('option');
+            option.value = role.id;
+            option.textContent = `${role.name} - ${role.description}`;
+            select.appendChild(option);
+        });
+    }
+}
 
-        function loadSTForDropdown() {
-            const select = document.getElementById('ssaDepositST');
-            if (select) {
-                select.innerHTML = '<option value="">Selecionar ST</option>';
-                
-                stAccounts
-                    .filter(st => st.status === 'Ativo')
-                    .forEach(st => {
-                        const option = document.createElement('option');
-                        option.value = st.id;
-                        option.textContent = `${st.code} - ${st.name}`;
-                        select.appendChild(option);
-                });
-            }
-        }
+function loadSTForDropdown() {
+    const select = document.getElementById('ssaDepositST');
+    if (select) {
+        select.innerHTML = '<option value="">Selecionar ST</option>';
+        
+        stAccounts
+            .filter(st => st.status === 'Ativo')
+            .forEach(st => {
+                const option = document.createElement('option');
+                option.value = st.id;
+                option.textContent = `${st.code} - ${st.name}`;
+                select.appendChild(option);
+        });
+    }
+}
 
-        function loadAFForDropdown() {
-            const select = document.getElementById('afDepositAF');
-            if (select) {
-                select.innerHTML = '<option value="">Selecionar AF</option>';
-                
-                afAccounts
-                    .filter(af => af.status === 'Ativo')
-                    .forEach(af => {
-                        const option = document.createElement('option');
-                        option.value = af.id;
-                        option.textContent = `${af.code} - ${af.name}`;
-                        select.appendChild(option);
-                });
-            }
-        }
+function loadAFForDropdown() {
+    const select = document.getElementById('afDepositAF');
+    if (select) {
+        select.innerHTML = '<option value="">Selecionar AF</option>';
+        
+        afAccounts
+            .filter(af => af.status === 'Ativo')
+            .forEach(af => {
+                const option = document.createElement('option');
+                option.value = af.id;
+                option.textContent = `${af.code} - ${af.name}`;
+                select.appendChild(option);
+        });
+    }
+}
+// CORREÇÃO: REMOVER O } EXTRA AQUI
 
         // ========== FUNÇÕES DE AUTENTICAÇÃO ==========
         function login(event) {
