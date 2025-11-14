@@ -1048,227 +1048,390 @@
                 </div>
             </div>
             
-            <!-- Sub-tab Relatórios Financeiros -->
-            <div class="sub-content" id="reports">
+            <!-- SUBSTITUIR TODO O CONTEÚDO DA SUB-TAB "Relatórios Financeiros" NO PRIMEIRO CÓDIGO -->
+
+<!-- Sub-tab Relatórios Financeiros -->
+<div class="sub-content" id="reports">
+    <div class="card">
+        <h3>Relatórios Financeiros</h3>
+        
+        <div class="sync-status">
+            <div class="sync-indicator sync-active" id="sync-indicator"></div>
+            <div>
+                <strong>Sincronização Automática Ativa</strong>
+                <div class="small muted" id="sync-status-text">Conectado ao Diário de Movimentos</div>
+            </div>
+            <button id="manual-sync" class="btn btn-small" style="margin-left: auto;">Atualizar Agora</button>
+        </div>
+        
+        <div class="file-upload">
+            <input type="file" id="transactions-file" class="file-input" accept=".json">
+            <label for="transactions-file" class="file-label">Importar Transações</label>
+            <span id="file-name" class="file-name">Nenhum arquivo selecionado</span>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label for="start-date">Data Inicial</label>
+                <input type="date" id="start-date">
+            </div>
+            <div class="filter-group">
+                <label for="end-date">Data Final</label>
+                <input type="date" id="end-date">
+            </div>
+            <div class="filter-group">
+                <label for="hide-zero">Ocultar contas com saldo zero</label>
+                <input type="checkbox" id="hide-zero" checked>
+            </div>
+            <div class="filter-group">
+                <button id="apply-filters" class="btn">Aplicar Filtros</button>
+            </div>
+        </div>
+        
+        <div class="nav-tabs" style="margin-top: 20px;">
+            <div class="nav-tab active" data-tab="dashboard-reports">Dashboard</div>
+            <div class="nav-tab" data-tab="balanco">Balanço Patrimonial</div>
+            <div class="nav-tab" data-tab="dre">DRE</div>
+            <div class="nav-tab" data-tab="dfc">DFC</div>
+            <div class="nav-tab" data-tab="dmpl">DMPL</div>
+            <div class="nav-tab" data-tab="analise-financeira">Análise Financeira</div>
+            <div class="nav-tab" data-tab="desempenho">Desempenho</div>
+            <div class="nav-tab" data-tab="variacoes">Variações Patrimoniais</div>
+            <div class="nav-tab" data-tab="custos">Análise de Custos</div>
+            <div class="nav-tab" data-tab="contas">Contas a Pagar/Receber</div>
+            <div class="nav-tab" data-tab="divida">Relatório de Dívida</div>
+        </div>
+        
+        <!-- Dashboard de Relatórios -->
+        <div id="dashboard-reports" class="tab-content active" style="padding: 0; margin-top: 20px;">
+            <div class="summary-card">
+                <div class="indicator-label">Saldo Total</div>
+                <div class="summary-value" id="total-balance">MZN 0,00</div>
+                <div class="indicator-label">Período: <span id="period-range"></span></div>
+                <div class="indicator-label">Transações sincronizadas: <span id="transactions-count">0</span></div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="indicator-card">
+                    <div class="indicator-label">Liquidez Corrente</div>
+                    <div class="indicator-value indicator-good" id="liquidez-corrente">0.0</div>
+                    <div class="indicator-label" id="liquidez-status">-</div>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-label">Margem Líquida</div>
+                    <div class="indicator-value indicator-warning" id="margem-liquida">0.0%</div>
+                    <div class="indicator-label" id="margem-status">-</div>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-label">ROE</div>
+                    <div class="indicator-value indicator-good" id="roe">0.0%</div>
+                    <div class="indicator-label" id="roe-status">-</div>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-label">Endividamento</div>
+                    <div class="indicator-value indicator-danger" id="endividamento">0.0%</div>
+                    <div class="indicator-label" id="endividamento-status">-</div>
+                </div>
+            </div>
+            
+            <div class="grid grid-2">
                 <div class="card">
-                    <h3>Relatórios Financeiros</h3>
-                    
-                    <div class="filters">
-                        <div class="filter-group">
-                            <label for="start-date">Data Inicial</label>
-                            <input type="date" id="start-date">
-                        </div>
-                        <div class="filter-group">
-                            <label for="end-date">Data Final</label>
-                            <input type="date" id="end-date">
-                        </div>
-                        <div class="filter-group">
-                            <label for="comparison-period">Comparar com:</label>
-                            <select id="comparison-period">
-                                <option value="">Não comparar</option>
-                                <option value="previous_month">Mês Anterior</option>
-                                <option value="previous_quarter">Trimestre Anterior</option>
-                                <option value="previous_year">Ano Anterior</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="hide-zero">Ocultar contas com saldo zero</label>
-                            <input type="checkbox" id="hide-zero" checked>
-                        </div>
-                        <div class="filter-group">
-                            <button id="apply-filters" class="btn">Aplicar Filtros</button>
-                        </div>
+                    <div class="card-header">
+                        <div class="card-title">Evolução de Receitas vs Despesas</div>
                     </div>
-                    
-                    <div class="nav-tabs" style="margin-top: 20px;">
-                        <div class="nav-tab active" data-tab="dashboard-reports">Dashboard</div>
-                        <div class="nav-tab" data-tab="balanco">Balanço Patrimonial</div>
-                        <div class="nav-tab" data-tab="dre">DRE</div>
-                        <div class="nav-tab" data-tab="dfc">DFC</div>
-                        <div class="nav-tab" data-tab="dmpl">DMPL</div>
-                        <div class="nav-tab" data-tab="analise-financeira">Análise Financeira</div>
-                        <div class="nav-tab" data-tab="desempenho">Desempenho</div>
-                        <div class="nav-tab" data-tab="variacoes">Variações Patrimoniais</div>
-                        <div class="nav-tab" data-tab="custos">Análise de Custos</div>
-                        <div class="nav-tab" data-tab="contas">Contas a Pagar/Receber</div>
-                        <div class="nav-tab" data-tab="divida">Relatório de Dívida</div>
-                        <div class="nav-tab" data-tab="preditivo">Análise Preditiva</div>
+                    <div class="chart-container">
+                        <canvas id="receitas-despesas-chart"></canvas>
                     </div>
-                    
-                    <!-- Dashboard de Relatórios -->
-                    <div id="dashboard-reports" class="tab-content active" style="padding: 0; margin-top: 20px;">
-                        <div class="kpi-card">
-                            <div class="kpi-label">Saldo Total</div>
-                            <div class="kpi-value" id="total-balance">MZN 0,00</div>
-                            <div class="kpi-label">Período: <span id="period-range"></span></div>
-                        </div>
-                        
-                        <div class="dashboard-grid">
-                            <div class="indicator-card">
-                                <div class="indicator-label">Liquidez Corrente</div>
-                                <div class="indicator-value indicator-good" id="liquidez-corrente">0.0</div>
-                                <div class="indicator-label" id="liquidez-status">-</div>
-                            </div>
-                            <div class="indicator-card">
-                                <div class="indicator-label">Margem Líquida</div>
-                                <div class="indicator-value indicator-warning" id="margem-liquida">0.0%</div>
-                                <div class="indicator-label" id="margem-status">-</div>
-                            </div>
-                            <div class="indicator-card">
-                                <div class="indicator-label">ROE</div>
-                                <div class="indicator-value indicator-good" id="roe">0.0%</div>
-                                <div class="indicator-label" id="roe-status">-</div>
-                            </div>
-                            <div class="indicator-card">
-                                <div class="indicator-label">Endividamento</div>
-                                <div class="indicator-value indicator-danger" id="endividamento">0.0%</div>
-                                <div class="indicator-label" id="endividamento-status">-</div>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-2">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-title">Evolução de Receitas vs Despesas</div>
-                                </div>
-                                <div class="chart-container">
-                                    <canvas id="receitas-despesas-chart"></canvas>
-                                </div>
-                            </div>
-                            
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-title">Composição do Patrimônio</div>
-                                </div>
-                                <div class="chart-container">
-                                    <canvas id="patrimonio-chart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="comparison-section" id="comparison-section" style="display: none;">
-                            <div class="card-header">
-                                <div class="card-title">Comparativo com Período Anterior</div>
-                            </div>
-                            <div class="chart-container">
-                                <canvas id="comparison-chart"></canvas>
-                            </div>
-                        </div>
-                        
-                        <div class="prediction-card">
-                            <div class="card-header">
-                                <div class="card-title" style="color: white;">Previsão para o Próximo Mês</div>
-                            </div>
-                            <div class="dashboard-grid">
-                                <div class="indicator-card" style="background: rgba(255,255,255,0.2);">
-                                    <div class="indicator-label" style="color: white;">Receita Prevista</div>
-                                    <div class="indicator-value" style="color: white;" id="predicted-revenue">MZN 0,00</div>
-                                    <div class="indicator-label" style="color: white;" id="revenue-trend">-</div>
-                                </div>
-                                <div class="indicator-card" style="background: rgba(255,255,255,0.2);">
-                                    <div class="indicator-label" style="color: white;">Lucro Previsto</div>
-                                    <div class="indicator-value" style="color: white;" id="predicted-profit">MZN 0,00</div>
-                                    <div class="indicator-label" style="color: white;" id="profit-trend">-</div>
-                                </div>
-                                <div class="indicator-card" style="background: rgba(255,255,255,0.2);">
-                                    <div class="indicator-label" style="color: white;">Fluxo de Caixa</div>
-                                    <div class="indicator-value" style="color: white;" id="predicted-cashflow">MZN 0,00</div>
-                                    <div class="indicator-label" style="color: white;" id="cashflow-trend">-</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Insights de Machine Learning -->
-                        <div class="ml-insights">
-                            <div class="card-header">
-                                <div class="card-title">Insights de IA</div>
-                            </div>
-                            <div id="ml-insights-content">
-                                <p>Carregando insights inteligentes...</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Detecção de Anomalias -->
-                        <div class="anomaly-detection">
-                            <div class="card-header">
-                                <div class="card-title">Detecção de Anomalias</div>
-                            </div>
-                            <div id="anomaly-detection-content">
-                                <p>Analisando transações em busca de padrões incomuns...</p>
-                            </div>
-                        </div>
-                        
-                        <div class="advice-section">
-                            <div class="advice-title">Recomendações Inteligentes</div>
-                            <div id="recomendacoes">
-                                <p>Carregue os dados para ver recomendações personalizadas.</p>
-                            </div>
-                        </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Composição do Patrimônio</div>
                     </div>
-                    
-                    <!-- Balanço Patrimonial -->
-                    <div id="balanco" class="tab-content">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-title">Balanço Patrimonial</div>
-                                <div class="export-options">
-                                    <button class="btn btn-success export-excel" data-report="balanco">Exportar Excel</button>
-                                    <button class="btn btn-success export-csv" data-report="balanco">Exportar CSV</button>
-                                    <button class="btn btn-success export-pdf" data-report="balanco">Exportar PDF</button>
-                                </div>
-                            </div>
-                            <table id="balanco-table">
-                                <thead>
-                                    <tr>
-                                        <th>Conta</th>
-                                        <th>Saldo (MZN)</th>
-                                        <th>Variação</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td colspan="3" class="loading">Carregando dados...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <!-- Outros relatórios (simplificados para demonstração) -->
-                    <div id="dre" class="tab-content">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-title">Demonstração do Resultado do Exercício (DRE)</div>
-                                <div class="export-options">
-                                    <button class="btn btn-success export-excel" data-report="dre">Exportar Excel</button>
-                                    <button class="btn btn-success export-pdf" data-report="dre">Exportar PDF</button>
-                                </div>
-                            </div>
-                            <p>Relatório DRE em desenvolvimento...</p>
-                        </div>
-                    </div>
-                    
-                    <div id="dfc" class="tab-content">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-title">Demonstração dos Fluxos de Caixa (DFC)</div>
-                                <div class="export-options">
-                                    <button class="btn btn-success export-excel" data-report="dfc">Exportar Excel</button>
-                                    <button class="btn btn-success export-pdf" data-report="dfc">Exportar PDF</button>
-                                </div>
-                            </div>
-                            <p>Relatório DFC em desenvolvimento...</p>
-                        </div>
-                    </div>
-                    
-                    <div id="preditivo" class="tab-content">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-title">Análise Preditiva</div>
-                            </div>
-                            <p>Análise preditiva em desenvolvimento...</p>
-                        </div>
+                    <div class="chart-container">
+                        <canvas id="patrimonio-chart"></canvas>
                     </div>
                 </div>
             </div>
+            
+            <div class="advice-section">
+                <div class="advice-title">Recomendações</div>
+                <div id="recomendacoes">
+                    <p>Carregue os dados para ver recomendações personalizadas.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Balanço Patrimonial -->
+        <div id="balanco" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Balanço Patrimonial</div>
+                    <div class="export-options">
+                        <button class="btn btn-success export-excel" data-report="balanco">Exportar Excel</button>
+                        <button class="btn btn-success export-csv" data-report="balanco">Exportar CSV</button>
+                        <button class="btn btn-success export-pdf" data-report="balanco">Exportar PDF</button>
+                    </div>
+                </div>
+                <table id="balanco-table">
+                    <thead>
+                        <tr>
+                            <th>Conta</th>
+                            <th>Saldo (MZN)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="2" class="loading">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- DRE -->
+        <div id="dre" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Demonstração do Resultado do Exercício</div>
+                    <div class="export-options">
+                        <button class="btn btn-success export-excel" data-report="dre">Exportar Excel</button>
+                        <button class="btn btn-success export-csv" data-report="dre">Exportar CSV</button>
+                        <button class="btn btn-success export-pdf" data-report="dre">Exportar PDF</button>
+                    </div>
+                </div>
+                <table id="dre-table">
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Valor (MZN)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="2" class="loading">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- DFC -->
+        <div id="dfc" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Demonstração do Fluxo de Caixa</div>
+                    <div class="export-options">
+                        <button class="btn btn-success export-excel" data-report="dfc">Exportar Excel</button>
+                        <button class="btn btn-success export-csv" data-report="dfc">Exportar CSV</button>
+                        <button class="btn btn-success export-pdf" data-report="dfc">Exportar PDF</button>
+                    </div>
+                </div>
+                <table id="dfc-table">
+                    <thead>
+                        <tr>
+                            <th>Atividade</th>
+                            <th>Descrição</th>
+                            <th>Valor (MZN)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="3" class="loading">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- DMPL -->
+        <div id="dmpl" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Demonstração das Mutações do Patrimônio Líquido</div>
+                    <div class="export-options">
+                        <button class="btn btn-success export-excel" data-report="dmpl">Exportar Excel</button>
+                        <button class="btn btn-success export-csv" data-report="dmpl">Exportar CSV</button>
+                        <button class="btn btn-success export-pdf" data-report="dmpl">Exportar PDF</button>
+                    </div>
+                </div>
+                <table id="dmpl-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Saldo Inicial</th>
+                            <th>Variações</th>
+                            <th>Saldo Final</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="4" class="loading">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Análise Financeira -->
+        <div id="analise-financeira" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Análise Financeira - Indicadores</div>
+                    <div class="export-options">
+                        <button class="btn btn-success export-excel" data-report="analise-financeira">Exportar Excel</button>
+                        <button class="btn btn-success export-csv" data-report="analise-financeira">Exportar CSV</button>
+                        <button class="btn btn-success export-pdf" data-report="analise-financeira">Exportar PDF</button>
+                    </div>
+                </div>
+                <table id="analise-financeira-table">
+                    <thead>
+                        <tr>
+                            <th>Indicador</th>
+                            <th>Fórmula</th>
+                            <th>Valor</th>
+                            <th>Classificação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="4" class="loading">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Outros relatórios (simplificados por questão de espaço) -->
+        <div id="desempenho" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Análise de Desempenho</div>
+                    <div class="export-options">
+                        <button class="btn btn-success export-excel" data-report="desempenho">Exportar Excel</button>
+                        <button class="btn btn-success export-csv" data-report="desempenho">Exportar CSV</button>
+                        <button class="btn btn-success export-pdf" data-report="desempenho">Exportar PDF</button>
+                    </div>
+                </div>
+                <div class="loading">Relatório de Desempenho em desenvolvimento...</div>
+            </div>
+        </div>
+        
+        <div id="variacoes" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Relatório de Variações Patrimoniais</div>
+                    <div class="export-options">
+                        <button class="btn btn-success export-excel" data-report="variacoes">Exportar Excel</button>
+                        <button class="btn btn-success export-csv" data-report="variacoes">Exportar CSV</button>
+                        <button class="btn btn-success export-pdf" data-report="variacoes">Exportar PDF</button>
+                    </div>
+                </div>
+                <div class="loading">Relatório de Variações Patrimoniais em desenvolvimento...</div>
+            </div>
+        </div>
+        
+        <div id="custos" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Análise de Custos</div>
+                    <div class="export-options">
+                        <button class="btn btn-success export-excel" data-report="custos">Exportar Excel</button>
+                        <button class="btn btn-success export-csv" data-report="custos">Exportar CSV</button>
+                        <button class="btn btn-success export-pdf" data-report="custos">Exportar PDF</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="custos-chart"></canvas>
+                </div>
+                <table id="custos-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo de Custo</th>
+                            <th>Valor (MZN)</th>
+                            <th>% do Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="3" class="loading">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="contas" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Contas a Pagar e Receber</div>
+                    <div class="export-options">
+                        <button class="btn btn-success export-excel" data-report="contas">Exportar Excel</button>
+                        <button class="btn btn-success export-csv" data-report="contas">Exportar CSV</button>
+                        <button class="btn btn-success export-pdf" data-report="contas">Exportar PDF</button>
+                    </div>
+                </div>
+                <div class="grid grid-2">
+                    <div>
+                        <h3>Contas a Receber</h3>
+                        <table id="contas-receber-table">
+                            <thead>
+                                <tr>
+                                    <th>Descrição</th>
+                                    <th>Valor (MZN)</th>
+                                    <th>Vencimento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="3" class="loading">Carregando dados...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h3>Contas a Pagar</h3>
+                        <table id="contas-pagar-table">
+                            <thead>
+                                <tr>
+                                    <th>Descrição</th>
+                                    <th>Valor (MZN)</th>
+                                    <th>Vencimento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="3" class="loading">Carregando dados...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="divida" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Relatório de Dívida</div>
+                    <div class="export-options">
+                        <button class="btn btn-success export-excel" data-report="divida">Exportar Excel</button>
+                        <button class="btn btn-success export-csv" data-report="divida">Exportar CSV</button>
+                        <button class="btn btn-success export-pdf" data-report="divida">Exportar PDF</button>
+                    </div>
+                </div>
+                <table id="divida-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo de Dívida</th>
+                            <th>Valor Original (MZN)</th>
+                            <th>Saldo Atual (MZN)</th>
+                            <th>Taxa de Juros</th>
+                            <th>Vencimento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="5" class="loading">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="integration-section">
+            <div class="integration-title">Integração com Great Mola ERP</div>
+            <p>Este sistema está preparado para integração automática com o Diário de Movimentos do sistema principal.</p>
+            <p><strong>Status da Sincronização:</strong> <span id="integration-status-text">Ativa</span></p>
+            <div id="integration-details" style="margin-top: 10px;">
+                <p><strong>Última sincronização:</strong> <span id="last-sync">-</span></p>
+                <p><strong>Transações sincronizadas:</strong> <span id="sync-transactions-count">0</span></p>
+            </div>
+        </div>
+    </div>
+</div>
             
             <!-- Sub-tab Diário de Movimentos -->
             <div class="sub-content" id="transactions">
